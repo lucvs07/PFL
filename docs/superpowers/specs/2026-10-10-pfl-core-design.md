@@ -37,7 +37,12 @@ Cada subprojeto tem sua própria spec, plano e implementação.
 ### 2.1 Regras gerais
 
 - **Posses:** **6 por time**, alternadas (configurável no motor).
-- **Início de posse:** sempre na própria linha de 25 (sem kickoff jogável nesta versão).
+- **Início de posse (posição de campo conta):**
+  - **Na própria 25:** primeira posse de cada time e após o adversário pontuar (TD, FG ou safety). Funciona como um touchback, sem kickoff jogável nesta versão.
+  - **Após punt:** onde a bola para, conforme a distância do punt (se passar da end zone, touchback na 25).
+  - **Após turnover (interceptação/fumble) ou turnover on downs:** o novo atacante começa no ponto onde a bola ficou, com o campo invertido.
+  - **Após FG errado:** o novo atacante começa no ponto do chute (ou na própria 20, o que for mais favorável a ele).
+  - As prorrogações têm regra própria (abaixo).
 - **Pontuação:**
   - Touchdown: **6**
   - Após TD, o atacante escolhe: **PAT** (1 ponto, chute quase automático, usa o especialista) ou **conversão de 2** (uma jogada normal a partir da linha de 3)
@@ -160,10 +165,15 @@ Resultado sob o ponto de vista da defesa. ✔ = leitura certa (vantagem defesa),
 
 ### 3.6 Fadiga
 
-- Cada vez que um Pokémon é **ator** em uma jogada, ganha **+1 de fadiga**.
-- Penalidade: **−10% nos stats por nível de fadiga a partir do limiar**. O limiar é **2**, ou **3** se HP base ≥ 100.
-- Recupera **1 nível por jogada fora de campo**. A fadiga **zera entre drives**.
-- O depth chart substitui automaticamente um titular que chegue ao limiar (seção 5.4).
+- **Ganho:** cada vez que um Pokémon é **ator** em uma jogada, ganha **+1 de fadiga**. **QB e OL** ganham **+½**, porque participam de quase toda jogada.
+- **Limiar:** **2**, ou **3** se HP base ≥ 100.
+- **Recuperação:**
+  - **1 nível por jogada fora de campo** (inclusive durante os drives do adversário, se ele não jogar nos dois lados).
+  - **Entre drives, recupera 2 níveis.** A fadiga **não zera**. Assim, um Pokémon que joga no ataque e na defesa acumula desgaste, e o dilema entre estrelas e profundidade de elenco é preservado.
+- **Substituição automática:** ao atingir o limiar, o titular é trocado pelo próximo reserva disponível no depth chart (seção 5.4).
+- **Regra de retorno:** quem saiu por fadiga **só volta quando a fadiga chegar a 0**. Isso evita o vai-e-volta.
+- **Penalidade:** **−10% nos stats por nível acima do limiar**. Ela só se aplica quando não há reserva disponível ou quando o jogador marca o titular como **"manter em campo"** no depth chart.
+- **Parâmetros:** todos os números de fadiga (ganho, limiar, recuperação, penalidade) são parâmetros do motor, calibrados pelo simulador.
 
 ---
 
@@ -246,7 +256,7 @@ Ordem e peso-alvo na variação total do resultado (a calibrar no simulador):
 
 - **Sem restrição rígida:** qualquer Pokémon joga em qualquer posição.
 - **Nota de aptidão de 1 a 5 estrelas** por posição, calculada pelos pesos de atributos da posição (seção 4.2). A nota serve como guia na interface e não interfere na regra.
-- O mesmo Pokémon pode jogar no ataque e na defesa. A fadiga é o que limita.
+- O mesmo Pokémon pode jogar no ataque e na defesa. O custo é a fadiga: como ela só recupera 2 níveis entre drives, jogar nos dois lados acumula desgaste (seção 3.6).
 
 ### 5.4 Formações, pacotes e depth chart
 
@@ -269,7 +279,8 @@ Ordem e peso-alvo na variação total do resultado (a calibrar no simulador):
 | Dime | 2 DL, 3 CB, 2 S |
 
 **Depth chart:** para cada vaga de cada formação/pacote, uma ordem de titular e reservas.
-- **Substituição automática** quando o titular atinge o limiar de fadiga.
+- **Substituição automática** quando o titular atinge o limiar de fadiga; ele só retorna com fadiga 0.
+- Opção **"manter em campo"** por Pokémon: ignora a substituição automática e aceita a penalidade de stats.
 - Ajuste manual entre drives.
 
 ### 5.5 Validação e persistência
@@ -439,7 +450,8 @@ Exemplo de `events[]` (consumidos pela animação e pelo log):
   - Validação de time: teto, espécie única, lendário, especialista, deck elegível.
   - Elegibilidade de cartas por formação/pacote.
   - Matriz de leitura: saldo zero em cada linha e coluna.
-  - Fadiga e substituição automática.
+  - Fadiga: ganho reduzido de QB/OL, recuperação entre drives, regra de retorno, "manter em campo".
+  - Posição de campo: início após punt, turnover, turnover on downs, FG errado e pontuação.
 - **Replays golden:** seed + ações fixas produzem estado final e eventos idênticos (protege o determinismo).
 - **Simulador:** roda no CI como portão de balanceamento (seção 7.3), com N reduzido para velocidade.
 - **Server:** teste de integração com 2 clientes Socket.io jogando uma partida completa, incluindo timeout e reconexão.
@@ -470,5 +482,5 @@ Exemplo de `events[]` (consumidos pela animação e pelo log):
 | Stat + d20 (sorte alta) | Leitura > tipo > stats > variância pequena |
 | Imunidade +60% (maior que 4x) | Escala monotônica; imunidade é o melhor resultado defensivo |
 | Tipos e tabela modernos implícitos | Tipagem e tabela da Gen 1 (bug Fantasma/Psíquico corrigido) |
-| Partida aberta | 6 posses por time + prorrogação universitária |
+| Partida aberta | 6 posses por time + prorrogação universitária; posição de campo carrega entre posses |
 | Sem regras de montagem | Teto salarial por BST, 1 lendário, especialista |
