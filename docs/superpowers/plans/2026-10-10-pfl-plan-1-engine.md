@@ -477,7 +477,7 @@ async function buildPokemon() {
   const list = [];
   for (let id = 1; id <= 151; id++) {
     const p = await getJson(`${API}/pokemon/${id}`);
-    const past = earliest(p.past_types ?? []);
+    const past: any = earliest(p.past_types ?? []);
     const slots = (past ? past.types : p.types) as { slot: number; type: { name: string } }[];
     const types = [...slots].sort((a, b) => a.slot - b.slot).map((t) => t.type.name);
     const stats: Record<string, number> = {};
@@ -491,7 +491,7 @@ async function buildTypeChart() {
   const chart: Record<string, Record<string, number>> = {};
   for (const attacker of GEN1_TYPES) {
     const t = await getJson(`${API}/type/${attacker}`);
-    const past = earliest(t.past_damage_relations ?? []);
+    const past: any = earliest(t.past_damage_relations ?? []);
     const rel = past ? past.damage_relations : t.damage_relations;
     const row: Record<string, number> = Object.fromEntries(GEN1_TYPES.map((d) => [d, 1]));
     for (const d of rel.double_damage_to) if (d.name in row) row[d.name] = 2;
@@ -1466,6 +1466,7 @@ import {
   threshold, fatigueMultiplier, initialFatigue, pickLineup, applyPlayFatigue, recoverBetweenDrives,
 } from '../src/fatigue';
 import { FORMATIONS, PACKAGES } from '../src/formations';
+import type { FatigueState } from '../src/model';
 import { electricTeam } from './fixtures';
 
 const team = electricTeam();
@@ -1530,7 +1531,7 @@ describe('fadiga por jogada', () => {
 
   it('fora de campo recupera 1 por jogada e só sai do descanso com fadiga 0', () => {
     const benchLineup = { ...lineup, RB: 50 };
-    let f = { levels: { 25: 2 }, resting: [25] };
+    let f: FatigueState = { levels: { 25: 2 }, resting: [25] };
     f = applyPlayFatigue(f, team, benchLineup, []);
     expect(f.levels[25]).toBe(1);
     expect(f.resting).toContain(25);

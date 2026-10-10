@@ -126,3 +126,32 @@ Quando a partida acaba, `match:end` substitui o último `match:phase`.
   - `npm run dev:client`: Vite em `http://localhost:5173`, que acessa o servidor via `VITE_SERVER_URL` (padrão `http://localhost:3001`)
   - `npm run sim -- --games N`: simulador do Plano 2
 - **Testes:** o `vitest.config.ts` da raiz passa a incluir `apps/**/test/**/*.test.ts` e `packages/**/test/**/*.test.ts`.
+
+## 5. Ajustes registrados após a escrita dos planos (2026-10-10)
+
+Os autores dos Planos 2–4 levantaram os pontos abaixo. Eles valem como contrato.
+
+- **Catálogo:** o Plano 1 tem **40** cartas (3 básicas + 2 especiais + 35 de tipo/assinatura). O Plano 2 preserva os 40 ids e chega a 85.
+- **`PlayOutcome`** (Plano 2) ganha os campos obrigatórios `readFactor`, `statFactor` e `varianceFactor`.
+  - `READ_YARDS` passa a ser exportado.
+  - Todo literal de `PlayOutcome` em testes precisa incluir os três campos.
+- **`SUGGESTED_TEAMS`:** a ordem importa para os testes do simulador.
+- **`packages/sim`** exporta também `actingTeams(state)`. `botAction` lança erro se o time não precisa agir na fase atual.
+- **`ROOM_CODE_ALPHABET`:** `@pfl/protocol` exporta `ROOM_CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ'`.
+- **`match:phase` idempotente:** pode ser reenviado com o mesmo `(turnId, phase)` nestes casos:
+  - o adversário escolheu a carta;
+  - confirmação de `team:depth`;
+  - mudança de deadline por ausência ou pausa;
+  - `match:resync`.
+
+  O cliente trata a mensagem como estado e não como transição.
+- **`turnId`:** FORMATION, PACKAGE e PLAYCALL do mesmo snap compartilham o `turnId`. Uma ação da fase errada com o `turnId` atual (inclusive a que perde a corrida contra o deadline) gera `error { code: 'ENGINE_ERROR' }`, com o código do motor na `message`.
+- **`ResultMessage.turnId`** é o `turnId` do snap resolvido. O cliente deduplica com `<=`.
+- **Erros de entrada na sala:** `ROOM_NOT_FOUND` e `ROOM_FULL` chegam só pelo Ack. Payload malformado gera `ENGINE_ERROR`; evento fora de sala gera `NOT_IN_ROOM`.
+- **`MatchStats`:**
+  - `sacks[K]` = sacks **feitos pela defesa** de K;
+  - `turnovers[K]` = turnovers **cometidos** por K;
+  - sacks não são creditados a nenhum Pokémon.
+- **Janela de `SET_DEPTH`:** vale só na etapa FORMATION do primeiro snap do drive. O cliente (Plano 4) mantém um rascunho de depth editável a qualquer momento e o **envia automaticamente** assim que `canEditDepth` fica verdadeiro. Assim a janela curta não exige ação humana.
+- **Replay:** `ReplayData` usa `DEFAULT_CONFIG`. `teams` são os times iniciais e os `SET_DEPTH` ficam em `actions`.
+- **Typecheck da raiz:** `tsconfig.json` exclui `apps/client`, e o script `typecheck` roda também `tsc -p apps/client/tsconfig.json`.
