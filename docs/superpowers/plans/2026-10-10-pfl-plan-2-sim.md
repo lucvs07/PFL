@@ -16,7 +16,7 @@
 
 **Ambiente de referência:** este plano foi validado numa cópia literal do Plano 1, com os dados reais da PokéAPI. Todos os testes abaixo passaram, e os números de simulação citados vêm dessa cópia (cerca de 21 ms por partida). Se o Plano 1 tiver sido executado com qualquer diferença, os números podem mudar, mas o procedimento continua valendo.
 
-**Pré-condição de typecheck:** o Plano 1, como está escrito, deixa 4 erros de `npm run typecheck`. Este plano espera que eles já tenham sido corrigidos na execução do Plano 1. Se aparecerem, **não mexa no código deste plano para escondê-los**: corrija na origem.
+**Pré-condição de typecheck:** os 4 erros de `npm run typecheck` que existiam no texto do Plano 1 (2 em `build-data.ts`, 2 em `fatigue.test.ts`) já foram corrigidos no próprio Plano 1. Se algum erro de typecheck aparecer, **não mexa no código deste plano para escondê-lo**: corrija na origem.
 - Dois erros estão em `packages/data/scripts/build-data.ts`: `Property 'types'` e `Property 'damage_relations' does not exist`. O retorno de `earliest<T>` perde o tipo da entrada.
 - Dois estão em `packages/engine/test/fatigue.test.ts`: o literal `{ levels: { 25: 2 }, resting: [25] }` é inferido com tipo estreito. Anote como `FatigueState`.
 
