@@ -149,12 +149,12 @@ Resultado sob o ponto de vista da defesa. ✔ = leitura certa (vantagem defesa),
 |                 | C. Dentro | C. Fora | P. Curto | P. Longo | Screen | Play-Action |
 |-----------------|:---------:|:-------:|:--------:|:--------:|:------:|:-----------:|
 | Contenção       | ✔ | ✔ | · | ✖ | · | ✖ |
-| Blitz           | ✔ | · | · | ✔ | ✖ | · |
-| Homem a Homem   | · | ✖ | ✔ | · | ✔ | · |
-| Zona Curta      | ✖ | · | ✔ | · | ✔ | ✖ |
-| Zona Profunda   | ✖ | ✖ | · | ✔ | · | ✔ |
+| Blitz           | ✔ | · | ✖ | ✔ | ✖ | · |
+| Homem a Homem   | ✖ | ✖ | ✔ | · | ✔ | · |
+| Zona Curta      | · | · | ✔ | ✖ | · | · |
+| Zona Profunda   | ✖ | · | ✖ | ✔ | · | ✔ |
 
-Princípio de design: nenhuma carta de defesa domina. Cada uma acerta 2–3 categorias e erra 2–3. Os valores finais serão ajustados pelo simulador (seção 7.3).
+**Princípio de design:** cada linha e cada coluna tem **saldo zero** (número de ✔ = número de ✖), e nenhuma categoria é estritamente dominada. A Zona Curta é a opção "segura" da defesa: acerta 1 categoria, erra 1 e é neutra no resto. Os valores dos multiplicadores serão ajustados pelo simulador (seção 7.3), e um teste automatizado garante o saldo zero da matriz.
 
 **Cartas básicas na matriz:** *Corrida Básica* conta como Corrida por Dentro, *Passe Básico* como Passe Curto e *Defesa Base* tem leitura sempre neutra.
 
@@ -438,6 +438,7 @@ Exemplo de `events[]` (consumidos pela animação e pelo log):
   - Transições de campo: downs, first down, TD, conversões, FG, punt, safety, turnover, turnover on downs, fim de posses, prorrogação (incluindo a regra da 3ª OT).
   - Validação de time: teto, espécie única, lendário, especialista, deck elegível.
   - Elegibilidade de cartas por formação/pacote.
+  - Matriz de leitura: saldo zero em cada linha e coluna.
   - Fadiga e substituição automática.
 - **Replays golden:** seed + ações fixas produzem estado final e eventos idênticos (protege o determinismo).
 - **Simulador:** roda no CI como portão de balanceamento (seção 7.3), com N reduzido para velocidade.
