@@ -16,12 +16,12 @@
 3. Servidor (salas por código, Socket.io, timers, reconexão, visão por jogador).
 4. Cliente (React + Phaser, download de sprites Gen 1 Yellow, telas da seção 6).
 
-**Desvios da spec (aguardando aprovação; a spec será atualizada para refleti-los antes da execução):**
+**Decisões aprovadas em 2026-10-10 (já refletidas na spec):**
 1. **Depth chart por vaga, compartilhado entre formações.** `WR1` usa a mesma ordem de reservas no Pistol e no Spread. A spec (5.4 e 6.1) pede um depth chart por formação/pacote.
 2. **Atores derivados da categoria da carta** (tabela `MATCHUPS`) em vez do campo `actors` por carta (spec 3.1). O ator preferido é o Pokémon que cumpre o requisito da carta.
 3. **Perfil de risco e variância por categoria** (`OFFENSE_PROFILES`). A carta só pode sobrescrever `baseYards`. A spec (3.1) previa um `profile` completo por carta.
 4. **Catálogo inicial de 35 cartas** (3 básicas, 2 especiais, 15+15 de tipo, 5 assinatura). O catálogo completo (~60 + ~20) e a calibração ficam no Plano 2.
-5. **Ajuste manual do depth chart entre drives (spec 5.4)** não está neste plano. Pendente de decisão: entra na Task 9 como ação `SET_DEPTH` ou vai para o Plano 3.
+5. **Ajuste manual do depth chart entre drives (spec 5.4)** fica no Plano 3 (servidor), que adiciona a ação ao motor.
 
 ## Global Constraints
 

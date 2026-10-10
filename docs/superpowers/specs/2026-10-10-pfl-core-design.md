@@ -111,20 +111,23 @@ interface Card {
   id: string;
   name: string;
   side: 'OFFENSE' | 'DEFENSE';
-  category: OffenseCategory | DefenseCategory;
-  origin: 'BASIC' | 'TYPE' | 'SIGNATURE';
-  requirements: Requirement[];       // ex.: { slot: 'RB', type: 'electric' }, { slot: 'WR', type: 'electric' }
-  actors: SlotRef[];                 // vagas cujos Pokémon disputam o confronto
+  category: OffenseCategory | DefenseCategory | 'PUNT' | 'FIELD_GOAL';
+  origin: 'BASIC' | 'TYPE' | 'SIGNATURE' | 'SPECIAL';
   element: PokemonType | null;       // tipo elemental da carta (entra no confronto de tipos)
-  profile: {
-    baseYards: number;
-    variance: number;                // amplitude relativa
-    risk: { sack?: number; interception?: number; fumble?: number; bigPlay?: number };
-  };
+  requirements: Requirement[];
+  baseYards?: number;                // sobrescreve as jardas base da categoria
+}
+
+interface Requirement {
+  position: Position;                // ex.: 'RB', 'WR', 'OL'
+  types?: PokemonType[];             // basta ter um deles
+  species?: number[];                // espécies/linha evolutiva aceitas
+  count?: number;                    // quantas vagas da posição precisam cumprir (padrão 1)
 }
 ```
 
-`Requirement` pode exigir tipo em uma vaga (`{ slot, type }`), espécie/linha evolutiva em uma vaga (`{ slot, species: [...] }`) ou quantidade (`{ slots: ['OL','OL','OL'], typeAnyOf: ['rock','ground'], count: 3 }`).
+- **Atores derivados da categoria.** Quem disputa a jogada é definido pela categoria da carta (tabela de confrontos do motor, seção 4.2). Exemplo: toda Corrida por Dentro coloca RB e OL contra DL e LB. Entre os candidatos de uma posição, o motor prefere o Pokémon que cumpre o requisito da carta.
+- **Perfil por categoria.** Jardas base, variância e riscos (sack, interceptação, fumble, incompleto, big play) são definidos por categoria. A carta pode sobrescrever apenas `baseYards`.
 
 ### 3.2 Categorias
 
@@ -139,7 +142,7 @@ interface Card {
 3. **Assinatura (~20):** ligadas a espécie ou linha evolutiva.
    Exemplos: *Muralha Snorlax* (Snorlax no OL), *Fly Route* (Pidgeot de WR).
 
-> A lista completa de cartas é conteúdo, não arquitetura. Será definida no plano de implementação e calibrada pelo simulador. O catálogo inicial precisa cobrir todos os 15 tipos e todas as categorias.
+> A lista completa de cartas é conteúdo, não arquitetura. O motor (Plano 1) nasce com um catálogo inicial de 35 cartas que cobre os 15 tipos e todas as categorias. O catálogo completo (~60 de tipo + ~20 assinatura) é escrito e calibrado com o simulador no Plano 2.
 
 ### 3.4 Deck
 
@@ -233,7 +236,7 @@ Ordem e peso-alvo na variação total do resultado (a calibrar no simulador):
 3. **Stats (~20%)**: a razão entre o placar de atributos do ataque e o da defesa (já com fadiga) posiciona o resultado dentro da faixa.
 4. **Variância (~10%)**: ±15%, com RNG semeado.
 
-**Saídas:** jardas ganhas/perdidas, sack, passe incompleto, interceptação, fumble, big play, touchdown. Os riscos vêm do `profile.risk` da carta, multiplicados pelo resultado da leitura e moderados pelo confronto de stats.
+**Saídas:** jardas ganhas/perdidas, sack, passe incompleto, interceptação, fumble, big play, touchdown. Os riscos vêm do perfil da categoria da carta (seção 3.1), multiplicados pelo resultado da leitura e moderados pelo confronto de stats.
 
 ---
 
@@ -278,10 +281,10 @@ Ordem e peso-alvo na variação total do resultado (a calibrar no simulador):
 | Nickel | 2 DL, 1 LB, 3 CB, 1 S |
 | Dime | 2 DL, 3 CB, 2 S |
 
-**Depth chart:** para cada vaga de cada formação/pacote, uma ordem de titular e reservas.
+**Depth chart:** para cada **vaga** (QB, OL1–3, RB, WR1–3, TE, FB, DL1–3, LB1–2, CB1–3, S1–2), uma ordem de titular e reservas. A mesma ordem vale em todas as formações/pacotes que usam aquela vaga.
 - **Substituição automática** quando o titular atinge o limiar de fadiga; ele só retorna com fadiga 0.
 - Opção **"manter em campo"** por Pokémon: ignora a substituição automática e aceita a penalidade de stats.
-- Ajuste manual entre drives.
+- **Ajuste manual entre drives:** o jogador pode editar o depth chart e o "manter em campo" no início de cada drive em que vai entrar em campo. O servidor revalida o time (subprojeto do servidor, Plano 3).
 
 ### 5.5 Validação e persistência
 
@@ -304,7 +307,7 @@ Estilo: fonte bitmap, paleta inspirada no Game Boy Color, componentes React com 
 2. **Montar time:**
    - Pokédex dos 151 com filtros (tipo, custo, aptidão)
    - Barra do teto salarial
-   - Editor de depth chart por formação/pacote
+   - Editor de depth chart por vaga
    - Editor de deck mostrando as cartas liberadas pelo elenco
    - Exportar/importar código
    - Escolher um time sugerido
