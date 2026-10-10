@@ -34,7 +34,7 @@
   - **Partida:** 6 posses por time; mão de 5 cartas; deck de 12 + 12, no máximo 2 cópias.
   - **Elenco:** 16 + 1 especialista; teto de 120; custo `max(1, round((BST − 180) / 30))`; no máximo 1 lendário (144, 145, 146, 150, 151).
   - **Leitura:** ✖ ×1,6, · ×1,0, ✔ ×0,4 com risco ×2.
-  - **Tipos:** 4x +30%, 2x +15%, 1x 0, ½x −15%, ¼x −30%, 0x −40%; afinidade +10% por ator.
+  - **Tipos:** 4x +60%, 2x +30%, 1x 0, ½x −30%, ¼x −45%, 0x −60% (escala dobrada por decisão do usuário em 2026-10-10); afinidade +10% por ator.
   - **Variância:** ±15%.
   - **Fadiga:** +1 por ator, +½ para QB/OL; limiar 2 (3 se HP ≥ 100); −1 por jogada fora de campo; −2 entre drives; retorno só com fadiga 0; −10% por nível acima do limiar.
   - **Campo:** touchback na 25; prorrogação a partir da 75 (25 do adversário); da 3ª prorrogação em diante, só tentativa de 2 a partir da 97.
@@ -648,12 +648,12 @@ describe('efetividade', () => {
 
 describe('escala de modificadores', () => {
   it('segue os valores da spec', () => {
-    expect(typeModifier(4)).toBe(0.3);
-    expect(typeModifier(2)).toBe(0.15);
+    expect(typeModifier(4)).toBe(0.6);
+    expect(typeModifier(2)).toBe(0.3);
     expect(typeModifier(1)).toBe(0);
-    expect(typeModifier(0.5)).toBe(-0.15);
-    expect(typeModifier(0.25)).toBe(-0.3);
-    expect(typeModifier(0)).toBe(-0.4);
+    expect(typeModifier(0.5)).toBe(-0.3);
+    expect(typeModifier(0.25)).toBe(-0.45);
+    expect(typeModifier(0)).toBe(-0.6);
   });
 
   it('é monotônica: maior efetividade nunca dá modificador menor', () => {
@@ -685,12 +685,12 @@ export function effectiveness(attack: PokemonType, defender: readonly PokemonTyp
 
 /** [efetividade, modificador] — spec, seção 4.3. Imunidade é o melhor resultado defensivo. */
 export const TYPE_SCALE: ReadonlyArray<readonly [number, number]> = [
-  [4, 0.3],
-  [2, 0.15],
+  [4, 0.6],
+  [2, 0.3],
   [1, 0],
-  [0.5, -0.15],
-  [0.25, -0.3],
-  [0, -0.4],
+  [0.5, -0.3],
+  [0.25, -0.45],
+  [0, -0.6],
 ];
 
 export function typeModifier(eff: number): number {

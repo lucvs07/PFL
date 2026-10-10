@@ -224,12 +224,12 @@ Ordem e peso-alvo na variação total do resultado (a calibrar no simulador):
 
      | Efetividade | Modificador |
      |---|---|
-     | 4x | +30% |
-     | 2x | +15% |
+     | 4x | +60% |
+     | 2x | +30% |
      | 1x | 0 |
-     | ½x | −15% |
-     | ¼x | −30% |
-     | 0x | −40% |
+     | ½x | −30% |
+     | ¼x | −45% |
+     | 0x | −60% |
 
    - **Afinidade:** cada ator do mesmo tipo da carta ganha **+10%** (inspirado no STAB).
    - Cartas sem tipo (`element: null`, como as básicas) não geram modificador de tipo.
@@ -426,7 +426,8 @@ Exemplo de `events[]` (consumidos pela animação e pelo log):
   - pontos por posse
   - duração em jogadas
   - impacto observado de tipo e de stats
-- **Portão de balanceamento:** nenhuma carta com win rate (das partidas em que foi jogada) fora de **45%–55%**, e participação observada de leitura/tipo/stats/variância próxima dos pesos-alvo da seção 4.3.
+- **Portão de balanceamento:** nenhuma carta com win rate (das partidas em que foi jogada) fora de **45%–55%**, exceto as **exceções documentadas** (hoje: `psychic_foresight`, revisar após os playtests).
+- **Pesos da seção 4.3 são informativos:** o relatório mede a participação de leitura/tipo/stats/variância, mas o portão não depende dela. Medição de 2026-10-10 com a escala antiga de tipos: leitura ~79%, tipo ~6%, stats ~13%, variância ~2%. Por isso a escala de tipos foi dobrada (decisão do usuário em 2026-10-10).
 
 ---
 

@@ -56,7 +56,7 @@ Os "35" do contrato são as cartas de tipo e de assinatura. Este plano preserva 
 - "**Portão de balanceamento:** nenhuma carta com win rate (das partidas em que foi jogada) fora de **45%–55%**" (spec 7.3). "**Simulador:** roda no CI como portão de balanceamento (seção 7.3), com N reduzido para velocidade." (spec 9)
 - Números **fixados pela spec**, que a calibração não pode mexer sem pedir ao usuário:
   - **Leitura:** ✖ ×1,6, · ×1,0, ✔ ×0,4 com risco ×2.
-  - **Tipos:** 4x +30%, 2x +15%, 1x 0, ½x −15%, ¼x −30%, 0x −40%; afinidade +10% por ator.
+  - **Tipos:** 4x +60%, 2x +30%, 1x 0, ½x −30%, ¼x −45%, 0x −60% (escala dobrada por decisão do usuário em 2026-10-10); afinidade +10% por ator.
   - **Variância:** ±15%.
   - **Fadiga:** +1 por ator, +½ para QB/OL; limiar 2 (3 se HP ≥ 100); −1 por jogada fora de campo; −2 entre drives; −10% por nível acima do limiar.
 
@@ -2371,6 +2371,8 @@ const GATE_SEED = 2026;
 const GATE_MIN_SAMPLE = 600;
 /** o portão só vale se cobrir uma parte relevante do catálogo */
 const GATE_MIN_SAMPLED_CARDS = 30;
+/** Exceções documentadas (spec 7.3), aprovadas pelo usuário em 2026-10-10; revisar após os playtests. */
+const GATE_EXCEPTIONS = ['psychic_foresight'];
 
 describe('portão de balanceamento', () => {
   it(
@@ -2379,12 +2381,19 @@ describe('portão de balanceamento', () => {
       const report = buildReport(runSim({ games: GATE_GAMES, seed: GATE_SEED }));
       const gate = balanceGate(report, { minSample: GATE_MIN_SAMPLE, low: 0.45, high: 0.55 });
       expect(gate.sampled.length).toBeGreaterThanOrEqual(GATE_MIN_SAMPLED_CARDS);
-      expect(gate.failures).toEqual([]);
+      expect(gate.failures.filter((f) => !GATE_EXCEPTIONS.includes(f.id))).toEqual([]);
     },
     300_000,
   );
 });
 ```
+
+> **Atualização de 2026-10-10 (decisões do usuário):**
+> - A escala de tipos foi **dobrada**: 4x +60%, 2x +30%, ½x −30%, ¼x −45%, 0x −60%.
+> - `psychic_foresight` é **exceção documentada** do portão (`GATE_EXCEPTIONS`).
+> - Os pesos da spec 4.3 passam a ser só informativos.
+>
+> As tabelas de linha de base e de iterações abaixo foram medidas com a escala **antiga**. Ao executar, refaça as medições e siga o mesmo procedimento: as cartas reprovadas e os ajustes de `baseYards` podem ser outros. Se, com a nova escala, `psychic_foresight` entrar na faixa, remova-a de `GATE_EXCEPTIONS`. Se outra carta de defesa cair no caso de parada, **pare e pergunte ao usuário**; não a acrescente às exceções por conta própria.
 
 - [ ] **Step 2: Rodar o portão e ler a linha de base**
 
