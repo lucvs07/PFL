@@ -10,7 +10,7 @@ import {
   type RoomState,
 } from '@pfl/protocol';
 import { createRoom, createSocket, emitIfConnected, joinRoom, type Joined, type PflSocket } from './net/socket';
-import { clearSession, describeFailure, errorReaction, loadSession, saveSession, type Session } from './net/session';
+import { clearSession, describeFailure, errorReaction, loadSession, rejoinFailure, saveSession, type Session } from './net/session';
 import { getSessionStorage, memoryStorage } from './lib/storage';
 import { canSubmitCard, initialMatchState, matchReducer, needsResync, panelMode } from './match/matchState';
 import { resolvePendingDepth, type DepthDraft, type PendingDepth } from './match/depthDraft';
@@ -55,6 +55,8 @@ export function App() {
   const resyncAsked = useRef(false);
   // Retomada já tentada nesta conexão: evita laço NOT_IN_ROOM -> room:join -> NOT_IN_ROOM.
   const rejoinTried = useRef(false);
+  // Geração do room:join de retomada: respostas de joins antigos não mexem no estado.
+  const rejoinGen = useRef(0);
   const now = useNow(room ? 200 : null);
 
   const updateSession = useCallback(
@@ -92,13 +94,21 @@ export function App() {
       const s = sessionRef.current;
       if (!s) return;
       rejoinTried.current = true;
+      const gen = ++rejoinGen.current;
       joinRoom(socket, s.code, s.token)
         .then((j) => {
+          if (gen !== rejoinGen.current) return;
           onJoined(j);
           const m = matchRef.current;
           if (m.view && !m.end) emitIfConnected(socket, 'match:resync'); // reconexão no meio da partida: estado atual
         })
         .catch((err: unknown) => {
+          const action = rejoinFailure(err, gen === rejoinGen.current);
+          if (action === 'ignore') return;
+          if (action === 'keep') {
+            setNotice('Sem resposta do servidor; tentando de novo ao reconectar.');
+            return;
+          }
           updateSession(null);
           setRoom(null);
           dispatch({ type: 'RESET' });

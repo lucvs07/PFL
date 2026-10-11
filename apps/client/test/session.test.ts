@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   AckError, ERROR_MESSAGES, SESSION_KEY, clearSession, describeFailure, errorReaction, loadSession,
-  normalizeRoomCode, saveSession, type Session,
+  normalizeRoomCode, rejoinFailure, saveSession, type Session,
 } from '../src/net/session';
 import { memoryStorage } from '../src/lib/storage';
 
@@ -85,5 +85,15 @@ describe('errorReaction', () => {
 
   it('describeFailure: ENGINE_ERROR no ack é falha do servidor ao abrir a sala', () => {
     expect(describeFailure(new AckError({ code: 'ENGINE_ERROR', message: 'Erro interno' }))).toBe('O servidor falhou ao abrir a sala. Tente de novo.');
+  });
+});
+
+describe('rejoinFailure', () => {
+  it('só o join atual decide; recusa do servidor limpa, timeout mantém', () => {
+    const ack = new AckError({ code: 'ROOM_NOT_FOUND', message: 'x' });
+    expect(rejoinFailure(ack, false)).toBe('ignore');
+    expect(rejoinFailure(new Error('timeout'), false)).toBe('ignore');
+    expect(rejoinFailure(ack, true)).toBe('clear');
+    expect(rejoinFailure(new Error('O servidor não respondeu.'), true)).toBe('keep');
   });
 });

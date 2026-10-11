@@ -107,3 +107,9 @@ export function describeFailure(err: unknown): string {
   if (err instanceof Error) return err.message;
   return 'Erro inesperado.';
 }
+
+/** Destino de um room:join de retomada que falhou: join antigo é ignorado; só recusa do servidor apaga a sessão. */
+export function rejoinFailure(err: unknown, current: boolean): 'ignore' | 'clear' | 'keep' {
+  if (!current) return 'ignore';
+  return err instanceof AckError ? 'clear' : 'keep';
+}
