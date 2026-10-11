@@ -73,7 +73,7 @@ export const MATCHUPS: Record<OffenseCategory, Matchup> = {
 };
 
 // Spec 4.3
-const READ_YARDS: Record<ReadResult, number> = { WRONG: 1.6, NEUTRAL: 1, RIGHT: 0.4 };
+export const READ_YARDS: Record<ReadResult, number> = { WRONG: 1.6, NEUTRAL: 1, RIGHT: 0.4 };
 const READ_INCOMPLETION: Record<ReadResult, number> = { WRONG: 0.5, NEUTRAL: 1, RIGHT: 1.5 };
 const READ_BIG_PLAY: Record<ReadResult, number> = { WRONG: 2, NEUTRAL: 1, RIGHT: 0.25 };
 const STUFF_PENALTY = 2;
@@ -168,7 +168,10 @@ export function resolvePlay(input: PlayInput): { outcome: PlayOutcome; rng: numb
   let offActors = off.actors;
   let defActors = def.actors;
   const make = (kind: PlayKind, yards: number, bigPlay = false): PlayOutcome =>
-    ({ kind, yards, bigPlay, read, offActors, defActors, offTypeMult, defTypeMult });
+    ({
+      kind, yards, bigPlay, read, offActors, defActors, offTypeMult, defTypeMult,
+      readFactor: READ_YARDS[read], statFactor, varianceFactor: variance,
+    });
 
   if (matchup.protection) {
     const ol = scoreSide(input.offLineup, [PROTECTION_OFF], input.offFatigue, preferOff);

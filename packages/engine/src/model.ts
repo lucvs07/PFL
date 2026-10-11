@@ -116,6 +116,12 @@ export interface PlayOutcome {
   defActors: number[];
   offTypeMult: number;
   defTypeMult: number;
+  /** multiplicador da leitura aplicado às jardas (1,6 / 1,0 / 0,4) */
+  readFactor: number;
+  /** razão de stats ataque/defesa, já limitada a [0,6; 1,4] */
+  statFactor: number;
+  /** fator de variância sorteado, em [1 − v; 1 + v] */
+  varianceFactor: number;
 }
 
 export type GameEvent =

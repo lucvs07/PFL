@@ -4,6 +4,7 @@ import type { PlayKind, PlayOutcome } from '../src/model';
 
 const o = (kind: PlayKind, yards: number): PlayOutcome => ({
   kind, yards, bigPlay: false, read: 'NEUTRAL', offActors: [], defActors: [], offTypeMult: 1, defTypeMult: 1,
+  readFactor: 1, statFactor: 1, varianceFactor: 1,
 });
 const first = (ballOn: number, yardsToGo = 10, down = 1) => ({ down, yardsToGo, ballOn });
 
