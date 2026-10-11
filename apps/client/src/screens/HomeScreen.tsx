@@ -1,7 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { ROOM_CODE_LENGTH } from '@pfl/protocol';
 import { normalizeRoomCode } from '../net/session';
-import { Sprite } from '../components/Sprite';
 import './lobby.css';
 
 interface Props {
@@ -11,7 +10,7 @@ interface Props {
   onBuilder: () => void;
 }
 
-/** Spec 6.1 (1): criar sala ou entrar com um código. Momento ousado do app: palavra gigante + Pikachu. */
+/** Spec 6.1 (1): criar sala ou entrar com um código. Momento ousado do app: a palavra gigante "PFL". */
 export function HomeScreen({ busy, onCreate, onJoin, onBuilder }: Props) {
   const [code, setCode] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -31,12 +30,7 @@ export function HomeScreen({ busy, onCreate, onJoin, onBuilder }: Props) {
     <main className="screen home">
       <div className="home-window">
         <div className="home-stage">
-          <div className="home-mark">
-            <h1 className="home-wordmark">PFL</h1>
-            <div className="home-hero">
-              <Sprite id={25} view="back" size={192} />
-            </div>
-          </div>
+          <h1 className="home-wordmark">PFL</h1>
           <p className="home-subtitle">Pokémon Football League</p>
         </div>
 

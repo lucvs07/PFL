@@ -1,6 +1,6 @@
 /* Início e Lobby (Task 15). Caixa de menu do GBC como único chrome; saturação só para tipo ou lado. */
 
-/* ================= Início (ref 3): palavra gigante + Pikachu de costas ================= */
+/* ================= Início (ref 3): palavra gigante na janela DMG ================= */
 .home {
   justify-content: center;
   align-items: center;
@@ -18,14 +18,16 @@
   outline-offset: -12px;
 }
 
-/* fundo: listras de gramado em duotone DMG */
+/* fundo: listras de gramado em duotone DMG; palavra e subtítulo centrados na janela */
 .home-stage {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-6) var(--space-4) var(--space-4);
+  justify-content: center;
+  gap: var(--space-4);
+  min-height: 336px;
+  padding: var(--space-6) var(--space-4);
   margin: 6px;
   background-color: var(--dmg-3);
   background-image: repeating-linear-gradient(
@@ -39,53 +41,21 @@
   overflow: hidden;
 }
 
-/* palavra e sprite na mesma célula: o sprite cobre o centro da palavra (figura e fundo) */
-.home-mark {
-  display: grid;
-  place-items: center;
-  width: 100%;
-  min-width: 0;
-}
-
-.home-mark > * { grid-area: 1 / 1; }
-
 .home-wordmark {
+  max-width: 100%;
   margin: 0;
   font-family: var(--font-display);
   font-size: clamp(80px, 24vw, 216px);
   line-height: 1;
   letter-spacing: 0.04em;
   color: var(--dmg-0);
+  text-align: center;
   text-shadow: 6px 6px 0 var(--dmg-1);
   user-select: none;
 }
 
-.home-hero {
-  position: relative;
-  z-index: 1;
-  align-self: end;
-  /* desce um pouco para o pé do sprite ficar abaixo da linha da palavra */
-  transform: translateY(18%);
-  line-height: 0;
-}
-
-.home-hero .sprite {
-  width: 192px;
-  height: 192px;
-}
-
-.home-hero .sprite-missing {
-  background: var(--dmg-3);
-  border: 3px dashed var(--dmg-0);
-  color: var(--dmg-0);
-  font-size: var(--fs-lg);
-  line-height: 1;
-}
-
 .home-subtitle {
-  position: relative;
-  z-index: 2;
-  margin: var(--space-4) 0 0;
+  margin: 0;
   padding: var(--space-1) var(--space-3);
   font-family: var(--font-display);
   font-size: var(--fs-md);
@@ -144,15 +114,6 @@
   color: var(--gbc-ink);
 }
 
-/* único momento de entrada: o Pikachu sobe em quatro passos; nada com movimento reduzido */
-@media (prefers-reduced-motion: no-preference) {
-  .home-hero { animation: home-rise 480ms steps(4, end) both; }
-}
-
-@keyframes home-rise {
-  from { transform: translateY(60%); }
-  to { transform: translateY(18%); }
-}
 
 /* ================= Lobby (ref 1) ================= */
 .lobby > * { min-width: 0; }
@@ -386,14 +347,9 @@
     outline-offset: -10px;
   }
 
-  .home-stage { padding: var(--space-4) var(--space-2) var(--space-3); }
-
-  /* ×1 do sprite B/W de 96 px; max-* também vale para o fallback com tamanho inline */
-  .home-hero .sprite {
-    width: 96px;
-    height: 96px;
-    max-width: 96px;
-    max-height: 96px;
+  .home-stage {
+    min-height: 224px;
+    padding: var(--space-4) var(--space-2);
   }
 
   .home-subtitle { font-size: var(--fs-xs); }
