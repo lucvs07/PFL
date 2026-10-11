@@ -87,6 +87,15 @@ describe('heurística de down & distance', () => {
     expect(at(25, 8, lastPossession)).toBe('GO');
   });
 
+  it('na prorrogação nunca chuta punt, nem empatado nem na frente', () => {
+    const view = playerView(start(), 'A');
+    const ot = (ballOn: number, score: { A: number; B: number }) =>
+      fourthDownDecision({ ...view, overtimeRound: 1, score, field: { down: 4, yardsToGo: 8, ballOn } }, 81);
+    expect(ot(40, { A: 7, B: 7 })).toBe('GO'); // fora do alcance do FG: antes era PUNT
+    expect(ot(40, { A: 10, B: 7 })).toBe('GO');
+    expect(ot(70, { A: 7, B: 7 })).toBe('FIELD_GOAL');
+  });
+
   it('no 4º down escolhe a carta especial que decidiu', () => {
     const s = toPlaycall(start());
     s.field = { down: 4, yardsToGo: 9, ballOn: 20 };

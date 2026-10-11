@@ -53,6 +53,7 @@ export function runSim(options: SimOptions): MatchRecord[] {
   if (!Number.isInteger(options.games) || options.games < 1) throw new Error(`games inválido: ${options.games}`);
   if (!Number.isInteger(options.seed) || options.seed < 0 || options.seed > MAX_SEED) throw new Error(`seed inválida: ${options.seed}`);
   const every = options.suggestedEvery ?? 4;
+  if (!Number.isInteger(every) || every < 1) throw new Error(`suggestedEvery inválido: ${options.suggestedEvery}`);
   let rng = options.seed | 0;
   const next = (): number => {
     const r = rngNext(rng);
@@ -61,22 +62,23 @@ export function runSim(options: SimOptions): MatchRecord[] {
   };
   const records: MatchRecord[] = [];
   for (let pair = 0; records.length < options.games; pair++) {
-    let x: Team;
-    let y: Team;
-    if (pair % every === 0) {
-      const i = next() % SUGGESTED_TEAMS.length;
-      const j = (i + 1 + (next() % (SUGGESTED_TEAMS.length - 1))) % SUGGESTED_TEAMS.length;
-      x = SUGGESTED_TEAMS[i];
-      y = SUGGESTED_TEAMS[j];
-    } else {
-      const rx = randomTeam(next(), `Aleatório ${pair}a`);
-      const ry = randomTeam(rx.rng, `Aleatório ${pair}b`);
-      x = rx.team;
-      y = ry.team;
-    }
-    const seed = next();
-    const botSeed = next();
+    // a geração dos times também entra no try: um erro dela precisa do mesmo contexto para ser reproduzido
     try {
+      let x: Team;
+      let y: Team;
+      if (pair % every === 0) {
+        const i = next() % SUGGESTED_TEAMS.length;
+        const j = (i + 1 + (next() % (SUGGESTED_TEAMS.length - 1))) % SUGGESTED_TEAMS.length;
+        x = SUGGESTED_TEAMS[i];
+        y = SUGGESTED_TEAMS[j];
+      } else {
+        const rx = randomTeam(next(), `Aleatório ${pair}a`);
+        const ry = randomTeam(rx.rng, `Aleatório ${pair}b`);
+        x = rx.team;
+        y = ry.team;
+      }
+      const seed = next();
+      const botSeed = next();
       records.push(playMatch(x, y, seed, botSeed, options.maxSteps));
       if (records.length < options.games) records.push(playMatch(y, x, seed, botSeed, options.maxSteps));
     } catch (e) {

@@ -95,6 +95,8 @@ export function fourthDownDecision(view: PlayerView, specialist: number): 'GO' |
     if (deficit <= 3 && fgProb >= 0.3) return 'FIELD_GOAL';
     return 'GO';
   }
+  // na prorrogação o punt só entrega a posse sem pontos: chuta FG se der, senão tenta
+  if (view.overtimeRound > 0) return fgProb >= 0.3 ? 'FIELD_GOAL' : 'GO';
   if (yardsToGo <= 2 && ballOn >= 40) return 'GO';
   if (fgProb >= 0.5) return 'FIELD_GOAL';
   if (yardsToGo <= 4 && ballOn >= 60) return 'GO';
