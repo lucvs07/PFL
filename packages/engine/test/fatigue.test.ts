@@ -41,6 +41,11 @@ describe('pickLineup', () => {
     expect(lineup.QB).toBe(63);
     expect(Object.keys(lineup)).toHaveLength(7);
   });
+
+  it('entre cansados, escala o menos cansado', () => {
+    const lineup = pickLineup(FORMATIONS.PISTOL, team, { levels: { 63: 3, 54: 1 }, resting: [63, 54] });
+    expect(lineup.QB).toBe(54);
+  });
 });
 
 describe('fadiga por jogada', () => {

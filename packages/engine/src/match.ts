@@ -77,7 +77,8 @@ export function createMatch(teamA: Team, teamB: Team, seed: number, config: Matc
       lastFormation: DEFAULT_FORMATION,
     };
   };
-  const teams = { A: runtime(teamA), B: runtime(teamB) };
+  // Copia os times: editar o objeto do chamador depois não pode alterar a partida (nem o replay).
+  const teams = { A: runtime(structuredClone(teamA)), B: runtime(structuredClone(teamB)) };
   const state: MatchState = {
     config,
     teams,
@@ -174,6 +175,7 @@ function onPlaycall(s: MatchState, action: Action, events: GameEvent[]): void {
     s.cards.defense ??= 'basic_defense';
   } else {
     if (action.type !== 'CARD') throw new EngineError('WRONG_PHASE', `${action.type} na fase de CARD`);
+    if (action.team !== 'A' && action.team !== 'B') throw new EngineError('WRONG_TEAM', String(action.team));
     const side = action.team === s.offense ? 'offense' : 'defense';
     if (s.cards[side] !== null) throw new EngineError('ALREADY_CHOSEN');
     if (!playableCards(s, action.team).includes(action.cardId)) throw new EngineError('CARD_NOT_PLAYABLE', action.cardId);
@@ -216,6 +218,12 @@ function resolveSnap(s: MatchState, events: GameEvent[]): void {
   const defCard = getCard(s.cards.defense as string);
   consumeCard(s, off, 'offense', offCard.id);
   consumeCard(s, def, 'defense', defCard.id);
+
+  if (offCard.category === 'PUNT' || offCard.category === 'FIELD_GOAL') {
+    // Chutes não geram atores, mas quem está fora de campo continua recuperando 1 nível (spec 3.6).
+    off.fatigue = applyPlayFatigue(off.fatigue, off.team, s.lineups.offense, []);
+    def.fatigue = applyPlayFatigue(def.fatigue, def.team, s.lineups.defense, []);
+  }
 
   if (offCard.category === 'PUNT') {
     events.push({ t: 'CARDS', offense: offCard.id, defense: defCard.id, read: 'NEUTRAL' });

@@ -2,11 +2,11 @@
 
 exports[`partidas completas > golden: a seed 2026 produz sempre o mesmo resultado 1`] = `
 {
-  "actions": 335,
+  "actions": 357,
   "score": {
-    "A": 15,
-    "B": 11,
+    "A": 14,
+    "B": 22,
   },
-  "turnId": 87,
+  "turnId": 94,
 }
 `;

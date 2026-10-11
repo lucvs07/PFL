@@ -275,3 +275,75 @@ describe('playerView', () => {
     expect(JSON.stringify(view)).not.toContain('basic_pass');
   });
 });
+
+describe('robustez do estado e das ações', () => {
+  it('createMatch não compartilha objetos com o chamador', () => {
+    const t = electricTeam('X');
+    const s = createMatch(t, B, 1).state;
+    t.depth.QB = [54];
+    t.roster.pop();
+    expect(s.teams.A.team.depth.QB).toEqual([63, 54]);
+    expect(s.teams.A.team.roster).toHaveLength(16);
+  });
+
+  it('CARD de um time que não é A nem B é rejeitado', () => {
+    const s = run(start(), { type: 'FORMATION', team: 'A', formation: 'PISTOL' }, { type: 'PACKAGE', team: 'B', package: 'BASE' }).state;
+    expect(() => step(s, { type: 'CARD', team: 'C' as never, cardId: 'basic_defense' })).toThrow(/WRONG_TEAM/);
+  });
+
+  it('o estado de entrada continua intacto quando step lança erro', () => {
+    const s = start();
+    const before = structuredClone(s);
+    expect(() => step(s, { type: 'FORMATION', team: 'B', formation: 'PISTOL' })).toThrow(/WRONG_TEAM/);
+    expect(() => step(s, { type: 'CARD', team: 'A', cardId: 'basic_run' })).toThrow(/WRONG_PHASE/);
+    expect(s).toEqual(before);
+  });
+});
+
+describe('padrões de timeout em situações especiais', () => {
+  it('no 4º down o ataque cai em punt', () => {
+    const s = start();
+    s.field = { down: 4, yardsToGo: 8, ballOn: 40 };
+    const { events } = run(s, { type: 'TIMEOUT' }, { type: 'TIMEOUT' }, { type: 'TIMEOUT' });
+    expect(events.find((e) => e.t === 'CARDS')).toMatchObject({ offense: 'punt', defense: 'basic_defense' });
+  });
+
+  it('na conversão cai em PAT', () => {
+    const s = start();
+    s.phase = 'CONVERSION';
+    const { events } = run(s, { type: 'TIMEOUT' });
+    expect(events.find((e) => e.t === 'CONVERSION')).toMatchObject({ choice: 'PAT' });
+  });
+
+  it('na tentativa de 2 pontos cai em corrida básica, mesmo no 4º down', () => {
+    const s = start();
+    s.phase = 'CONVERSION';
+    const two = run(s, { type: 'CONVERSION', team: 'A', choice: 'TWO' }).state;
+    two.field = { ...two.field, down: 4 };
+    const { events } = run(two, { type: 'TIMEOUT' }, { type: 'TIMEOUT' }, { type: 'TIMEOUT' });
+    expect(events.find((e) => e.t === 'CARDS')).toMatchObject({ offense: 'basic_run' });
+  });
+});
+
+describe('prorrogação e fadiga em chutes', () => {
+  it('termina já na rodada 1 quando há vencedor', () => {
+    const s = start();
+    s.offense = 'B';
+    s.possessions = { A: 6, B: 6 };
+    s.score = { A: 7, B: 0 };
+    s.overtime = { round: 1, turnsInRound: 1 };
+    s.field = { down: 4, yardsToGo: 10, ballOn: 75 };
+    const { state, events } = snap(s, 'punt');
+    expect(state.phase).toBe('MATCH_END');
+    expect(events.at(-1)).toEqual({ t: 'MATCH_END', score: { A: 7, B: 0 } });
+  });
+
+  it('punt também recupera a fadiga de quem está fora de campo', () => {
+    const s = start();
+    s.field = { down: 4, yardsToGo: 8, ballOn: 40 };
+    s.teams.A.fatigue = { levels: { 50: 5 }, resting: [50] }; // Diglett fora de campo
+    const { state } = snap(s, 'punt');
+    // -1 pela jogada e -2 pelo fim do drive
+    expect(state.teams.A.fatigue.levels[50]).toBe(2);
+  });
+});

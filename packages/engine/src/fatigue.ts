@@ -28,10 +28,33 @@ export function initialFatigue(): FatigueState {
   return { levels: {}, resting: [] };
 }
 
-/** Prefere quem não está descansando; se a vaga não tiver alternativa, escala um cansado. */
-export function pickLineup(slots: readonly SlotId[], team: Team, fatigue: FatigueState): Lineup {
+/**
+ * Prefere quem não está descansando; se a vaga não tiver alternativa, escala o menos cansado
+ * (empate: o primeiro do depth chart).
+ */
+function fatigueAwareLineup(slots: readonly SlotId[], team: Team, fatigue: FatigueState): Lineup | null {
   const resting = new Set(fatigue.resting);
-  const lineup = fillSlots(slots, team.depth, (id) => !resting.has(id)) ?? fillSlots(slots, team.depth);
+  const level = (id: number): number => fatigue.levels[id] ?? 0;
+  const used = new Set<number>();
+  const lineup: Lineup = {};
+  for (const slot of slots) {
+    const candidates = (team.depth[slot] ?? []).filter((id) => !used.has(id));
+    const pick =
+      candidates.find((id) => !resting.has(id)) ??
+      candidates.reduce<number | undefined>((best, id) => (best === undefined || level(id) < level(best) ? id : best), undefined);
+    if (pick === undefined) return null;
+    lineup[slot] = pick;
+    used.add(pick);
+  }
+  return lineup;
+}
+
+/**
+ * A escolha gulosa acima pode consumir o único candidato de uma vaga posterior. Nesse caso cai no
+ * preenchimento simples pela ordem do depth chart, que `validateTeam` garante ser possível.
+ */
+export function pickLineup(slots: readonly SlotId[], team: Team, fatigue: FatigueState): Lineup {
+  const lineup = fatigueAwareLineup(slots, team, fatigue) ?? fillSlots(slots, team.depth);
   if (!lineup) throw new Error(`Depth chart não preenche ${slots.join(',')}`);
   return lineup;
 }
