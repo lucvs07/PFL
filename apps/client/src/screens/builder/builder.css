@@ -1,0 +1,741 @@
+/* Montar time (Task 14). Caixa de menu do GBC como único chrome; saturação só para tipo ou lado. */
+
+.builder > * { min-width: 0; }
+
+/* ---------- cabeçalho ---------- */
+.builder-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.builder-header-top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.builder-title {
+  font-size: var(--fs-lg);
+  margin: 0;
+}
+
+.builder-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.builder-controls .input {
+  font-size: var(--fs-body-sm);
+  flex: 1 1 160px;
+}
+
+.builder-controls .builder-name {
+  flex: 2 1 200px;
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+}
+
+.builder-message {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  border-left: 6px solid var(--gbc-ink);
+  padding-left: var(--space-2);
+}
+
+.builder-errors summary {
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+}
+
+.builder-errors[open] summary { margin-bottom: var(--space-2); }
+
+/* ---------- faixa: teto + elenco ---------- */
+.builder-strip {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.cap-bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.cap-bar-label {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  font-size: var(--fs-body-sm);
+}
+
+.cap-bar-num {
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+}
+
+.cap-bar-track {
+  height: 16px;
+  border: 3px solid var(--gbc-ink);
+  background: var(--gbc-panel);
+}
+
+.cap-bar-fill {
+  height: 100%;
+  background: var(--gbc-green-1);
+}
+
+.cap-bar.is-over .cap-bar-fill { background: var(--gbc-red); }
+.cap-bar.is-over .cap-bar-label { color: var(--gbc-red); }
+
+.roster-strip {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.roster-strip-title {
+  margin: 0;
+  font-size: var(--fs-md);
+}
+
+.roster-strip-count { color: var(--gbc-muted); }
+
+.roster-strip-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 88px;
+  gap: var(--space-3);
+  align-items: start;
+  min-width: 0;
+}
+
+.roster-slots {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.roster-slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  min-height: 96px;
+  padding: var(--space-1);
+  background: var(--gbc-paper);
+  border: 3px solid var(--gbc-ink);
+  box-shadow: 2px 2px 0 var(--gbc-ink);
+}
+
+.roster-slot.is-empty {
+  justify-content: center;
+  background: transparent;
+  border: 3px dashed var(--gbc-panel-dark);
+  box-shadow: none;
+}
+
+.roster-slot-no {
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  color: var(--gbc-panel-dark);
+}
+
+.roster-slot-name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-body-sm);
+  line-height: 1.2;
+}
+
+.roster-slot-meta {
+  display: flex;
+  gap: var(--space-1);
+  align-items: center;
+}
+
+.roster-slot-cost {
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+}
+
+.roster-slot-remove {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gbc-ink);
+  color: var(--gbc-paper);
+  border: 2px solid var(--gbc-ink);
+  font-family: var(--font-body);
+  font-size: var(--fs-body-sm);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.roster-slot-remove:hover { background: var(--gbc-muted); }
+
+.roster-kicker {
+  border-width: 4px;
+  box-shadow: 3px 3px 0 var(--gbc-ink);
+}
+
+.roster-kicker.is-empty {
+  border: 3px dashed var(--gbc-ink);
+  text-align: center;
+}
+
+.roster-kicker-label {
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+}
+
+.roster-kicker-help,
+.roster-kicker-stats {
+  font-size: var(--fs-body-sm);
+  line-height: 1.2;
+  color: var(--gbc-muted);
+  text-align: center;
+}
+
+.roster-strip-help {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  color: var(--gbc-muted);
+}
+
+.legend-tag,
+.pick-tag {
+  display: inline-block;
+  padding: 1px 4px;
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.legend-tag {
+  background: var(--gbc-paper);
+  color: var(--gbc-ink);
+  border: 2px solid var(--gbc-ink);
+}
+
+.pick-tag {
+  background: var(--gbc-ink);
+  color: var(--gbc-paper);
+}
+
+/* ---------- abas ---------- */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.tab.is-active {
+  background: var(--gbc-ink);
+  color: var(--gbc-paper);
+}
+
+.tab.is-active:hover:not(:disabled) {
+  background: var(--gbc-ink);
+}
+
+/* ---------- aba Elenco ---------- */
+.builder-roster-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.pokedex {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr) 288px;
+  gap: var(--space-4);
+  align-items: start;
+  min-width: 0;
+}
+
+/* trilho de tipos */
+.type-rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.rail-pill {
+  --pill-color: var(--gbc-ink);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  background: var(--gbc-paper);
+  color: var(--gbc-ink);
+  border: 2px solid var(--gbc-ink);
+  border-left: 10px solid var(--pill-color);
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+  line-height: 1.6;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.rail-pill:hover { background: var(--gbc-panel); }
+
+.rail-pill[aria-pressed='true'] {
+  background: var(--pill-color);
+  border-width: 3px;
+  border-left-width: 10px;
+  box-shadow: 2px 2px 0 var(--gbc-ink);
+}
+
+.rail-all[aria-pressed='true'] { color: var(--gbc-paper); }
+
+/* coluna central */
+.pokedex-main {
+  min-width: 0;
+}
+
+.pokedex-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.pokedex-filters .input { font-size: var(--fs-body-sm); }
+
+.pokedex-count {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+  color: var(--gbc-muted);
+}
+
+.dex-grid {
+  list-style: none;
+  margin: 0;
+  /* espaço para o sprite saltar acima da primeira fileira */
+  padding: 32px var(--space-2) var(--space-3) 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(124px, 1fr));
+  column-gap: var(--space-3);
+  row-gap: 40px;
+  max-height: 70vh;
+  overflow-y: auto;
+  border-top: 3px solid var(--gbc-ink);
+}
+
+.dex-grid > li { min-width: 0; }
+
+.dex-tile {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 28px var(--space-2) var(--space-2);
+  background: var(--gbc-paper);
+  color: var(--gbc-ink);
+  border: 3px solid var(--gbc-ink);
+  box-shadow: 3px 3px 0 var(--gbc-ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.dex-tile:hover { background: var(--gbc-panel); }
+
+.dex-tile.is-selected {
+  border-width: 4px;
+  box-shadow: 5px 5px 0 var(--gbc-ink);
+  background: var(--gbc-panel);
+}
+
+.dex-tile.is-picked { outline: 3px double var(--gbc-ink); outline-offset: -8px; }
+
+.dex-tile:focus-visible {
+  outline: 3px dashed var(--gbc-blue);
+  outline-offset: 3px;
+}
+
+/* número gigante e apagado atrás do sprite (ref 5) */
+.dex-ghost {
+  position: absolute;
+  z-index: -1;
+  top: 2px;
+  right: 4px;
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 1;
+  color: var(--gbc-panel);
+  pointer-events: none;
+  user-select: none;
+}
+
+.dex-tile.is-selected .dex-ghost,
+.dex-tile:hover .dex-ghost { color: var(--gbc-paper); }
+
+/* sprite saltando acima do card (ref 4), escala ×1 */
+.dex-tile-sprite {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 56px;
+  height: 56px;
+}
+
+.dex-tile-no {
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+  color: var(--gbc-muted);
+}
+
+.dex-tile-name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-body);
+  line-height: 1.3;
+}
+
+.dex-types {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+
+.dex-tile-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  align-items: center;
+  margin-top: auto;
+  padding-top: var(--space-1);
+}
+
+.dex-cost {
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+}
+
+.dex-tile .stars { font-size: var(--fs-body-sm); }
+
+/* painel de detalhe fixo à direita */
+.dex-detail {
+  position: sticky;
+  top: var(--space-4);
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-3);
+  background: var(--gbc-paper);
+  border: 4px solid var(--gbc-ink);
+  box-shadow: 4px 4px 0 var(--gbc-ink);
+}
+
+.dex-detail-hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  justify-content: center;
+  padding: var(--space-2) 0;
+  background: var(--gbc-panel);
+  border: 3px solid var(--gbc-ink);
+  overflow: hidden;
+}
+
+.dex-detail-hero .sprite {
+  width: 112px;
+  height: 112px;
+  max-width: none;
+}
+
+.dex-detail-ghost {
+  top: 50%;
+  left: 50%;
+  right: auto;
+  transform: translate(-50%, -50%);
+  font-size: 64px;
+  color: var(--gbc-panel-dark);
+  opacity: 0.45;
+}
+
+.dex-detail-title {
+  margin: 0;
+  font-size: var(--fs-md);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.dex-detail-no { color: var(--gbc-muted); }
+
+.dex-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.dex-detail-sub {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--fs-xs);
+}
+
+.apt-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px var(--space-3);
+}
+
+.apt-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.apt-pos {
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+}
+
+.apt-list .stars { font-size: var(--fs-body-sm); letter-spacing: 0; }
+
+.dex-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.dex-detail-actions .btn { flex: 1 1 auto; }
+
+/* times sugeridos: cards de cidade de ginásio (ref 1) */
+.suggested-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: var(--space-4);
+}
+
+.gym-card {
+  --gym-color: var(--gbc-ink);
+  display: flex;
+  min-width: 0;
+  background: var(--gbc-paper);
+  border: 3px solid var(--gbc-ink);
+  box-shadow: 3px 3px 0 var(--gbc-ink);
+}
+
+.gym-band {
+  flex: none;
+  width: 14px;
+  background: var(--gym-color);
+  border-right: 3px solid var(--gbc-ink);
+}
+
+.gym-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+}
+
+.gym-city {
+  font-size: var(--fs-body-sm);
+  color: var(--gbc-muted);
+  border-bottom: 4px solid var(--gym-color);
+  align-self: flex-start;
+}
+
+.gym-name {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+
+.gym-roster {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px var(--space-2);
+}
+
+.gym-roster li {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.gym-roster-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-body-sm);
+}
+
+.gym-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.gym-extra {
+  flex: 1 1 140px;
+  font-size: var(--fs-body-sm);
+  color: var(--gbc-muted);
+}
+
+.gym-cost {
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+}
+
+/* ---------- aba Deck ---------- */
+.deck-editor {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.deck-column { min-width: 0; border-top-width: 10px; }
+.deck-column.is-offense { border-top-color: var(--side-offense); }
+.deck-column.is-defense { border-top-color: var(--side-defense); }
+
+.deck-title {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.deck-count { color: var(--gbc-muted); }
+
+.deck-list {
+  list-style: none;
+  margin: 0 0 var(--space-3);
+  padding: 0;
+}
+
+.deck-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 40px auto;
+  gap: var(--space-2);
+  align-items: center;
+  padding: 2px 0;
+  border-bottom: 2px solid var(--gbc-panel);
+  font-size: var(--fs-body-sm);
+}
+
+.deck-copies {
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+  text-align: right;
+}
+
+.deck-column > .muted { font-size: var(--fs-body-sm); }
+
+.card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding-top: var(--space-2);
+}
+
+/* ---------- aba Código ---------- */
+.code-panel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.code-panel > p { grid-column: 1 / -1; }
+
+/* ---------- foco ---------- */
+.rail-pill:focus-visible,
+.roster-slot-remove:focus-visible,
+.builder-errors summary:focus-visible {
+  outline: 3px dashed var(--gbc-blue);
+  outline-offset: 2px;
+}
+
+/* ---------- responsivo ---------- */
+@media (max-width: 900px) {
+  .pokedex { grid-template-columns: 120px minmax(0, 1fr); }
+  .dex-detail {
+    grid-column: 1 / -1;
+    position: static;
+  }
+  .deck-editor,
+  .code-panel { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 720px) {
+  .pokedex { grid-template-columns: minmax(0, 1fr); }
+
+  /* trilho vira linha de chips com rolagem própria */
+  .type-rail {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: var(--space-2);
+    overscroll-behavior-x: contain;
+  }
+  .rail-pill { flex: none; }
+
+  .dex-grid {
+    grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+    max-height: 60vh;
+  }
+
+  .roster-strip-body { grid-template-columns: minmax(0, 1fr) 80px; }
+  .roster-slots { grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); }
+  .roster-slot { min-height: 84px; }
+  .roster-slot-meta { display: none; }
+
+  .gym-roster { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
