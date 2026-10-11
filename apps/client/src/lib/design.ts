@@ -1,4 +1,5 @@
 import type { PokemonType } from '@pfl/engine';
+import type { MatchStats, PokemonMatchStats } from '@pfl/protocol';
 
 export type StatTier = 'low' | 'mid' | 'good' | 'high';
 
@@ -37,4 +38,28 @@ const GYMS: readonly GymTheme[] = [
 export function gymTheme(teamName: string): GymTheme | null {
   const lower = teamName.toLowerCase();
   return GYMS.find((g) => lower.includes(g.city.toLowerCase())) ?? null;
+}
+
+/** MVP: mais jardas; empate por touchdowns, depois jogadas, depois menor espécie. */
+export function mvpOf(stats: MatchStats): PokemonMatchStats | null {
+  let best: PokemonMatchStats | null = null;
+  for (const p of stats.pokemon) {
+    if (
+      !best ||
+      p.yards > best.yards ||
+      (p.yards === best.yards &&
+        (p.touchdowns > best.touchdowns ||
+          (p.touchdowns === best.touchdowns &&
+            (p.plays > best.plays || (p.plays === best.plays && p.speciesId < best.speciesId)))))
+    ) {
+      best = p;
+    }
+  }
+  return best;
+}
+
+/** Largura relativa (0..1) de uma barra de jardas frente ao máximo do time. */
+export function barRatio(value: number, max: number): number {
+  if (max <= 0) return 0;
+  return Math.max(0, Math.min(1, value / max));
 }
