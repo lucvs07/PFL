@@ -12,7 +12,7 @@
     "data:build": "npm run build -w @pfl/data",
     "sim": "tsx packages/sim/src/cli.ts",
     "dev:server": "npm run dev -w @pfl/server",
-    "dev:client": "npm run dev -w @pfl/client",
+    "dev:client": "npm run sprites:dev -w @pfl/client && npm run dev -w @pfl/client",
     "build:client": "npm run build -w @pfl/client"
   },
   "devDependencies": {

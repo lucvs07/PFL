@@ -5,6 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "sprites": "tsx scripts/download-sprites.ts",
+    "sprites:dev": "tsx scripts/download-sprites.ts --allow-missing",
+    "prebuild": "npm run sprites:dev",
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json"
