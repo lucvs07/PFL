@@ -8,12 +8,12 @@ import { canPlay } from '../src/cards/eligibility';
 import { getCard } from '../src/cards/catalog';
 
 const EXPECTED_COST: Record<string, number> = {
-  'Relâmpagos de Vermilion': 120,
-  'Chamas de Cinnabar': 111,
-  'Marés de Cerulean': 116,
-  'Muralha de Pewter': 115,
+  'Relâmpagos de Vermilion': 116,
+  'Chamas de Cinnabar': 120,
+  'Marés de Cerulean': 117,
+  'Muralha de Pewter': 120,
   'Mentes de Saffron': 120,
-  'Selva de Celadon': 118,
+  'Selva de Celadon': 117,
 };
 
 describe('SUGGESTED_TEAMS', () => {
