@@ -1,0 +1,79 @@
+/* Paleta inspirada no Game Boy Color (menus do Pokémon Yellow + verdes do DMG). */
+:root {
+  --gbc-ink: #181010;
+  --gbc-paper: #f8f8f0;
+  --gbc-panel: #e8e0c8;
+  --gbc-panel-dark: #c8b890;
+  --gbc-border: #383028;
+  --gbc-muted: #6c6458;
+  --gbc-green-0: #0f380f;
+  --gbc-green-1: #306230;
+  --gbc-green-2: #8bac0f;
+  --gbc-green-3: #9bbc0f;
+  --gbc-field: #48a058;
+  --gbc-red: #d03028;
+  --gbc-blue: #3058c0;
+  --gbc-yellow: #f8d030;
+  --gbc-orange: #e88830;
+
+  /* Duotone DMG para fundos de destaque */
+  --dmg-0: var(--gbc-green-0);
+  --dmg-1: var(--gbc-green-1);
+  --dmg-2: var(--gbc-green-2);
+  --dmg-3: var(--gbc-green-3);
+
+  /* Lados da partida: saturação só significa tipo ou lado */
+  --side-offense: var(--gbc-red);
+  --side-defense: var(--gbc-blue);
+
+  /* Rampa das barras de stat: <50, <80, <100, >=100 */
+  --stat-low: #d03028;
+  --stat-mid: #e88830;
+  --stat-good: #f8d030;
+  --stat-high: #58a038;
+
+  /* Leitura do ponto de vista da defesa: ✔ azul, · cinza, ✖ vermelho */
+  --read-right: var(--gbc-blue);
+  --read-neutral: var(--gbc-muted);
+  --read-wrong: var(--gbc-red);
+
+  --type-normal: #a8a878;
+  --type-fire: #f08030;
+  --type-water: #6890f0;
+  --type-grass: #78c850;
+  --type-electric: #f8d030;
+  --type-ice: #98d8d8;
+  --type-fighting: #c03028;
+  --type-poison: #a040a0;
+  --type-ground: #e0c068;
+  --type-flying: #a890f0;
+  --type-psychic: #f85888;
+  --type-bug: #a8b820;
+  --type-rock: #b8a038;
+  --type-ghost: #705898;
+  --type-dragon: #7038f8;
+
+  /* Press Start 2P em títulos, números, placar e botões; Pixelify Sans no corpo. */
+  --font-display: 'Press Start 2P', monospace;
+  --font-body: 'Pixelify Sans', 'Press Start 2P', monospace;
+  --font-pixel: var(--font-display);
+
+  /* Tamanhos de texto "display" (Press Start 2P) */
+  --fs-xs: 8px;
+  --fs-sm: 10px;
+  --fs-md: 12px;
+  --fs-lg: 16px;
+  --fs-xl: 24px;
+  /* Tamanhos de texto de corpo (Pixelify Sans), mínimo de 14px */
+  --fs-body: 16px;
+  --fs-body-sm: 14px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+
+  --border: 4px solid var(--gbc-border);
+  --shadow: 4px 4px 0 var(--gbc-border);
+}
