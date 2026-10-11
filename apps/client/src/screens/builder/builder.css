@@ -408,8 +408,8 @@
   top: -30px;
   left: 50%;
   transform: translateX(-50%);
-  width: 56px;
-  height: 56px;
+  width: 96px;
+  height: 96px;
 }
 
 .dex-tile-no {
@@ -476,8 +476,8 @@
 }
 
 .dex-detail-hero .sprite {
-  width: 112px;
-  height: 112px;
+  width: 192px;
+  height: 192px;
   max-width: none;
 }
 

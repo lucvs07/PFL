@@ -36,7 +36,7 @@ export function StatsTable({ stats, names }: { stats: MatchStats; names: Record<
                   <tr key={r.speciesId}>
                     <td>
                       <span className="stats-name">
-                        <Sprite id={r.speciesId} size={32} />
+                        <Sprite id={r.speciesId} size={48} />
                         <span>{speciesName(r.speciesId)}</span>
                       </span>
                       <span className="yards-bar" aria-hidden="true">

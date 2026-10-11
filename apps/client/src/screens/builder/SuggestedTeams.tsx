@@ -27,7 +27,7 @@ export function SuggestedTeams({ onPick }: { onPick: (team: Team) => void }) {
                 <ul className="gym-roster">
                   {team.roster.slice(0, SHOWN).map((id) => (
                     <li key={id}>
-                      <Sprite id={id} size={32} />
+                      <Sprite id={id} size={48} />
                       <span className="gym-roster-name">{speciesName(id)}</span>
                     </li>
                   ))}

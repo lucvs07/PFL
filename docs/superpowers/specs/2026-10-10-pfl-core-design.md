@@ -17,7 +17,7 @@
 | **Formato em campo** | **7v7** (formação modelada como dado, para permitir um modo 11v11 no futuro) |
 | **Coração do jogo** | **Playbook gerado pelo elenco**: os Pokémon que você escala definem quais cartas/jogadas você pode ter. Ataque e defesa escolhem cartas **às cegas e simultaneamente**, depois de revelarem formação e pacote |
 | **Sorte** | **Baixa**: a partida é decidida pela leitura (blefe/antecipação), depois por tipos e stats |
-| **Visual** | Pixel art 2D, sprites Gen 1 (Pokémon Yellow, GBC) da PokéAPI |
+| **Visual** | Pixel art 2D, sprites Gen 5 Black/White (front/back) do repositório de sprites da PokéAPI, baixados no setup (decisão do usuário em 2026-10-11); dados e tipagens continuam Gen 1 |
 | **Stack** | Monorepo TypeScript (npm workspaces): `engine` puro + `server` Node/Socket.io + `client` React/Phaser |
 
 ### 1.1 Roadmap de subprojetos
@@ -188,7 +188,7 @@ Resultado sob o ponto de vista da defesa. ✔ = leitura certa (vantagem defesa),
 - **Tabela de tipos:** `type.past_damage_relations` (entrada `generation-i`). Inclui o bug Fantasma → Psíquico = 0x.
   - **Decisão:** usar a tabela da Gen 1 **corrigindo o bug**: Fantasma causa **2x** em Psíquico.
 - **15 tipos:** Normal, Fogo, Água, Planta, Elétrico, Gelo, Lutador, Venenoso, Terra, Voador, Psíquico, Inseto, Pedra, Fantasma, Dragão.
-- **Sprites:** `sprites.versions.generation-i.yellow` (`front_gbc`/`back_gbc`, além de `front_transparent`/`back_transparent` e variantes cinza).
+- **Sprites:** Gen 5 Black/White do repositório de sprites da PokéAPI (`sprites/pokemon/versions/generation-v/black-white/{id}.png` e `.../back/{id}.png`, PNG 96×96 com fundo transparente), baixados no setup. Decisão do usuário em 2026-10-11, substituindo os GBC do Yellow (o fundo branco deles aparecia como caixa). Dados e tipagens continuam Gen 1.
 - **Stats:** a divisão moderna (Sp. Atk / Sp. Def) da PokéAPI. A Gen 1 tinha um único "Special", e essa diferença é aceita conscientemente.
 - **Sem dependência em tempo de execução:** um script de build (`packages/data`) baixa os dados uma vez e gera JSON estático versionado (`pokemon.json`, `typechart.json`). Os sprites também são baixados no build e servidos pelo próprio client.
 
@@ -337,7 +337,7 @@ Estilo: fonte bitmap, paleta inspirada no Game Boy Color, componentes React com 
 +-----------------------------------------------------------------------+
 ```
 
-- **Sprites:** ataque com `back_gbc`, defesa com `front_gbc` (Yellow).
+- **Sprites:** Gen 5 Black/White da PokéAPI, baixados no setup (decisão do usuário em 2026-10-11): ataque com o sprite de costas (`back`), defesa com o de frente (`front`).
 - **Indicador de fadiga** sobre cada sprite.
 - **Animação dirigida pelos eventos do motor:** snap → bloqueio → confronto (com efeito de tipo) → tackle/recepção/TD.
 - **Revelação das cartas** com destaque visual do resultado da leitura (✔/·/✖).

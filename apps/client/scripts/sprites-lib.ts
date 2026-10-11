@@ -1,4 +1,4 @@
-// Download dos sprites Gen 1 Yellow (GBC) no setup/build. O jogo nunca chama a PokéAPI em runtime.
+// Download dos sprites Gen 5 Black/White (front/back, PNG transparente) no setup/build. O jogo nunca chama a PokéAPI em runtime.
 import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 
@@ -6,10 +6,13 @@ export const GEN1_COUNT = 151;
 export type SpriteView = 'front' | 'back';
 export const SPRITE_VIEWS: readonly SpriteView[] = ['front', 'back'];
 
-const BASE = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-i/yellow';
+const BASE = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white';
+
+/** Pasta (relativa a apps/client) dos sprites B/W. Raiz nova para não pular os PNGs antigos do Yellow já baixados. */
+export const SPRITE_ROOT_DIR = join('public', 'sprites', 'bw');
 
 export function spriteUrl(view: SpriteView, id: number): string {
-  return view === 'front' ? `${BASE}/gbc/${id}.png` : `${BASE}/back/gbc/${id}.png`;
+  return view === 'front' ? `${BASE}/${id}.png` : `${BASE}/back/${id}.png`;
 }
 
 export function spriteFile(root: string, view: SpriteView, id: number): string {

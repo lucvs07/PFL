@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { DEFENSE_SLOTS, FORMATIONS, OFFENSE_SLOTS, PACKAGES, type SlotId } from '@pfl/engine';
 import {
-  FIELD_HEIGHT, FIELD_WIDTH, LOS_Y, PLATE_HEIGHT, PLATE_WIDTH, PX_PER_YARD, SPRITE_SIZE, clampY, fatigueColor, fatigueRatio, plateBox, plateText, slotOfId, slotPoint,
+  FIELD_HEIGHT, FIELD_WIDTH, LOS_Y, fatigueBarBox, PLATE_HEIGHT, PLATE_WIDTH, PX_PER_YARD, SPRITE_SIZE, clampY, fatigueColor, fatigueRatio, plateBox, plateText, slotOfId, slotPoint,
   visibleYardLines, yardLineY,
 } from '../src/phaser/layout';
 
@@ -30,7 +30,7 @@ describe('posição das vagas no campo vertical', () => {
   it('nenhuma formação ou pacote sobrepõe sprites', () => {
     for (const slots of [...Object.values(FORMATIONS), ...Object.values(PACKAGES)]) {
       for (let i = 0; i < slots.length; i++) {
-        for (let j = i + 1; j < slots.length; j++) expect(distance(slots[i], slots[j])).toBeGreaterThanOrEqual(36);
+        for (let j = i + 1; j < slots.length; j++) expect(distance(slots[i], slots[j])).toBeGreaterThanOrEqual(SPRITE_SIZE);
       }
     }
   });
@@ -100,6 +100,24 @@ describe('plaquinhas (chip de vaga + nome)', () => {
           if (a !== b) expect(overlaps(plateBox(a), spriteBox(b)), `plaquinha ${a} x sprite ${b}`).toBe(false);
         }
       }
+    }
+  });
+
+  it('nunca ficam sob a barra de fadiga de outra vaga', () => {
+    for (const slots of allSets()) {
+      for (const a of slots) {
+        for (const b of slots) {
+          if (a !== b) expect(overlaps(plateBox(a), fatigueBarBox(b)), `plaquinha ${a} x barra ${b}`).toBe(false);
+        }
+      }
+    }
+  });
+
+  it('barra de fadiga acima do sprite e dentro do canvas', () => {
+    for (const slot of [...OFFENSE_SLOTS, ...DEFENSE_SLOTS]) {
+      const bar = fatigueBarBox(slot);
+      expect(bar.y + bar.h).toBeLessThanOrEqual(spriteBox(slot).y);
+      expect(bar.y).toBeGreaterThanOrEqual(0);
     }
   });
 

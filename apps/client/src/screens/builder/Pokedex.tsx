@@ -105,7 +105,7 @@ export function Pokedex({ draft, onAdd, onSpecialist }: Props) {
                       {String(s.id).padStart(3, '0')}
                     </span>
                     <span className="dex-tile-sprite">
-                      <Sprite id={s.id} size={56} />
+                      <Sprite id={s.id} size={96} />
                     </span>
                     <span className="dex-tile-no">{dexNumber(s.id)}</span>
                     <span className="dex-tile-name">{displayName(s.name)}</span>
@@ -168,7 +168,7 @@ function SpeciesDetail({ species, draft, onAdd, onSpecialist }: DetailProps) {
         <span className="dex-ghost dex-detail-ghost" aria-hidden="true">
           {String(species.id).padStart(3, '0')}
         </span>
-        <Sprite id={species.id} size={112} />
+        <Sprite id={species.id} size={192} />
       </div>
       <h3 className="dex-detail-title">
         <span className="dex-detail-no">{dexNumber(species.id)}</span> {displayName(species.name)}

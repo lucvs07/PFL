@@ -6,7 +6,7 @@ import { EFFECT_TEXT } from '../match/effect';
 import { spriteSrc } from '../lib/sprites';
 import { speciesName } from '../lib/names';
 import {
-  FIELD_HEIGHT, FIELD_WIDTH, LOS_Y, PLATE_HEIGHT, PX_PER_YARD, SPRITE_SIZE, clampY, fatigueColor, fatigueRatio, plateText, slotPoint,
+  BAR_HEIGHT, BAR_WIDTH, FIELD_HEIGHT, FIELD_WIDTH, LOS_Y, PLATE_HEIGHT, PX_PER_YARD, SPRITE_SIZE, clampY, fatigueColor, fatigueRatio, plateText, slotPoint,
   visibleYardLines, yardLineY,
 } from './layout';
 
@@ -166,9 +166,11 @@ export class FieldScene extends Phaser.Scene {
       ? this.add.image(0, 0, key).setDisplaySize(SPRITE_SIZE, SPRITE_SIZE)
       : this.add.circle(0, 0, 14, w.side === 'offense' ? COLORS.los : COLORS.endZoneOpp).setStrokeStyle(2, COLORS.line);
     const ratio = fatigueRatio(w.id, level);
-    const barBg = this.add.rectangle(0, -SPRITE_SIZE / 2 - 4, 32, 6, COLORS.barBg);
+    // mesma caixa de fatigueBarBox (layout.ts): 1 px acima do sprite
+    const barY = -SPRITE_SIZE / 2 - 1 - BAR_HEIGHT / 2;
+    const barBg = this.add.rectangle(0, barY, BAR_WIDTH, BAR_HEIGHT, COLORS.barBg);
     const bar = this.add
-      .rectangle(-15, -SPRITE_SIZE / 2 - 4, Math.max(2, 30 * ratio), 4, fatigueColor(ratio))
+      .rectangle(-(BAR_WIDTH / 2 - 1), barY, Math.max(2, (BAR_WIDTH - 2) * ratio), BAR_HEIGHT - 2, fatigueColor(ratio))
       .setOrigin(0, 0.5);
     barBg.setVisible(level > 0);
     bar.setVisible(level > 0);

@@ -4,11 +4,11 @@ import { threshold } from '@pfl/engine';
 export const FIELD_WIDTH = 480;
 export const FIELD_HEIGHT = 560;
 /** Linha de scrimmage fixa na tela; as linhas de jarda rolam conforme a bola. O ataque sobe. */
-export const LOS_Y = 320;
+export const LOS_Y = 286;
 export const PX_PER_YARD = 8;
-export const SPRITE_SIZE = 40;
+export const SPRITE_SIZE = 48;
 export const COL_PX = 60;
-export const ROW_PX = 58;
+export const ROW_PX = 72;
 const EDGE = 12;
 
 /** col: colunas a partir do centro; row: fileiras a partir da linha (positivo = campo do ataque). */
@@ -17,7 +17,7 @@ const SLOT_OFFSETS: Record<SlotId, { col: number; row: number }> = {
   OL1: { col: -1, row: 0.9 },
   OL2: { col: 0, row: 0.9 },
   OL3: { col: 1, row: 0.9 },
-  RB: { col: 0, row: 3.2 },
+  RB: { col: 0, row: 3.1 },
   FB: { col: -0.9, row: 2.6 },
   TE: { col: 2, row: 1 },
   WR1: { col: -3.4, row: 0.9 },
@@ -31,8 +31,8 @@ const SLOT_OFFSETS: Record<SlotId, { col: number; row: number }> = {
   CB1: { col: -3.4, row: -1.2 },
   CB2: { col: 3.4, row: -1.2 },
   CB3: { col: 2.4, row: -2.2 },
-  S1: { col: -1, row: -3.4 },
-  S2: { col: 1.4, row: -3.4 },
+  S1: { col: -1, row: -3.1 },
+  S2: { col: 1.4, row: -3.1 },
 };
 
 export const PLATE_WIDTH = 52;
@@ -48,6 +48,16 @@ export function slotPoint(slot: SlotId): { x: number; y: number } {
 export function plateBox(slot: SlotId): { x: number; y: number; w: number; h: number } {
   const { x, y } = slotPoint(slot);
   return { x: x - PLATE_WIDTH / 2, y: y + SPRITE_SIZE / 2 + PLATE_GAP, w: PLATE_WIDTH, h: PLATE_HEIGHT };
+}
+
+export const BAR_WIDTH = 32;
+export const BAR_HEIGHT = 6;
+const BAR_GAP = 1;
+
+/** Barra de fadiga (fundo) logo acima do sprite. */
+export function fatigueBarBox(slot: SlotId): { x: number; y: number; w: number; h: number } {
+  const { x, y } = slotPoint(slot);
+  return { x: x - BAR_WIDTH / 2, y: y - SPRITE_SIZE / 2 - BAR_GAP - BAR_HEIGHT, w: BAR_WIDTH, h: BAR_HEIGHT };
 }
 
 /** Nome limitado a `max` caracteres; a reticência conta dentro do limite. */

@@ -50,7 +50,7 @@
   align-items: center;
   gap: var(--space-4);
   min-width: 0;
-  padding-left: 112px;
+  padding-left: 192px;
   min-height: 120px;
   background: var(--gbc-paper);
 }
@@ -62,7 +62,7 @@
   line-height: 0;
   z-index: 1;
 }
-.mvp-sprite .sprite { width: 112px; height: 112px; image-rendering: pixelated; }
+.mvp-sprite .sprite { width: 192px; height: 192px; image-rendering: pixelated; }
 .mvp-sprite .sprite-missing {
   display: grid;
   place-items: center;

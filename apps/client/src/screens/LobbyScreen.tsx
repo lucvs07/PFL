@@ -95,7 +95,7 @@ export function LobbyScreen({ room, myTeam, onSubmitTeam, onReady, onLeave }: Pr
               </div>
               {lead !== null && (
                 <div className="lobby-lead">
-                  <Sprite id={lead} size={112} />
+                  <Sprite id={lead} size={192} />
                 </div>
               )}
             </article>
@@ -128,7 +128,7 @@ export function LobbyScreen({ room, myTeam, onSubmitTeam, onReady, onLeave }: Pr
                     </span>
                     <span className="team-option-sprites" aria-hidden="true">
                       {o.team.roster.slice(0, OPTION_SPRITES).map((id) => (
-                        <Sprite key={id} id={id} size={28} />
+                        <Sprite key={id} id={id} size={32} />
                       ))}
                     </span>
                   </label>

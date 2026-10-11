@@ -3,7 +3,7 @@ import { mkdtemp, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import {
-  downloadAll, ensureSprite, fetchPng, isPng, spriteFile, spriteUrl,
+  downloadAll, ensureSprite, SPRITE_ROOT_DIR, fetchPng, isPng, spriteFile, spriteUrl,
   type FetchLike, type FetchResponseLike, type RetryOptions,
 } from '../scripts/sprites-lib';
 
@@ -27,13 +27,17 @@ function scripted(...responses: (FetchResponseLike | Error)[]): FetchLike & { ca
 }
 
 describe('URLs e caminhos', () => {
-  it('usa os sprites GBC do Yellow verificados', () => {
+  it('usa os sprites Black/White (Gen 5) verificados', () => {
     expect(spriteUrl('front', 25)).toBe(
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-i/yellow/gbc/25.png',
+      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/25.png',
     );
     expect(spriteUrl('back', 25)).toBe(
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-i/yellow/back/gbc/25.png',
+      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/back/25.png',
     );
+  });
+
+  it('a raiz dos sprites B/W é public/sprites/bw (não reaproveita os PNGs do Yellow)', () => {
+    expect(SPRITE_ROOT_DIR).toBe(join('public', 'sprites', 'bw'));
   });
 
   it('grava em {root}/{view}/{id}.png', () => {

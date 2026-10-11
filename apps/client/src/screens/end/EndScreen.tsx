@@ -39,7 +39,7 @@ export function EndScreen({ end, you, onLeave }: Props) {
         {mvp && (
           <section className="panel mvp" aria-label="Destaque da partida">
             <div className="mvp-sprite">
-              <Sprite id={mvp.speciesId} size={112} />
+              <Sprite id={mvp.speciesId} size={192} />
             </div>
             <div className="mvp-info">
               <p className="mvp-tag">MVP</p>

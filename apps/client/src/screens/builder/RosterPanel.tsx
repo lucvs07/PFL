@@ -27,7 +27,7 @@ export function RosterPanel({ draft, onRemove }: Props) {
               </li>
             ) : (
               <li key={id} className="roster-slot">
-                <Sprite id={id} size={40} />
+                <Sprite id={id} size={48} />
                 <span className="roster-slot-name" title={speciesName(id)}>
                   {speciesName(id)}
                 </span>
@@ -53,7 +53,7 @@ export function RosterPanel({ draft, onRemove }: Props) {
             <span className="roster-kicker-help">Escolha na Pokédex</span>
           ) : (
             <>
-              <Sprite id={specialist} size={40} />
+              <Sprite id={specialist} size={48} />
               <span className="roster-slot-name" title={speciesName(specialist)}>
                 {speciesName(specialist)}
               </span>

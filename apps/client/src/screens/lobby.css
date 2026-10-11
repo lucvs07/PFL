@@ -70,8 +70,8 @@
 }
 
 .home-hero .sprite {
-  width: 224px;
-  height: 224px;
+  width: 192px;
+  height: 192px;
 }
 
 .home-hero .sprite-missing {
@@ -225,7 +225,7 @@
   background: var(--gbc-panel);
 }
 
-.lobby-card.has-lead { padding-right: calc(112px - var(--lead-bleed) + var(--space-3)); }
+.lobby-card.has-lead { padding-right: calc(192px - var(--lead-bleed) + var(--space-3)); }
 
 .lobby-card-facts {
   display: flex;
@@ -297,8 +297,8 @@
 }
 
 .lobby-lead .sprite {
-  width: 112px;
-  height: 112px;
+  width: 192px;
+  height: 192px;
 }
 
 /* lista de times: faixa na cor da cidade de ginásio (fallback tinta) e fileira de sprites */
@@ -369,8 +369,8 @@
 }
 
 .team-option-sprites .sprite {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
 }
 
 .lobby-help {
@@ -388,12 +388,12 @@
 
   .home-stage { padding: var(--space-4) var(--space-2) var(--space-3); }
 
-  /* ×2 do sprite de 56 px; max-* também vale para o fallback com tamanho inline */
+  /* ×1 do sprite B/W de 96 px; max-* também vale para o fallback com tamanho inline */
   .home-hero .sprite {
-    width: 112px;
-    height: 112px;
-    max-width: 112px;
-    max-height: 112px;
+    width: 96px;
+    height: 96px;
+    max-width: 96px;
+    max-height: 96px;
   }
 
   .home-subtitle { font-size: var(--fs-xs); }

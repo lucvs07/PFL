@@ -34,7 +34,7 @@ export function HomeScreen({ busy, onCreate, onJoin, onBuilder }: Props) {
           <div className="home-mark">
             <h1 className="home-wordmark">PFL</h1>
             <div className="home-hero">
-              <Sprite id={25} view="back" size={224} />
+              <Sprite id={25} view="back" size={192} />
             </div>
           </div>
           <p className="home-subtitle">Pokémon Football League</p>

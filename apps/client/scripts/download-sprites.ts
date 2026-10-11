@@ -1,10 +1,10 @@
-// npm run sprites -w @pfl/client — baixa os 151 sprites (front e back) para public/sprites.
+// npm run sprites -w @pfl/client — baixa os 151 sprites (front e back) para public/sprites/bw.
 // Com --allow-missing, falhas viram aviso (útil no dev offline; o <Sprite> tem fallback).
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { downloadAll, GEN1_COUNT } from './sprites-lib';
+import { downloadAll, GEN1_COUNT, SPRITE_ROOT_DIR } from './sprites-lib';
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), '../public/sprites');
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '..', SPRITE_ROOT_DIR);
 const allowMissing = process.argv.includes('--allow-missing');
 const ids = Array.from({ length: GEN1_COUNT }, (_, i) => i + 1);
 

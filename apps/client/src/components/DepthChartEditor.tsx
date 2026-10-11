@@ -71,7 +71,7 @@ function SlotEditor({ slot, roster, list, onAction }: SlotProps) {
         <ol className="depth-list">
           {list.map((id, i) => (
             <li key={id}>
-              <Sprite id={id} size={24} />
+              <Sprite id={id} size={32} />
               <span className="depth-name">{speciesName(id)}</span>
               <Stars value={aptitude(id, position)} />
               <span className="depth-buttons">

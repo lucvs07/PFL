@@ -9,8 +9,8 @@ interface Props {
   size?: number;
 }
 
-/** Sprite Gen 1 Yellow servido localmente; se faltar (sprites não baixados), mostra as iniciais. */
-export function Sprite({ id, view = 'front', size = 40 }: Props) {
+/** Sprite Gen 5 Black/White servido localmente; se faltar (sprites não baixados), mostra as iniciais. */
+export function Sprite({ id, view = 'front', size = 48 }: Props) {
   const [failed, setFailed] = useState(false);
   useEffect(() => setFailed(false), [id, view]);
   const name = speciesName(id);
