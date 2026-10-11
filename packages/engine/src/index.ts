@@ -15,3 +15,4 @@ export * from './cards/deck';
 export * from './errors';
 export * from './match';
 export * from './replay';
+export * from './teams/suggested';
