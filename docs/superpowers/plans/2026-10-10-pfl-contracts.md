@@ -171,3 +171,22 @@ Os autores dos Planos 2–4 levantaram os pontos abaixo. Eles valem como contrat
   - `fillSlots(slots, depth, preferred?, fallback?)`: se a escolha gulosa falhar, tenta a ordem simples do depth chart e depois um emparelhamento completo. `validateTeam` só acusa `FORMATION_UNFILLABLE`/`PACKAGE_UNFILLABLE` quando não existe escalação. `pickLineup` usa `fillSlots` com `fallback` = o menos cansado.
   - O `Team` dentro do `MatchState` é congelado (`Object.freeze` profundo) e compartilhado entre os estados de `step`; o resto do estado continua sendo copiado. Quem precisar mudar o time (ex.: `SET_DEPTH` no Plano 3) troca `rt.team` por um objeto novo, nunca muta o atual.
 - **Typecheck da raiz:** `tsconfig.json` exclui `apps/client`, e o script `typecheck` roda também `tsc -p apps/client/tsconfig.json`.
+
+## 6. Entregas do Plano 2 (executado em 2026-10-11, branch `pfl-2-sim`)
+
+O código é a fonte de verdade onde o texto do Plano 2 divergir (ver o aviso no topo dele).
+
+- **Catálogo:** `CARDS` tem **85** cartas (3 básicas, 2 especiais, 60 de tipo, 20 de assinatura). Os 40 ids do Plano 1 mantêm lado, categoria, origem, elemento e requisitos; só `baseYards` de algumas cartas mudou na calibração.
+- **`SUGGESTED_TEAMS`:** mesma ordem e mesmos nomes (Vermilion, Cinnabar, Cerulean, Pewter, Saffron, Celadon). **Elencos, depth charts e custos diferem da tabela do Plano 2**: os times foram rebalanceados com o simulador (confrontos entre eles de 45% a 52%). Custos atuais: 116 / 120 / 117 / 120 / 120 / 117. Planos 3 e 4 devem usar os times por índice ou nome, nunca assumir elenco ou custo.
+- **`PlayOutcome`:** `readFactor`, `statFactor` e `varianceFactor` são obrigatórios; `READ_YARDS` é exportado de `resolve.ts`. Todo literal de `PlayOutcome` precisa dos três campos (os Planos 3 e 4 já os trazem).
+- **`@pfl/sim`** (`packages/sim/src/index.ts`): `weightedPick`, `botAction`, `botDecide`, `actingTeams`, `randomTeam`, `buildDepth`, `usableCards`, `playMatch`, `runSim`, `MAX_SEED`, `buildReport`, `balanceGate`, `formatReport`. `botAction` decide só com `playerView` e o próprio time.
+- **CLI** `npm run sim -- --games N [--seed S] [--min-sample M] [--gate]` (também `--opção=valor` e `--help`). Seed de 0 a 4294967295. Códigos de saída: 0 ok; 1 portão reprovado; 2 argumentos inválidos; 3 `--gate` sem amostra suficiente (menos de 30 cartas avaliadas); 4 erro de execução da simulação.
+- **Ferramenta:** `packages/sim/scripts/rebalance-teams.ts` refaz o rebalanceamento dos times sugeridos (uso manual, fora dos testes).
+- **Portão de balanceamento:** `packages/sim/test/balance-gate.test.ts` (2000 partidas, seed 2026, amostra mínima 600, faixa 45–55%, ao menos 30 cartas). `GATE_EXCEPTIONS` está vazio (`psychic_foresight` entrou na faixa).
+  - `npm test` agora leva cerca de 30 a 45 s por causa do portão. Para iterar em outros planos, rode arquivos isolados com `npx vitest run <arquivo>`.
+  - O portão é sensível a qualquer mudança que altere a ordem de consumo do RNG, mesmo sem efeito de balanceamento. Se ele ficar vermelho depois de uma mudança do engine sem relação com balanceamento, **não recalibre de imediato**: confirme com `npm run sim -- --games 6000 --seed 7 --min-sample 1000 --gate` e com as seeds 11, 3 e 99. Na calibração só `OFFENSE_PROFILES` e `baseYards` são ajustáveis (os números da spec continuam fixos).
+  - Mudanças do Plano 3 no engine (`SET_DEPTH`, `snapInDrive`, `canEditDepth`) não podem consumir RNG nem alterar o fluxo das ações do bot. O snapshot golden do Plano 1 deve continuar igual.
+- **Pendências conhecidas (decisão do usuário):**
+  - Contribuição observada: leitura 74% / tipo 12% / stats 12% / variância 2%, contra os alvos 50/20/20/10 da spec 4.3. Não é atingível com os números fixados; a spec 7.3 já os trata como informativos.
+  - Cartas que só aparecem nos times sugeridos ficam abaixo da amostra mínima e escapam do portão. O relatório as lista como aviso (por exemplo `ice_blizzard`, `sig_hitmonchan_counter`, `rock_throw_deep`, `sig_machamp_karate`, `sig_mewtwo_mind`).
+  - Os temas dos times sugeridos derivaram um pouco: Cinnabar não tem carta de Lutador e Saffron tem 8 cartas Normal.
