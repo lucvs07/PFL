@@ -148,7 +148,7 @@ function onFormation(s: MatchState, action: Action, events: GameEvent[]): void {
   const a = accept(action, 'FORMATION', s.offense);
   const rt = s.teams[s.offense];
   const formation = a ? a.formation : rt.lastFormation;
-  if (!(formation in FORMATIONS)) throw new EngineError('UNKNOWN_FORMATION', formation);
+  if (!Object.hasOwn(FORMATIONS, formation)) throw new EngineError('UNKNOWN_FORMATION', formation);
   s.formation = formation;
   rt.lastFormation = formation;
   s.lineups.offense = pickLineup(FORMATIONS[formation], rt.team, rt.fatigue);
@@ -160,7 +160,7 @@ function onPackage(s: MatchState, action: Action, events: GameEvent[]): void {
   const defense = other(s.offense);
   const a = accept(action, 'PACKAGE', defense);
   const pkg = a ? a.package : DEFAULT_PACKAGE;
-  if (!(pkg in PACKAGES)) throw new EngineError('UNKNOWN_PACKAGE', pkg);
+  if (!Object.hasOwn(PACKAGES, pkg)) throw new EngineError('UNKNOWN_PACKAGE', pkg);
   const rt = s.teams[defense];
   s.package = pkg;
   s.lineups.defense = pickLineup(PACKAGES[pkg], rt.team, rt.fatigue);
@@ -185,6 +185,7 @@ function onPlaycall(s: MatchState, action: Action, events: GameEvent[]): void {
 function onConversion(s: MatchState, action: Action, events: GameEvent[]): void {
   const a = accept(action, 'CONVERSION', s.offense);
   const choice = a ? a.choice : 'PAT';
+  if (choice !== 'PAT' && choice !== 'TWO') throw new EngineError('INVALID_CHOICE', String(choice));
   if (choice === 'PAT') {
     const r = resolvePat(s.teams[s.offense].team.specialist, s.rng);
     s.rng = r.rng;

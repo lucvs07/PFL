@@ -6,7 +6,8 @@ export type EngineErrorCode =
   | 'ALREADY_CHOSEN'
   | 'CARD_NOT_PLAYABLE'
   | 'UNKNOWN_FORMATION'
-  | 'UNKNOWN_PACKAGE';
+  | 'UNKNOWN_PACKAGE'
+  | 'INVALID_CHOICE';
 
 export class EngineError extends Error {
   readonly code: EngineErrorCode;

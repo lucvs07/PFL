@@ -23,7 +23,9 @@ const clampSpot = (yard: number): number => Math.min(99, Math.max(1, yard));
 
 export function advanceField(field: FieldState, outcome: PlayOutcome): PlayAdvance {
   if (outcome.kind === 'INTERCEPTION' || outcome.kind === 'FUMBLE') {
-    return { field, firstDown: false, end: { kind: 'TURNOVER', spot: clampSpot(field.ballOn + outcome.yards) } };
+    const spot = field.ballOn + outcome.yards;
+    // Turnover dentro da end zone adversária: touchback (o novo ataque começa na 25).
+    return { field, firstDown: false, end: { kind: 'TURNOVER', spot: spot >= 100 ? 100 - TOUCHBACK : clampSpot(spot) } };
   }
   const yards = outcome.kind === 'INCOMPLETE' ? 0 : outcome.yards;
   const ballOn = field.ballOn + yards;

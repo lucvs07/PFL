@@ -69,6 +69,17 @@ describe('validação de ações', () => {
     expect(() => step(state, { type: 'CARD', team: 'A', cardId: 'punt' })).toThrow(/CARD_NOT_PLAYABLE/);
   });
 
+  it('ids e escolhas inválidos viram EngineError, mesmo com chaves de protótipo', () => {
+    const s = start();
+    for (const bad of ['toString', '__proto__', 'constructor']) {
+      expect(() => step(s, { type: 'FORMATION', team: 'A', formation: bad as never })).toThrow(/UNKNOWN_FORMATION/);
+    }
+    const atPackage = run(s, { type: 'FORMATION', team: 'A', formation: 'PISTOL' }).state;
+    expect(() => step(atPackage, { type: 'PACKAGE', team: 'B', package: 'toString' as never })).toThrow(/UNKNOWN_PACKAGE/);
+    const atConversion = { ...start(), phase: 'CONVERSION' as const };
+    expect(() => step(atConversion, { type: 'CONVERSION', team: 'A', choice: 'BOGUS' as never })).toThrow(/INVALID_CHOICE/);
+  });
+
   it('não altera o estado de entrada', () => {
     const s = start();
     const before = structuredClone(s);
@@ -108,6 +119,26 @@ describe('loop da jogada', () => {
     const next = run(s, { type: 'CARD', team: 'A', cardId: card! }, { type: 'CARD', team: 'B', cardId: 'basic_defense' }).state;
     expect(next.teams.A.offense.hand).toHaveLength(5);
     expect(next.teams.A.offense.discard).toContain(card);
+  });
+});
+
+describe('deck esgotado no meio da partida', () => {
+  it('reembaralha o descarte e mantém a mão com 5 e 12 cartas no total', () => {
+    let s = start();
+    s.field = { down: 1, yardsToGo: 100, ballOn: 25 }; // evita first down, TD e fim de drive
+    let defCardsPlayed = 0;
+    for (let i = 0; i < 9; i++) {
+      s = run(s, { type: 'FORMATION', team: 'A', formation: 'PISTOL' }, { type: 'PACKAGE', team: 'B', package: 'BASE' }).state;
+      const defCard = playableCards(s, 'B').find((id) => id !== 'basic_defense');
+      if (!defCard) { s = run(s, { type: 'TIMEOUT' }).state; continue; }
+      defCardsPlayed++;
+      s = run(s, { type: 'CARD', team: 'A', cardId: 'basic_run' }, { type: 'CARD', team: 'B', cardId: defCard }).state;
+      s.field = { down: 1, yardsToGo: 100, ballOn: 25 };
+      const d = s.teams.B.defense;
+      expect(d.hand).toHaveLength(5);
+      expect(d.draw.length + d.hand.length + d.discard.length).toBe(12);
+    }
+    expect(defCardsPlayed).toBeGreaterThan(7); // mais que as 7 cartas do monte: obrigou a reembaralhar
   });
 });
 

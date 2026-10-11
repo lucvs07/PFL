@@ -39,7 +39,15 @@ describe('advanceField', () => {
 
   it('interceptação e fumble marcam o ponto do turnover', () => {
     expect(advanceField(first(40), o('INTERCEPTION', 18)).end).toEqual({ kind: 'TURNOVER', spot: 58 });
-    expect(advanceField(first(98), o('FUMBLE', 5)).end).toEqual({ kind: 'TURNOVER', spot: 99 });
+    expect(advanceField(first(80), o('FUMBLE', 5)).end).toEqual({ kind: 'TURNOVER', spot: 85 });
+  });
+
+  it('turnover na end zone adversária vira touchback (novo ataque na 25)', () => {
+    const picks = advanceField(first(85), o('INTERCEPTION', 18)).end;
+    expect(picks).toEqual({ kind: 'TURNOVER', spot: 75 });
+    expect(nextDriveStart(picks!)).toBe(25);
+    const fumble = advanceField(first(98), o('FUMBLE', 5)).end;
+    expect(nextDriveStart(fumble!)).toBe(25);
   });
 });
 
