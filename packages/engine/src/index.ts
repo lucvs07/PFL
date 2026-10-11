@@ -6,3 +6,4 @@ export * from './formations';
 export * from './cards/categories';
 export * from './cards/catalog';
 export * from './cards/eligibility';
+export * from './team';
