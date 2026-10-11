@@ -243,7 +243,12 @@ export class FieldScene extends Phaser.Scene {
   private floatText(x: number, y: number, text: string, color: string): void {
     const t = this.add.text(x, y, text, { ...TEXT_STYLE, color }).setOrigin(0.5).setDepth(30);
     this.transient.push(t);
-    this.tweens.add({ targets: t, y: y - 20, alpha: 0, duration: this.reduced ? 0 : 900, onComplete: () => t.destroy() });
+    if (this.reduced) {
+      // Texto informativo: fica parado e some depois, sem tween.
+      this.time.delayedCall(900, () => t.destroy());
+      return;
+    }
+    this.tweens.add({ targets: t, y: y - 20, alpha: 0, duration: 900, onComplete: () => t.destroy() });
   }
 
   private runStep(step: AnimStep): void {

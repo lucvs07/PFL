@@ -20,24 +20,38 @@ export function PhaserField({ stage, play }: Props) {
   useEffect(() => {
     const host = hostRef.current;
     if (!host) return;
-    const scene = new FieldScene();
-    const game = new Phaser.Game({
-      type: Phaser.AUTO,
-      parent: host,
-      width: FIELD_WIDTH,
-      height: FIELD_HEIGHT,
-      pixelArt: true,
-      backgroundColor: '#48a058',
-      banner: false,
-      audio: { noAudio: true },
-      scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
-      scene,
+    let cancelled = false;
+    let game: Phaser.Game | null = null;
+    // O Phaser rasteriza o texto ao criá-lo; sem as fontes carregadas ele cairia na monoespaçada.
+    const loadFonts = async () => {
+      try {
+        await Promise.all([document.fonts.load('8px "Press Start 2P"'), document.fonts.load('10px "Pixelify Sans"')]);
+      } catch {
+        // segue mesmo assim com a fonte reserva
+      }
+    };
+    void loadFonts().then(() => {
+      if (cancelled) return;
+      const scene = new FieldScene();
+      game = new Phaser.Game({
+        type: Phaser.AUTO,
+        parent: host,
+        width: FIELD_WIDTH,
+        height: FIELD_HEIGHT,
+        pixelArt: true,
+        backgroundColor: '#48a058',
+        banner: false,
+        audio: { noAudio: true },
+        scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
+        scene,
+      });
+      sceneRef.current = scene;
+      scene.sync(latest.current.stage, latest.current.play);
     });
-    sceneRef.current = scene;
-    scene.sync(latest.current.stage, latest.current.play);
     return () => {
+      cancelled = true;
       sceneRef.current = null;
-      game.destroy(true);
+      game?.destroy(true);
     };
   }, []);
 
