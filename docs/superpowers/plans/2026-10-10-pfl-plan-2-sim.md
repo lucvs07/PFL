@@ -16,6 +16,8 @@
 
 **Ambiente de referência:** este plano foi validado numa cópia literal do Plano 1, com os dados reais da PokéAPI. Todos os testes abaixo passaram, e os números de simulação citados vêm dessa cópia (cerca de 21 ms por partida). Se o Plano 1 tiver sido executado com qualquer diferença, os números podem mudar, mas o procedimento continua valendo.
 
+**Ajustes do Plano 1 posteriores a essa validação** (revisão final, branch `pfl-1-engine`): turnover na end zone adversária vira touchback (novo ataque na 25); punt e FG também recuperam 1 nível de fadiga de quem está fora de campo; `pickLineup` escala o menos cansado quando todos os candidatos descansam; `createMatch` clona os times; `CARD` com time fora de `A`/`B` lança `WRONG_TEAM`; `EngineErrorCode` ganha `INVALID_CHOICE`. O snapshot golden do Plano 1 foi regenerado (placar 14 × 22, 357 ações, `turnId` 94). **Os números de simulação e de calibração citados abaixo (win rate por carta, iterações do Step 5) podem ser ligeiramente diferentes**: meça de novo no início da Task 10 e use os valores medidos, mantendo o procedimento.
+
 **Pré-condição de typecheck:** os 4 erros de `npm run typecheck` que existiam no texto do Plano 1 (2 em `build-data.ts`, 2 em `fatigue.test.ts`) já foram corrigidos no próprio Plano 1. Se algum erro de typecheck aparecer, **não mexa no código deste plano para escondê-lo**: corrija na origem.
 - Dois erros estão em `packages/data/scripts/build-data.ts`: `Property 'types'` e `Property 'damage_relations' does not exist`. O retorno de `earliest<T>` perde o tipo da entrada.
 - Dois estão em `packages/engine/test/fatigue.test.ts`: o literal `{ levels: { 25: 2 }, resting: [25] }` é inferido com tipo estreito. Anote como `FatigueState`.
@@ -265,7 +267,7 @@ por:
 Run: `npm test && npm run typecheck`
 Expected:
 - Tudo PASS, incluindo os 2 testes novos.
-- O snapshot golden de `full-match.test.ts` **não muda**: ele guarda só placar, `turnId` e número de ações, e os sorteios não mudaram. Se mudar, pare: a ordem dos sorteios foi alterada por engano.
+- O snapshot golden de `full-match.test.ts` **não muda em relação ao que o Plano 1 deixou** (placar 14 × 22, 357 ações, `turnId` 94): ele guarda só placar, `turnId` e número de ações, e os sorteios não mudaram. Se mudar, pare: a ordem dos sorteios foi alterada por engano.
 
 - [ ] **Step 7: Commit**
 

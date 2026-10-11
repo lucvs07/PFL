@@ -3225,3 +3225,17 @@ git commit -m "feat(engine): replay determinístico e testes de partida completa
   Ficam para os Planos 2–4: protocolo Socket.io (7.2), simulador (7.3), interface (6), erros de rede (8), times sugeridos e catálogo completo.
 - **Consistência de tipos:** `PlayOutcome`, `DriveEnd`, `MatchState`, `FatigueState` e `DeckState` usam os mesmos nomes de campo em todas as tasks. `fillSlots` é definido na Task 4 e usado nas Tasks 5 e 6. `matchesRequirement` é definido na Task 4 e usado na Task 7.
 - **Placeholders:** nenhum.
+
+---
+
+## Adendo pós-execução (2026-10-11)
+
+O plano foi executado no branch `pfl-1-engine`. O código dos blocos acima foi transcrito sem alterações, e a revisão final pediu os ajustes abaixo, já aplicados no código (os blocos de código deste documento **não** foram reescritos; vale o código do repositório):
+
+- **Touchback em turnover na end zone adversária** (`field.ts`): `advanceField` devolve `TURNOVER` com `spot: 75` quando `ballOn + yards >= 100`. O teste de `FUMBLE` da 98 passou a ser um caso de meio de campo mais um teste novo de touchback.
+- **Ids inválidos:** `Object.hasOwn` em `onFormation`/`onPackage`; novo código `INVALID_CHOICE` para conversão fora de `PAT`/`TWO`.
+- **`createMatch`** clona os times; **`CARD`** valida `team ∈ {A, B}` (`WRONG_TEAM`).
+- **Fadiga:** punt e FG recuperam 1 nível de quem está fora de campo; `pickLineup` escolhe o menos cansado entre os que descansam, mantendo o fallback `fillSlots`.
+- **Testes novos:** reembaralhar o deck dentro da partida, TIMEOUT em 4º down/conversão/2 pontos, fim da prorrogação na rodada 1, estado intacto quando `step` lança, `pickLineup` pelo menos cansado, punt recuperando fadiga. Total: 113 testes.
+- **Snapshot golden** regenerado com autorização do usuário: placar 14 × 22, 357 ações, `turnId` 94.
+- **Catálogo:** tem 40 cartas (o texto acima diz 35; vale o contrato, seção 5).
