@@ -8,3 +8,5 @@ export * from './cards/catalog';
 export * from './cards/eligibility';
 export * from './team';
 export * from './fatigue';
+export * from './resolve';
+export * from './specials';
