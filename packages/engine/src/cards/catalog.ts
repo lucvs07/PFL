@@ -36,7 +36,7 @@ export const CARDS: readonly Card[] = [
   { id: 'field_goal', name: 'Field Goal', side: 'OFFENSE', category: 'FIELD_GOAL', origin: 'SPECIAL', element: null, requirements: [] },
 
   // Ataque por tipo
-  offense('normal_tackle', 'Investida', 'RUN_INSIDE', 'normal', [byType('RB', ['normal'])]),
+  offense('normal_tackle', 'Investida', 'RUN_INSIDE', 'normal', [byType('RB', ['normal'])], 'TYPE', 5),
   offense('fire_deep', 'Lança-Chamas Longo', 'DEEP_PASS', 'fire', [byType('WR', ['fire'])]),
   offense('water_surf_route', 'Surf Route', 'DEEP_PASS', 'water', [byType('QB', ['water']), byType('WR', ['water'])], 'TYPE', 20),
   offense('grass_vine_screen', 'Chicote de Vinha', 'SCREEN', 'grass', [byType('RB', ['grass'])]),
@@ -71,13 +71,13 @@ export const CARDS: readonly Card[] = [
 
   // Assinatura
   offense('sig_snorlax_wall', 'Muralha Snorlax', 'RUN_INSIDE', 'normal', [bySpecies('OL', [143])], 'SIGNATURE', 5),
-  offense('sig_fly_route', 'Fly Route', 'DEEP_PASS', 'flying', [bySpecies('WR', [17, 18])], 'SIGNATURE', 21),
+  offense('sig_fly_route', 'Fly Route', 'DEEP_PASS', 'flying', [bySpecies('WR', [17, 18])], 'SIGNATURE', 18),
   offense('sig_mewtwo_mind', 'Mente Mewtwo', 'PLAY_ACTION', 'psychic', [bySpecies('QB', [150])], 'SIGNATURE', 15),
   defense('sig_scyther_blade', 'Lâmina Scyther', 'MAN', 'bug', [bySpecies('CB', [123])], 'SIGNATURE'),
   defense('sig_gyarados_hyper_beam', 'Hiper Raio Gyarados', 'BLITZ', 'water', [bySpecies('DL', [130])], 'SIGNATURE'),
   // ---- Plano 2: catálogo completo ----
   // Ataque por tipo (2ª carta de cada tipo)
-  offense('normal_quick_attack', 'Ataque Rápido', 'RUN_OUTSIDE', 'normal', [byType('RB', ['normal'])]),
+  offense('normal_quick_attack', 'Ataque Rápido', 'RUN_OUTSIDE', 'normal', [byType('RB', ['normal'])], 'TYPE', 6),
   offense('fire_blast_fake', 'Explosão de Fogo', 'PLAY_ACTION', 'fire', [byType('QB', ['fire'])]),
   offense('water_gun_slant', "Jato d'Água", 'SHORT_PASS', 'water', [byType('WR', ['water'])]),
   offense('grass_petal_dance', 'Dança das Pétalas', 'RUN_INSIDE', 'grass', [byType('OL', ['grass'], 2)]),
@@ -86,7 +86,7 @@ export const CARDS: readonly Card[] = [
   offense('fighting_rolling_kick', 'Chute Giratório', 'RUN_OUTSIDE', 'fighting', [byType('WR', ['fighting'])]),
   offense('poison_acid_screen', 'Ácido', 'SCREEN', 'poison', [byType('RB', ['poison'])]),
   offense('ground_bonemerang', 'Bumerangue de Osso', 'SHORT_PASS', 'ground', [byType('WR', ['ground'])]),
-  offense('flying_sky_attack', 'Ataque do Céu', 'PLAY_ACTION', 'flying', [byType('QB', ['flying'])]),
+  offense('flying_sky_attack', 'Ataque do Céu', 'PLAY_ACTION', 'flying', [byType('QB', ['flying'])], 'TYPE', 11),
   offense('psychic_psybeam', 'Psicorraio', 'SHORT_PASS', 'psychic', [byType('WR', ['psychic'])], 'TYPE', 6),
   offense('bug_pin_missile', 'Míssil de Agulhas', 'RUN_OUTSIDE', 'bug', [byType('RB', ['bug'])], 'TYPE', 6),
   offense('rock_throw_deep', 'Arremesso de Rocha', 'DEEP_PASS', 'rock', [byType('WR', ['rock'])]),
@@ -113,8 +113,8 @@ export const CARDS: readonly Card[] = [
   // Assinatura (15 novas; total 20)
   offense('sig_pikachu_volt', 'Choque de Pikachu', 'SCREEN', 'electric', [bySpecies('RB', [25, 26])], 'SIGNATURE', 7),
   offense('sig_machamp_karate', 'Golpe de Karatê', 'RUN_OUTSIDE', 'fighting', [bySpecies('WR', [66, 67, 68])], 'SIGNATURE', 6),
-  offense('sig_dugtrio_dig', 'Cavar de Dugtrio', 'RUN_OUTSIDE', 'ground', [bySpecies('RB', [50, 51])], 'SIGNATURE', 6),
-  offense('sig_alakazam_teleport', 'Teleporte', 'PLAY_ACTION', 'psychic', [bySpecies('QB', [63, 64, 65])], 'SIGNATURE', 9),
+  offense('sig_dugtrio_dig', 'Cavar de Dugtrio', 'RUN_OUTSIDE', 'ground', [bySpecies('RB', [50, 51])], 'SIGNATURE', 5),
+  offense('sig_alakazam_teleport', 'Teleporte', 'PLAY_ACTION', 'psychic', [bySpecies('QB', [63, 64, 65])], 'SIGNATURE', 8),
   offense('sig_onix_bind', 'Constrição de Onix', 'RUN_INSIDE', 'rock', [bySpecies('OL', [95])], 'SIGNATURE', 5),
   offense('sig_starmie_swift', 'Meteoro Estelar', 'SHORT_PASS', 'water', [bySpecies('WR', [120, 121])], 'SIGNATURE', 8),
   offense('sig_dragonite_hyper_beam', 'Hiper Raio Dragonite', 'DEEP_PASS', 'dragon', [bySpecies('WR', [147, 148, 149])], 'SIGNATURE', 20),

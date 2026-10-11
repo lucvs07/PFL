@@ -3,8 +3,9 @@ import { runSim } from '../src/runner';
 import { buildReport, balanceGate } from '../src/report';
 
 // Portão de balanceamento (spec 7.3), com N reduzido para rodar na suíte.
-// N e seed fixos → resultado determinístico. Amostra mínima 600: 2σ ≈ ±4,1 pontos em torno de 50%.
-const GATE_GAMES = 2000;
+// N e seed fixos → resultado determinístico. Reprova só carta com o IC 95% (Wilson) inteiro fora de 45–55%.
+// 2500 partidas: com a contagem exclusiva (só o lado que jogou a carta sozinho), 2000 não chegam a 30 cartas com 600 jogos.
+const GATE_GAMES = 2500;
 const GATE_SEED = 2026;
 const GATE_MIN_SAMPLE = 600;
 /** o portão só vale se cobrir uma parte relevante do catálogo */

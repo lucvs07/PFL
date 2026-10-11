@@ -74,4 +74,8 @@ describe('runSim: contexto e validação', () => {
   it.each([-1, 1.5, 2 ** 32, Number.NaN])('rejeita seed inválida %s', (seed) => {
     expect(() => runSim({ games: 2, seed })).toThrow(/seed inválida/);
   });
+
+  it.each([0, -1, 1.5, Number.NaN])('rejeita suggestedEvery inválido %s', (suggestedEvery) => {
+    expect(() => runSim({ games: 2, seed: 1, suggestedEvery })).toThrow(/suggestedEvery inválido/);
+  });
 });

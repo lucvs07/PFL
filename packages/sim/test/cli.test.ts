@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { main, parseArgs } from '../src/cli';
+import type { MatchRecord, runSim } from '../src/runner';
 
 describe('parseArgs', () => {
   it('lê --games, --seed, --min-sample e --gate', () => {
@@ -35,9 +36,24 @@ describe('main', () => {
     expect(out.join('\n')).toContain('relatório de balanceamento (4 partidas)');
   });
 
-  it('com --gate devolve 1 se alguma carta amostrada sair da faixa', () => {
-    // com amostra mínima 1, quase toda carta jogada em 2 partidas tem win rate 0% ou 100%
-    expect(main(['--games', '2', '--seed', '2', '--min-sample', '1', '--gate'], () => {})).toBe(1);
+  it('com --gate devolve 1 se alguma carta amostrada sair da faixa (com o IC 95% inteiro fora)', () => {
+    // 50 partidas em que A joga normal_tackle e sempre vence: 100%, IC ≈ 93–100%
+    const record: MatchRecord = {
+      teams: { A: 'x', B: 'y' },
+      score: { A: 7, B: 0 },
+      winner: 'A',
+      events: [
+        { t: 'DRIVE_START', offense: 'A', ballOn: 25, possession: 1, overtimeRound: 0 },
+        { t: 'CARDS', offense: 'normal_tackle', defense: 'basic_defense', read: 'NEUTRAL' },
+      ],
+    };
+    const simulate = (() => Array.from({ length: 50 }, () => record)) as typeof runSim;
+    expect(main(['--games', '50', '--min-sample', '50', '--gate'], () => {}, () => {}, simulate)).toBe(1);
+  });
+
+  it('com --gate e amostra pequena, carta fora só no ponto não reprova', () => {
+    // 2 partidas: win rate 0% ou 100%, mas o IC cruza a faixa; cai na falta de cobertura (3), não em 1
+    expect(main(['--games', '2', '--seed', '2', '--min-sample', '1', '--gate'], () => {}, () => {})).toBe(3);
   });
 
   it('com --gate devolve 3 quando nenhuma carta atinge a amostra mínima (não aprova por vacuidade)', () => {
