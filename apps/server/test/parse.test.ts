@@ -33,6 +33,22 @@ describe('parsePlay', () => {
     ];
     for (const [event, payload] of cases) expect(parsePlay(event, payload)).toBeNull();
   });
+
+  it('limita o tamanho e as chaves do payload de team:depth', () => {
+    const big = Array.from({ length: 17 }, (_, i) => i);
+    const cases: unknown[] = [
+      { turnId: 3, depth: { QB: [1], junk: [] }, keepOnField: [] },
+      { turnId: 3, depth: { QB: big }, keepOnField: [] },
+      { turnId: 3, depth: { QB: ['63'] }, keepOnField: [] },
+      { turnId: 3, depth: { QB: [1] }, keepOnField: big },
+      { turnId: 3, depth: { QB: [1] }, keepOnField: ['25'] },
+      { turnId: 3, depth: { QB: [1.5] }, keepOnField: [] },
+      { turnId: 3, depth: { QB: 1 }, keepOnField: [] },
+    ];
+    for (const payload of cases) expect(parsePlay('team:depth', payload)).toBeNull();
+    const full = Array.from({ length: 16 }, (_, i) => i);
+    expect(parsePlay('team:depth', { turnId: 3, depth: { QB: full }, keepOnField: full })).not.toBeNull();
+  });
 });
 
 describe('toAction', () => {

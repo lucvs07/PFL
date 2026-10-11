@@ -236,6 +236,35 @@ describe('ajuste do depth chart (team:depth)', () => {
   });
 });
 
+describe('log de SET_DEPTH', () => {
+  it('três depths do mesmo time na janela deixam só o último no log', () => {
+    const { session } = setup();
+    session.start();
+    const turnId = session.state.turnId;
+    const d = (qb: number[]) => ({ ...electricTeam().depth, QB: qb });
+    session.handle('A', { kind: 'depth', turnId, depth: d([54, 63]), keepOnField: [] });
+    session.handle('A', { kind: 'depth', turnId, depth: d([63, 54]), keepOnField: [25] });
+    session.handle('A', { kind: 'depth', turnId, depth: d([54]), keepOnField: [26] });
+    expect(session.actions).toEqual([{ type: 'SET_DEPTH', team: 'A', depth: d([54]), keepOnField: [26] }]);
+    expect(replay(teams().A, teams().B, session.seed, session.actions).state).toEqual(session.state);
+  });
+
+  it('A, B, A: um SET_DEPTH por time (o último de cada)', () => {
+    const { session } = setup();
+    session.start();
+    const turnId = session.state.turnId;
+    const d = (qb: number[]) => ({ ...electricTeam().depth, QB: qb });
+    session.handle('A', { kind: 'depth', turnId, depth: d([54, 63]), keepOnField: [] });
+    session.handle('B', { kind: 'depth', turnId, depth: d([63, 54]), keepOnField: [] });
+    session.handle('A', { kind: 'depth', turnId, depth: d([54]), keepOnField: [25] });
+    const sets = session.actions.filter((a) => a.type === 'SET_DEPTH');
+    expect(sets).toHaveLength(2);
+    expect(sets).toContainEqual({ type: 'SET_DEPTH', team: 'A', depth: d([54]), keepOnField: [25] });
+    expect(sets).toContainEqual({ type: 'SET_DEPTH', team: 'B', depth: d([63, 54]), keepOnField: [] });
+    expect(replay(teams().A, teams().B, session.seed, session.actions).state).toEqual(session.state);
+  });
+});
+
 describe('fim de partida', () => {
   it('uma partida só de timeouts termina com match:end, stats e replay reproduzível', () => {
     const { session, rec, ends } = setup({ timings: { resultAnimationMs: 0 } });

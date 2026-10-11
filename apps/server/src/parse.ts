@@ -1,4 +1,4 @@
-import { FORMATIONS, PACKAGES, type Action, type FormationId, type PackageId, type Team, type TeamKey } from '@pfl/engine';
+import { DEFENSE_SLOTS, FORMATIONS, OFFENSE_SLOTS, PACKAGES, ROSTER_SIZE, type Action, type FormationId, type PackageId, type Team, type TeamKey } from '@pfl/engine';
 
 /** Intenção de jogo já validada quanto ao formato. A validação de regra é do motor. */
 export type PlayRequest =
@@ -13,6 +13,12 @@ export type PlayEvent = 'play:formation' | 'play:package' | 'play:card' | 'play:
 const MAX_CARD_ID_LENGTH = 64;
 
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
+
+const DEPTH_KEYS: ReadonlySet<string> = new Set<string>([...OFFENSE_SLOTS, ...DEFENSE_SLOTS]);
+
+/** Lista curta de inteiros seguros: limita o custo de guardar e revalidar o payload. */
+const isIdList = (v: unknown): v is number[] =>
+  Array.isArray(v) && v.length <= ROSTER_SIZE && v.every((n) => Number.isSafeInteger(n));
 
 /** Nunca lança. Devolve null para qualquer payload fora do formato do contrato. */
 export function parsePlay(event: PlayEvent, payload: unknown): PlayRequest | null {
@@ -37,8 +43,9 @@ export function parsePlay(event: PlayEvent, payload: unknown): PlayRequest | nul
     }
     case 'team:depth': {
       const { depth, keepOnField } = payload;
-      return isRecord(depth) && Array.isArray(keepOnField)
-        ? { kind: 'depth', turnId, depth: depth as Team['depth'], keepOnField: keepOnField as number[] }
+      if (!isRecord(depth) || !Object.keys(depth).every((k) => DEPTH_KEYS.has(k) && isIdList(depth[k]))) return null;
+      return isIdList(keepOnField)
+        ? { kind: 'depth', turnId, depth: depth as Team['depth'], keepOnField }
         : null;
     }
   }

@@ -136,9 +136,24 @@ export class MatchSession {
       return;
     }
     this.current = result.state;
+    if (action.type === 'SET_DEPTH') this.dropSupersededDepth(action.team);
     this.log.push(action);
     this.history.push(...result.events);
     this.dispatch(prev, action, result.events, from);
+  }
+
+  /**
+   * SET_DEPTH substitui depth/keepOnField por inteiro e não consome RNG; só o último de cada time
+   * depois da última ação de outro tipo importa. Descartar os anteriores mantém o replay equivalente
+   * e impede que um jogador infle o log (e o match:end) reenviando o depth.
+   */
+  private dropSupersededDepth(team: TeamKey): void {
+    let i = this.log.length;
+    while (i > 0 && this.log[i - 1].type === 'SET_DEPTH') i -= 1;
+    for (let j = this.log.length - 1; j >= i; j -= 1) {
+      const a = this.log[j];
+      if (a.type === 'SET_DEPTH' && a.team === team) this.log.splice(j, 1);
+    }
   }
 
   private dispatch(prev: MatchState, action: Action, events: GameEvent[], from: TeamKey | null): void {

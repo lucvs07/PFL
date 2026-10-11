@@ -52,6 +52,8 @@ export async function createPflServer(options: PflServerOptions = {}): Promise<P
   const httpServer = createServer();
   const io: PflIo = new Server<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData>(httpServer, {
     cors: { origin: options.corsOrigin ?? true },
+    // um código de time tem ~2 KB; o padrão de 1 MB deixaria um jogador sobrecarregar o processo
+    maxHttpBufferSize: 64 * 1024,
   });
 
   const rooms: RoomManager = new RoomManager({
