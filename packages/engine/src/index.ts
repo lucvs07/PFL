@@ -10,3 +10,4 @@ export * from './team';
 export * from './fatigue';
 export * from './resolve';
 export * from './specials';
+export * from './field';
