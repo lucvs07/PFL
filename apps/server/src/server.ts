@@ -1,0 +1,212 @@
+import { randomUUID } from 'node:crypto';
+import { createServer } from 'node:http';
+import type { AddressInfo } from 'node:net';
+import { Server, type Socket } from 'socket.io';
+import type { TeamKey } from '@pfl/engine';
+import type { Ack, ClientToServerEvents, ErrorCode, ServerToClientEvents } from '@pfl/protocol';
+import { normalizeRoomCode } from './codes';
+import type { Outgoing } from './outgoing';
+import { parsePlay, type PlayEvent } from './parse';
+import type { Room } from './room';
+import { RoomManager } from './rooms';
+import { realScheduler, resolveTimings, type Scheduler, type TimingsInput } from './timings';
+
+interface SocketData {
+  code: string | null;
+  key: TeamKey | null;
+}
+export type PflIo = Server<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData>;
+type PflSocket = Socket<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData>;
+type SeatAck = Ack<{ code: string; you: TeamKey; token: string }>;
+
+export interface PflServerOptions {
+  /** padrão 0 (porta livre); main.ts usa 3001 */
+  port?: number;
+  host?: string;
+  /** timers curtos nos testes */
+  timings?: TimingsInput;
+  /** relógio e timers injetáveis */
+  scheduler?: Scheduler;
+  /** códigos de sala e seed da partida */
+  random?: () => number;
+  newToken?: () => string;
+  /** padrão true: reflete a origem (o cliente Vite roda em outra porta) */
+  corsOrigin?: string | string[] | boolean;
+}
+
+export interface PflServer {
+  port: number;
+  io: PflIo;
+  rooms: RoomManager;
+  close(): Promise<void>;
+}
+
+function deliver(socket: PflSocket, msg: Outgoing): void {
+  (socket.emit as unknown as (event: string, payload: unknown) => boolean).call(socket, msg.event, msg.payload);
+}
+
+const field = (payload: unknown, name: string): unknown =>
+  typeof payload === 'object' && payload !== null ? (payload as Record<string, unknown>)[name] : undefined;
+
+export async function createPflServer(options: PflServerOptions = {}): Promise<PflServer> {
+  const httpServer = createServer();
+  const io: PflIo = new Server<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData>(httpServer, {
+    cors: { origin: options.corsOrigin ?? true },
+  });
+
+  const rooms: RoomManager = new RoomManager({
+    scheduler: options.scheduler ?? realScheduler,
+    timings: resolveTimings(options.timings),
+    random: options.random ?? Math.random,
+    newToken: options.newToken ?? randomUUID,
+    send: (code, to, msg) => {
+      const connId = rooms.get(code)?.connectionOf(to);
+      const socket = connId ? io.sockets.sockets.get(connId) : undefined;
+      if (socket) deliver(socket, msg);
+    },
+    onRoomClosed: (code) => {
+      for (const socket of io.sockets.sockets.values()) {
+        if (socket.data.code === code) {
+          socket.data.code = null;
+          socket.data.key = null;
+        }
+      }
+    },
+  });
+
+  io.on('connection', (socket: PflSocket) => {
+    socket.data.code = null;
+    socket.data.key = null;
+
+    const fail = (code: ErrorCode, message: string): void => {
+      socket.emit('error', { code, message });
+    };
+    /** Nenhum handler pode derrubar o processo. */
+    const guard =
+      <A extends unknown[]>(fn: (...args: A) => void) =>
+      (...args: A): void => {
+        try {
+          fn(...args);
+        } catch (err) {
+          console.error('[pfl] erro no handler', err);
+          fail('ENGINE_ERROR', 'Erro interno');
+        }
+      };
+    const current = (): { room: Room; key: TeamKey } | null => {
+      const room = socket.data.code ? rooms.get(socket.data.code) : undefined;
+      return room && socket.data.key ? { room, key: socket.data.key } : null;
+    };
+    const bound = (): { room: Room; key: TeamKey } | null => {
+      const b = current();
+      if (!b) fail('NOT_IN_ROOM', 'Entre numa sala primeiro');
+      return b;
+    };
+    const leave = (): void => {
+      const b = current();
+      if (b) b.room.disconnect(b.key, socket.id);
+      socket.data.code = null;
+      socket.data.key = null;
+    };
+    const bind = (room: Room, key: TeamKey): void => {
+      socket.data.code = room.code;
+      socket.data.key = key;
+      const previous = room.connect(key, socket.id);
+      if (previous && previous !== socket.id) io.sockets.sockets.get(previous)?.disconnect(true);
+    };
+    const play = (event: PlayEvent, payload: unknown): void => {
+      const b = bound();
+      if (!b) return;
+      const req = parsePlay(event, payload);
+      if (!req) return fail('ENGINE_ERROR', `Payload inválido em ${event}`);
+      b.room.play(b.key, req);
+    };
+
+    socket.on(
+      'room:create',
+      guard((ack: unknown) => {
+        if (typeof ack !== 'function') return;
+        leave();
+        const { room, key, token } = rooms.create();
+        (ack as SeatAck)({ ok: true, data: { code: room.code, you: key, token } });
+        bind(room, key);
+      }),
+    );
+
+    socket.on(
+      'room:join',
+      guard((payload: unknown, ack: unknown) => {
+        if (typeof ack !== 'function') return;
+        const reply = ack as SeatAck;
+        const here = current();
+        if (here && normalizeRoomCode(field(payload, 'code')) === here.room.code) {
+          // já está nesta sala: devolve a própria vaga em vez de ocupar a outra
+          reply({ ok: true, data: { code: here.room.code, you: here.key, token: here.room.tokenOf(here.key) ?? '' } });
+          here.room.resync(here.key);
+          return;
+        }
+        const result = rooms.join(field(payload, 'code'), field(payload, 'token'));
+        if (!result.ok) {
+          const message = result.code === 'ROOM_FULL' ? 'Sala cheia' : 'Sala não encontrada';
+          reply({ ok: false, error: { code: result.code, message } });
+          return;
+        }
+        leave();
+        reply({ ok: true, data: { code: result.room.code, you: result.key, token: result.token } });
+        bind(result.room, result.key);
+      }),
+    );
+
+    socket.on(
+      'team:submit',
+      guard((payload: unknown) => {
+        const b = bound();
+        if (b) b.room.submitTeam(b.key, field(payload, 'teamCode'));
+      }),
+    );
+    socket.on(
+      'room:ready',
+      guard((payload: unknown) => {
+        const b = bound();
+        if (b) b.room.setReady(b.key, field(payload, 'ready'));
+      }),
+    );
+    socket.on('play:formation', guard((payload: unknown) => play('play:formation', payload)));
+    socket.on('play:package', guard((payload: unknown) => play('play:package', payload)));
+    socket.on('play:card', guard((payload: unknown) => play('play:card', payload)));
+    socket.on('play:conversion', guard((payload: unknown) => play('play:conversion', payload)));
+    socket.on('team:depth', guard((payload: unknown) => play('team:depth', payload)));
+    socket.on(
+      'match:resync',
+      guard(() => {
+        const b = bound();
+        if (b) b.room.resync(b.key);
+      }),
+    );
+    socket.on('disconnect', () => {
+      try {
+        leave();
+      } catch (err) {
+        console.error('[pfl] erro ao desconectar', err);
+      }
+    });
+  });
+
+  await new Promise<void>((resolve, reject) => {
+    httpServer.once('error', reject);
+    if (options.host) httpServer.listen(options.port ?? 0, options.host, () => resolve());
+    else httpServer.listen(options.port ?? 0, () => resolve());
+  });
+  const port = (httpServer.address() as AddressInfo).port;
+
+  return {
+    port,
+    io,
+    rooms,
+    close: async () => {
+      rooms.closeAll();
+      await new Promise<void>((resolve) => {
+        io.close(() => resolve());
+      });
+    },
+  };
+}

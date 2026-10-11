@@ -10,7 +10,8 @@
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json",
     "data:build": "npm run build -w @pfl/data",
-    "sim": "tsx packages/sim/src/cli.ts"
+    "sim": "tsx packages/sim/src/cli.ts",
+    "dev:server": "npm run dev -w @pfl/server"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",
