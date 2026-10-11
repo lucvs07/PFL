@@ -11,3 +11,6 @@ export * from './fatigue';
 export * from './resolve';
 export * from './specials';
 export * from './field';
+export * from './cards/deck';
+export * from './errors';
+export * from './match';
