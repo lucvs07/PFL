@@ -1,0 +1,12 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`partidas completas > golden: a seed 2026 produz sempre o mesmo resultado 1`] = `
+{
+  "actions": 335,
+  "score": {
+    "A": 15,
+    "B": 11,
+  },
+  "turnId": 87,
+}
+`;

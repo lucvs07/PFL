@@ -14,3 +14,4 @@ export * from './field';
 export * from './cards/deck';
 export * from './errors';
 export * from './match';
+export * from './replay';
