@@ -37,6 +37,16 @@ describe('fillSlots', () => {
     expect(fillSlots(['WR1'], depth, () => false)).toEqual({ WR1: 4 });
   });
 
+  it('acha a escalação mesmo quando a escolha gulosa consome o único candidato de outra vaga', () => {
+    const shared = { WR1: [25, 26], WR2: [25] };
+    expect(fillSlots(['WR1', 'WR2'], shared)).toEqual({ WR1: 26, WR2: 25 });
+    expect(fillSlots(['WR1', 'WR2'], shared, (id) => id === 25)).toEqual({ WR1: 26, WR2: 25 });
+  });
+
+  it('usa o fallback quando nenhum candidato livre é preferido', () => {
+    expect(fillSlots(['QB'], { QB: [1, 2, 3] }, () => false, (c) => c[c.length - 1])).toEqual({ QB: 3 });
+  });
+
   it('devolve null quando uma vaga fica sem candidato', () => {
     expect(fillSlots(['QB', 'RB', 'WR1', 'TE'], depth)).toBeNull();
   });

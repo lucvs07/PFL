@@ -40,8 +40,15 @@ export function advanceField(field: FieldState, outcome: PlayOutcome): PlayAdvan
   return { field: { down: field.down + 1, yardsToGo: toGo, ballOn }, firstDown: false, end: null };
 }
 
-/** Linha de início do próximo drive, do ponto de vista do novo atacante (spec 2.1). */
+/**
+ * Linha de início do próximo drive, do ponto de vista do novo atacante (spec 2.1). Sempre dentro do
+ * campo: um FG errado chutado de dentro da própria end zone, por exemplo, deixa o adversário na 99.
+ */
 export function nextDriveStart(end: DriveEnd): number {
+  return clampSpot(rawDriveStart(end));
+}
+
+function rawDriveStart(end: DriveEnd): number {
   switch (end.kind) {
     case 'TOUCHDOWN':
     case 'SAFETY':

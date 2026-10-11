@@ -77,4 +77,10 @@ describe('validateTeam', () => {
     expect(codes({ ...t, depth: { ...t.depth, S2: [] } })).toContain('PACKAGE_UNFILLABLE');
     expect(codes({ ...t, keepOnField: [150] })).toContain('KEEP_NOT_IN_ROSTER');
   });
+
+  it('aceita depth chart que só fecha trocando quem a ordem gulosa escolheria', () => {
+    const t = electricTeam();
+    // WR1 pega o 125 primeiro, mas o 125 é o único WR2: ainda há escalação válida (WR1 = 26).
+    expect(codes({ ...t, depth: { ...t.depth, WR1: [125, 26], WR2: [125] } })).toEqual([]);
+  });
 });

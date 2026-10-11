@@ -23,9 +23,16 @@ const generationNumber = (url: string): number => Number(url.split('/').filter(B
 
 async function getJson(url: string): Promise<any> {
   for (let attempt = 1; ; attempt++) {
-    const res = await fetch(url);
-    if (res.ok) return res.json();
-    if (attempt === 3) throw new Error(`${res.status} ao buscar ${url}`);
+    // Erros de rede (fetch rejeitado) também contam como tentativa.
+    let failure: unknown;
+    try {
+      const res = await fetch(url);
+      if (res.ok) return await res.json();
+      failure = new Error(`${res.status} ao buscar ${url}`);
+    } catch (err) {
+      failure = err;
+    }
+    if (attempt === 3) throw failure;
     await new Promise((r) => setTimeout(r, 1000 * attempt));
   }
 }

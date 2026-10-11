@@ -64,6 +64,12 @@ describe('nextDriveStart', () => {
     expect(nextDriveStart({ kind: 'FIELD_GOAL', good: false, ballOn: 90 })).toBe(20);
   });
 
+  it('FG errado do fundo do próprio campo: o adversário começa na 99, nunca dentro da end zone', () => {
+    expect(nextDriveStart({ kind: 'FIELD_GOAL', good: false, ballOn: 10 })).toBe(97);
+    expect(nextDriveStart({ kind: 'FIELD_GOAL', good: false, ballOn: 7 })).toBe(99);
+    expect(nextDriveStart({ kind: 'FIELD_GOAL', good: false, ballOn: 1 })).toBe(99);
+  });
+
   it('punt: onde a bola parou, ou touchback se entrar na end zone', () => {
     expect(nextDriveStart({ kind: 'PUNT', landing: 80 })).toBe(20);
     expect(nextDriveStart({ kind: 'PUNT', landing: 105 })).toBe(25);

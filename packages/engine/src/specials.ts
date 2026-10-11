@@ -14,7 +14,11 @@ export function fieldGoalDistance(ballOn: number): number {
   return 100 - ballOn + 17;
 }
 
+/** Acima desta distância o FG não tem chance; o piso de 5% vale só dentro do alcance. Calibrável (Plano 2). */
+export const MAX_FG_DISTANCE = 70;
+
 export function fieldGoalProbability(distance: number, specialist: number): number {
+  if (distance > MAX_FG_DISTANCE) return 0;
   const spAttack = getSpecies(specialist).stats.spAttack;
   return Math.min(0.98, Math.max(0.05, 1.05 - distance * 0.012 + (spAttack - 80) / 400));
 }

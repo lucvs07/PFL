@@ -78,7 +78,8 @@ export function createMatch(teamA: Team, teamB: Team, seed: number, config: Matc
     };
   };
   // Copia os times: editar o objeto do chamador depois não pode alterar a partida (nem o replay).
-  const teams = { A: runtime(structuredClone(teamA)), B: runtime(structuredClone(teamB)) };
+  // Congelados porque os estados seguintes compartilham o mesmo `Team` (ver cloneState).
+  const teams = { A: runtime(deepFreeze(structuredClone(teamA))), B: runtime(deepFreeze(structuredClone(teamB))) };
   const state: MatchState = {
     config,
     teams,
@@ -101,9 +102,23 @@ export function createMatch(teamA: Team, teamB: Team, seed: number, config: Matc
   return { state, events };
 }
 
+function deepFreeze<T>(value: T): T {
+  if (value && typeof value === 'object') {
+    for (const v of Object.values(value)) deepFreeze(v);
+    Object.freeze(value);
+  }
+  return value;
+}
+
+/** Cópia do estado para o próximo passo. O `Team` não muda durante a partida e é compartilhado. */
+function cloneState(state: MatchState): MatchState {
+  const runtime = (rt: TeamRuntime): TeamRuntime => ({ ...structuredClone({ ...rt, team: null }), team: rt.team });
+  return { ...structuredClone({ ...state, teams: null }), teams: { A: runtime(state.teams.A), B: runtime(state.teams.B) } };
+}
+
 export function step(state: MatchState, action: Action): StepResult {
   if (state.phase === 'MATCH_END') throw new EngineError('MATCH_OVER');
-  const s = structuredClone(state);
+  const s = cloneState(state);
   const events: GameEvent[] = [];
   switch (s.phase) {
     case 'FORMATION':
@@ -223,23 +238,19 @@ function resolveSnap(s: MatchState, events: GameEvent[]): void {
     // Chutes não geram atores, mas quem está fora de campo continua recuperando 1 nível (spec 3.6).
     off.fatigue = applyPlayFatigue(off.fatigue, off.team, s.lineups.offense, []);
     def.fatigue = applyPlayFatigue(def.fatigue, def.team, s.lineups.defense, []);
-  }
-
-  if (offCard.category === 'PUNT') {
     events.push({ t: 'CARDS', offense: offCard.id, defense: defCard.id, read: 'NEUTRAL' });
-    const r = resolvePunt(off.team.specialist, s.rng);
-    s.rng = r.rng;
-    events.push({ t: 'PUNT', distance: r.distance });
-    endDrive(s, { kind: 'PUNT', landing: s.field.ballOn + r.distance }, events);
-    return;
-  }
-  if (offCard.category === 'FIELD_GOAL') {
-    events.push({ t: 'CARDS', offense: offCard.id, defense: defCard.id, read: 'NEUTRAL' });
-    const r = resolveFieldGoal(s.field.ballOn, off.team.specialist, s.rng);
-    s.rng = r.rng;
-    events.push({ t: 'FIELD_GOAL', distance: r.distance, good: r.good });
-    if (r.good) s.score[offKey] += 3;
-    endDrive(s, { kind: 'FIELD_GOAL', good: r.good, ballOn: s.field.ballOn }, events);
+    if (offCard.category === 'PUNT') {
+      const r = resolvePunt(off.team.specialist, s.rng);
+      s.rng = r.rng;
+      events.push({ t: 'PUNT', distance: r.distance });
+      endDrive(s, { kind: 'PUNT', landing: s.field.ballOn + r.distance }, events);
+    } else {
+      const r = resolveFieldGoal(s.field.ballOn, off.team.specialist, s.rng);
+      s.rng = r.rng;
+      events.push({ t: 'FIELD_GOAL', distance: r.distance, good: r.good });
+      if (r.good) s.score[offKey] += 3;
+      endDrive(s, { kind: 'FIELD_GOAL', good: r.good, ballOn: s.field.ballOn }, events);
+    }
     return;
   }
 
@@ -277,6 +288,7 @@ function resolveSnap(s: MatchState, events: GameEvent[]): void {
     case 'TOUCHDOWN':
       s.score[offKey] += 6;
       events.push({ t: 'TOUCHDOWN', team: offKey });
+      clearSnap(s);
       s.phase = 'CONVERSION';
       s.turnId += 1;
       return;
@@ -295,8 +307,13 @@ function resolveSnap(s: MatchState, events: GameEvent[]): void {
 }
 
 function beginSnap(s: MatchState): void {
+  clearSnap(s);
   s.phase = 'FORMATION';
   s.turnId += 1;
+}
+
+/** Limpa as escolhas do snap anterior (formação, pacote, escalações e cartas). */
+function clearSnap(s: MatchState): void {
   s.formation = null;
   s.package = null;
   s.lineups = { offense: {}, defense: {} };

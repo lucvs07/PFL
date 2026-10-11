@@ -192,6 +192,24 @@ describe('touchdown e conversão', () => {
     throw new Error('nenhuma seed gerou TD');
   });
 
+  it('na conversão, as escolhas do snap do TD já foram limpas', () => {
+    for (let seed = 1; seed <= 50; seed++) {
+      const s = start(seed);
+      s.field = { down: 1, yardsToGo: 1, ballOn: 99 };
+      const { state } = snap(s);
+      if (state.phase !== 'CONVERSION') continue;
+      expect(state.cards).toEqual({ offense: null, defense: null });
+      expect(state.formation).toBeNull();
+      expect(state.package).toBeNull();
+      expect(state.lineups).toEqual({ offense: {}, defense: {} });
+      const view = playerView(state, 'A');
+      expect(view.yourCard).toBeNull();
+      expect(view.opponentHasChosen).toBe(false);
+      return;
+    }
+    throw new Error('nenhuma seed gerou TD');
+  });
+
   it('PAT encerra o drive e B começa na 25', () => {
     const s = start();
     s.phase = 'CONVERSION';
@@ -284,6 +302,17 @@ describe('robustez do estado e das ações', () => {
     t.roster.pop();
     expect(s.teams.A.team.depth.QB).toEqual([63, 54]);
     expect(s.teams.A.team.roster).toHaveLength(16);
+  });
+
+  it('step reaproveita o Team (congelado) e copia o resto do estado', () => {
+    const s = start();
+    const next = step(s, { type: 'FORMATION', team: 'A', formation: 'PISTOL' }).state;
+    expect(next.teams.A.team).toBe(s.teams.A.team);
+    expect(Object.isFrozen(s.teams.A.team.depth.QB)).toBe(true);
+    expect(() => s.teams.A.team.roster.push(1)).toThrow(TypeError);
+    expect(next.teams.A.offense).not.toBe(s.teams.A.offense);
+    expect(next.teams.A.fatigue).not.toBe(s.teams.A.fatigue);
+    expect(next.lineups).not.toBe(s.lineups);
   });
 
   it('CARD de um time que não é A nem B é rejeitado', () => {
