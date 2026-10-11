@@ -1,6 +1,6 @@
 import { pathToFileURL } from 'node:url';
 import { runSim } from './runner';
-import { DEFAULT_GATE, balanceGate, buildReport, formatReport } from './report';
+import { DEFAULT_GATE, MIN_SAMPLED_CARDS, balanceGate, buildReport, formatReport } from './report';
 
 export interface CliOptions {
   games: number;
@@ -46,8 +46,16 @@ export function parseArgs(argv: readonly string[]): CliOptions {
   return options;
 }
 
-/** Devolve o código de saída: 0 ok; 1 portão reprovado (com --gate); 2 argumentos inválidos. */
-export function main(argv: readonly string[], out: (line: string) => void = console.log, err: (line: string) => void = console.error): number {
+/**
+ * Devolve o código de saída: 0 ok; 1 portão reprovado (com --gate); 2 argumentos inválidos;
+ * 3 amostra insuficiente para o portão (com --gate); 4 erro de execução da simulação.
+ */
+export function main(
+  argv: readonly string[],
+  out: (line: string) => void = console.log,
+  err: (line: string) => void = console.error,
+  simulate: typeof runSim = runSim,
+): number {
   let options: CliOptions;
   try {
     options = parseArgs(argv);
@@ -56,11 +64,23 @@ export function main(argv: readonly string[], out: (line: string) => void = cons
     return 2;
   }
   const started = Date.now();
-  const report = buildReport(runSim({ games: options.games, seed: options.seed }));
+  let report: ReturnType<typeof buildReport>;
+  try {
+    report = buildReport(simulate({ games: options.games, seed: options.seed }));
+  } catch (e) {
+    err(`erro na simulação: ${(e as Error).message}`);
+    return 4;
+  }
   const gate = balanceGate(report, { ...DEFAULT_GATE, minSample: options.minSample });
   out(formatReport(report, gate));
   out(`Seed ${options.seed}, amostra mínima ${options.minSample}, ${((Date.now() - started) / 1000).toFixed(1)} s`);
-  return options.gate && gate.failures.length > 0 ? 1 : 0;
+  if (!options.gate) return 0;
+  if (gate.failures.length > 0) return 1;
+  if (gate.sampled.length < MIN_SAMPLED_CARDS) {
+    err(`amostra insuficiente: só ${gate.sampled.length} cartas com ≥ ${options.minSample} jogos (mínimo ${MIN_SAMPLED_CARDS}); aumente --games`);
+    return 3;
+  }
+  return 0;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

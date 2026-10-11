@@ -39,4 +39,17 @@ describe('main', () => {
     // com amostra mínima 1, quase toda carta jogada em 2 partidas tem win rate 0% ou 100%
     expect(main(['--games', '2', '--seed', '2', '--min-sample', '1', '--gate'], () => {})).toBe(1);
   });
+
+  it('com --gate devolve 3 quando nenhuma carta atinge a amostra mínima (não aprova por vacuidade)', () => {
+    const errors: string[] = [];
+    expect(main(['--games', '4', '--seed', '2', '--min-sample', '1000', '--gate'], () => {}, (l) => errors.push(l))).toBe(3);
+    expect(errors.join('\n')).toContain('amostra insuficiente');
+  });
+
+  it('erro de execução da simulação devolve 4 com mensagem, e não o código do portão reprovado', () => {
+    const errors: string[] = [];
+    const boom = (): never => { throw new Error('partida não terminou em 5000 ações (seed 9)'); };
+    expect(main(['--games', '2', '--gate'], () => {}, (l) => errors.push(l), boom)).toBe(4);
+    expect(errors.join('\n')).toContain('partida não terminou em 5000 ações (seed 9)');
+  });
 });

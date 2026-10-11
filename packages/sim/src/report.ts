@@ -140,6 +140,8 @@ export interface GateOptions {
   minSample: number;
   low: number;
   high: number;
+  /** amostra mínima para entrar no aviso de subamostra (padrão UNDER_SAMPLE_FLOOR) */
+  underSampleFloor?: number;
 }
 /** Spec 7.3: win rate por carta (partidas em que foi jogada) entre 45% e 55%. */
 export const DEFAULT_GATE: GateOptions = { minSample: 1000, low: 0.45, high: 0.55 };
@@ -148,7 +150,14 @@ export interface GateResult {
   /** cartas de deck (TYPE/SIGNATURE) com amostra ≥ minSample */
   sampled: string[];
   failures: { id: string; games: number; winRate: number }[];
+  /** aviso (não reprova): cartas de deck abaixo da amostra mínima, com amostra ≥ UNDER_SAMPLE_FLOOR e win rate fora da faixa */
+  underSampled: { id: string; games: number; winRate: number }[];
 }
+
+/** Abaixo disso o win rate é ruído demais até para um aviso. */
+export const UNDER_SAMPLE_FLOOR = 200;
+/** Cobertura mínima para o portão valer: menos cartas avaliadas que isso é "amostra insuficiente", não aprovação. */
+export const MIN_SAMPLED_CARDS = 30;
 
 export function balanceGate(report: Report, options: GateOptions = DEFAULT_GATE): GateResult {
   const sampled = Object.entries(report.cards)
@@ -161,7 +170,15 @@ export function balanceGate(report: Report, options: GateOptions = DEFAULT_GATE)
   const failures = sampled
     .map((id) => ({ id, games: report.cards[id].games, winRate: report.cards[id].winRate }))
     .filter((f) => f.winRate < options.low || f.winRate > options.high);
-  return { sampled, failures };
+  const underSampled = Object.entries(report.cards)
+    .filter(([id, c]) => {
+      const origin = getCard(id).origin;
+      return (origin === 'TYPE' || origin === 'SIGNATURE') && c.games < options.minSample && c.games >= (options.underSampleFloor ?? UNDER_SAMPLE_FLOOR);
+    })
+    .map(([id, c]) => ({ id, games: c.games, winRate: c.winRate }))
+    .filter((f) => f.winRate < options.low || f.winRate > options.high)
+    .sort((a, b) => a.id.localeCompare(b.id));
+  return { sampled, failures, underSampled };
 }
 
 const pct = (x: number): string => `${(x * 100).toFixed(1)}%`;
@@ -195,6 +212,11 @@ export function formatReport(report: Report, gate: GateResult): string {
     lines.push(`  ${id.padEnd(28)} ${pct(s.winRate).padStart(6)}  (${s.games} jogos)${flag}`);
   }
   lines.push('');
+  if (gate.underSampled.length > 0) {
+    lines.push('Atenção (informativo): cartas abaixo da amostra mínima com win rate fora da faixa');
+    for (const f of gate.underSampled) lines.push(`  ${f.id.padEnd(28)} ${pct(f.winRate).padStart(6)}  (${f.games} jogos)`);
+    lines.push('');
+  }
   lines.push(`Portão: ${gate.sampled.length} cartas com amostra suficiente, ${gate.failures.length} fora de 45–55%`);
   return lines.join('\n');
 }

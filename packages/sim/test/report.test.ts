@@ -61,6 +61,14 @@ describe('balanceGate', () => {
     expect(gate.failures.map((f) => f.id)).toEqual(['electric_paralysis', 'normal_tackle', 'normal_wall']);
   });
 
+  it('lista, só como aviso, cartas abaixo da amostra mínima com win rate fora da faixa', () => {
+    const gate = balanceGate(report, { minSample: 4, low: 0.45, high: 0.55, underSampleFloor: 1 });
+    expect(gate.sampled).toEqual([]);
+    expect(gate.failures).toEqual([]); // não reprova: é só visibilidade
+    expect(gate.underSampled.map((f) => f.id)).toEqual(['electric_paralysis', 'normal_tackle', 'normal_wall']);
+    expect(formatReport(report, gate)).toContain('abaixo da amostra mínima');
+  });
+
   it('aprova carta dentro da faixa', () => {
     const gate = balanceGate(report, { minSample: 3, low: 0.3, high: 0.7 });
     expect(gate.failures).toEqual([]);
