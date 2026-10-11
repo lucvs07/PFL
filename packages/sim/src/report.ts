@@ -57,6 +57,15 @@ function addWin(map: Record<string, WinStat>, key: string, won: boolean): void {
   if (won) s.wins += 1;
 }
 
+function deckCategories(ids: Iterable<string>): Set<string> {
+  const out = new Set<string>();
+  for (const id of ids) {
+    const card = getCard(id);
+    if (card.origin === 'TYPE' || card.origin === 'SIGNATURE') out.add(card.category);
+  }
+  return out;
+}
+
 export function buildReport(records: readonly MatchRecord[]): Report {
   const cards: Record<string, WinStat> = {};
   const categories: Record<string, WinStat> = {};
@@ -105,7 +114,11 @@ export function buildReport(records: readonly MatchRecord[]): Report {
     for (const key of ['A', 'B'] as const) {
       const won = rec.winner === key;
       for (const id of played[key]) addWin(cards, id, won);
-      for (const cat of new Set([...played[key]].map((id) => getCard(id).category))) addWin(categories, cat, won);
+      // Só cartas de deck e só categorias que apenas este lado jogou na partida: senão as básicas e
+      // as categorias espelhadas contam para os dois times e o win rate converge para 50% por construção.
+      const own = deckCategories(played[key]);
+      const other = deckCategories(played[key === 'A' ? 'B' : 'A']);
+      for (const cat of own) if (!other.has(cat)) addWin(categories, cat, won);
     }
   }
 

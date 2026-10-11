@@ -3,6 +3,8 @@ import { actingTeams, botAction } from './bot';
 import { randomTeam } from './random-team';
 
 export const MAX_STEPS_PER_MATCH = 5000;
+/** maior seed aceita (32 bits sem sinal): acima disso `seed | 0` repetiria outra seed em silêncio */
+export const MAX_SEED = 2 ** 32 - 1;
 
 export interface MatchRecord {
   teams: Record<TeamKey, string>;
@@ -16,11 +18,12 @@ export function playMatch(teamA: Team, teamB: Team, seed: number, botSeed: numbe
   let { state, events } = createMatch(teamA, teamB, seed);
   const log: GameEvent[] = [...events];
   let rng = botSeed;
-  for (let i = 0; i < maxSteps; i++) {
+  for (let i = 0; i <= maxSteps; i++) {
     if (state.phase === 'MATCH_END') {
       const winner: TeamKey = state.score.A > state.score.B ? 'A' : 'B';
       return { teams: { A: teamA.name, B: teamB.name }, score: { ...state.score }, winner, events: log };
     }
+    if (i === maxSteps) break;
     const team = actingTeams(state)[0];
     const decision = botAction(state, team, rng);
     rng = decision.rng;
@@ -28,7 +31,9 @@ export function playMatch(teamA: Team, teamB: Team, seed: number, botSeed: numbe
     state = r.state;
     log.push(...r.events);
   }
-  throw new Error(`partida não terminou em ${maxSteps} ações (seed ${seed})`);
+  throw new Error(
+    `partida não terminou em ${maxSteps} ações (seed ${seed}) [botSeed ${botSeed}; A: ${teamA.name}; B: ${teamB.name}]`,
+  );
 }
 
 export interface SimOptions {
@@ -36,6 +41,8 @@ export interface SimOptions {
   seed: number;
   /** a cada quantos confrontos um usa dois times sugeridos (o resto usa times aleatórios) */
   suggestedEvery?: number;
+  /** limite de ações por partida (padrão MAX_STEPS_PER_MATCH) */
+  maxSteps?: number;
 }
 
 /**
@@ -44,6 +51,7 @@ export interface SimOptions {
  */
 export function runSim(options: SimOptions): MatchRecord[] {
   if (!Number.isInteger(options.games) || options.games < 1) throw new Error(`games inválido: ${options.games}`);
+  if (!Number.isInteger(options.seed) || options.seed < 0 || options.seed > MAX_SEED) throw new Error(`seed inválida: ${options.seed}`);
   const every = options.suggestedEvery ?? 4;
   let rng = options.seed | 0;
   const next = (): number => {
@@ -68,8 +76,12 @@ export function runSim(options: SimOptions): MatchRecord[] {
     }
     const seed = next();
     const botSeed = next();
-    records.push(playMatch(x, y, seed, botSeed));
-    if (records.length < options.games) records.push(playMatch(y, x, seed, botSeed));
+    try {
+      records.push(playMatch(x, y, seed, botSeed, options.maxSteps));
+      if (records.length < options.games) records.push(playMatch(y, x, seed, botSeed, options.maxSteps));
+    } catch (e) {
+      throw new Error(`${(e as Error).message} [runSim --seed ${options.seed}, par ${pair}]`);
+    }
   }
   return records;
 }

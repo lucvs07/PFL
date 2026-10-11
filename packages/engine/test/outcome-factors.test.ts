@@ -18,6 +18,10 @@ const PAIRS: [string, string][] = [
 ];
 
 describe('PlayOutcome expõe os fatores da resolução', () => {
+  it('os multiplicadores de leitura são os da spec 4.3 (1,6 / 1,0 / 0,4)', () => {
+    expect(READ_YARDS).toEqual({ WRONG: 1.6, NEUTRAL: 1, RIGHT: 0.4 });
+  });
+
   it('readFactor segue a leitura e os fatores ficam nas faixas da spec', () => {
     for (const [o, d] of PAIRS) {
       for (let seed = 1; seed <= 300; seed++) {

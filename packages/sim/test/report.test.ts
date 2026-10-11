@@ -51,6 +51,31 @@ describe('buildReport', () => {
   });
 });
 
+describe('win rate por categoria', () => {
+  const ev = (a: string, b: string): GameEvent[] => [
+    { t: 'DRIVE_START', offense: 'A', ballOn: 25, possession: 1, overtimeRound: 0 },
+    { t: 'CARDS', offense: a, defense: 'basic_defense', read: 'NEUTRAL' },
+    { t: 'PLAY', outcome: outcome({}) },
+    { t: 'DRIVE_START', offense: 'B', ballOn: 25, possession: 1, overtimeRound: 0 },
+    { t: 'CARDS', offense: b, defense: 'basic_defense', read: 'NEUTRAL' },
+    { t: 'PLAY', outcome: outcome({}) },
+  ];
+  const rec = (events: GameEvent[], winner: 'A' | 'B'): MatchRecord => ({
+    teams: { A: 'x', B: 'y' }, score: { A: 7, B: 0 }, winner, events,
+  });
+
+  it('ignora cartas básicas/especiais e categorias jogadas pelos dois lados na mesma partida', () => {
+    // A joga RUN_INSIDE de tipo; B joga SHORT_PASS básica → só RUN_INSIDE conta, só para A
+    const solo = buildReport([rec(ev('normal_tackle', 'basic_pass'), 'A')]);
+    expect(solo.categories.RUN_INSIDE).toEqual({ games: 1, wins: 1, winRate: 1 });
+    expect(solo.categories.SHORT_PASS).toBeUndefined();
+    expect(solo.categories.BASE_D).toBeUndefined();
+    // os dois jogam RUN_INSIDE de tipo → espelhado, não entra
+    const mirror = buildReport([rec(ev('normal_tackle', 'fighting_submission'), 'A')]);
+    expect(mirror.categories.RUN_INSIDE).toBeUndefined();
+  });
+});
+
 describe('balanceGate', () => {
   const report = buildReport([record('A'), record('A'), record('B')]);
 

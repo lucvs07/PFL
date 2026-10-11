@@ -20,6 +20,13 @@ describe('randomTeam', () => {
     expect(() => randomTeam(1, 'x', 0)).toThrow(/nenhum elenco válido em 0 tentativas/);
   });
 
+  it('tenta de novo quando um elenco não libera as cartas: seed 1 falha com 1 tentativa e fecha com o padrão', () => {
+    expect(() => randomTeam(1, 'x', 1)).toThrow(/nenhum elenco válido em 1 tentativas/);
+    const r = randomTeam(1, 'x');
+    expect(validateTeam(r.team)).toEqual([]);
+    expect(randomTeam(1, 'x')).toEqual(r); // as tentativas descartadas avançam o rng de forma determinística
+  });
+
   it('é determinístico', () => {
     expect(randomTeam(99)).toEqual(randomTeam(99));
     expect(randomTeam(99).team).not.toEqual(randomTeam(100).team);

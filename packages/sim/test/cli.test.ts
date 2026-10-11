@@ -53,3 +53,31 @@ describe('main', () => {
     expect(errors.join('\n')).toContain('partida não terminou em 5000 ações (seed 9)');
   });
 });
+
+describe('parseArgs: formatos e repetição', () => {
+  it.each([
+    [['--games', '1e1'], /--games precisa/],
+    [['--games', '0x2'], /--games precisa/],
+    [['--games', '3', '--seed', ''], /--seed precisa/],
+    [['--games', '3', '--seed', '4294967296'], /--seed precisa/],
+    [['--games', '3', '--seed', '1.5'], /--seed precisa/],
+    [['--games', '2', '--games', '3'], /--games repetido/],
+    [['--games', '3', '--gate', '--gate'], /--gate repetido/],
+  ])('rejeita %j', (argv, message) => {
+    expect(() => parseArgs(argv as string[])).toThrow(message);
+  });
+
+  it('aceita a forma --opção=valor e a maior seed de 32 bits', () => {
+    expect(parseArgs(['--games=5', '--seed=4294967295'])).toEqual({ games: 5, seed: 4294967295, minSample: 1000, gate: false });
+  });
+});
+
+describe('main: --help', () => {
+  it('imprime o uso e devolve 0', () => {
+    const out: string[] = [];
+    expect(main(['--help'], (l) => out.push(l))).toBe(0);
+    expect(out.join('\n')).toContain('uso: npm run sim -- --games N');
+    expect(main(['-h'], () => {})).toBe(0);
+  });
+});
+

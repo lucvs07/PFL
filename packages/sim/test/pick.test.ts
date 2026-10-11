@@ -25,4 +25,10 @@ describe('weightedPick', () => {
     expect(() => weightedPick([], [], 1)).toThrow(/peso positivo/);
     expect(() => weightedPick(['a'], [0], 1)).toThrow(/peso positivo/);
   });
+
+  it('peso NaN ou infinito conta como zero, sem contaminar o sorteio', () => {
+    for (let rng = 1; rng <= 50; rng++) expect(weightedPick(['a', 'b'], [Number.NaN, 1], rng).item).toBe('b');
+    expect(() => weightedPick(['a'], [Number.NaN], 1)).toThrow(/peso positivo/);
+    expect(() => weightedPick(['a'], [Number.POSITIVE_INFINITY], 1)).toThrow(/peso positivo/);
+  });
 });

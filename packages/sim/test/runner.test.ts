@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { SUGGESTED_TEAMS } from '@pfl/engine';
+import { SUGGESTED_TEAMS, createMatch, step } from '@pfl/engine';
+import { actingTeams, botAction } from '../src/bot';
 import { playMatch, runSim } from '../src/runner';
 
 describe('playMatch', () => {
@@ -39,5 +40,38 @@ describe('runSim', () => {
     expect(() => runSim({ games: 0, seed: 1 })).toThrow(/games inválido/);
     expect(() => runSim({ games: -3, seed: 1 })).toThrow(/games inválido/);
     expect(() => runSim({ games: 2.5, seed: 1 })).toThrow(/games inválido/);
+  });
+});
+
+describe('playMatch: limite de ações', () => {
+  it('uma partida que termina em exatamente maxSteps ações não é erro (sem off-by-one)', () => {
+    const [a, b] = [SUGGESTED_TEAMS[0], SUGGESTED_TEAMS[1]];
+    let state = createMatch(a, b, 11).state;
+    let rng = 12;
+    let actions = 0;
+    while (state.phase !== 'MATCH_END') {
+      const d = botAction(state, actingTeams(state)[0], rng);
+      rng = d.rng;
+      state = step(state, d.action).state;
+      actions++;
+    }
+    expect(() => playMatch(a, b, 11, 12, actions)).not.toThrow();
+    expect(() => playMatch(a, b, 11, 12, actions - 1)).toThrow(/não terminou/);
+  });
+
+  it('a mensagem de erro traz botSeed e os dois times para reproduzir a partida', () => {
+    expect(() => playMatch(SUGGESTED_TEAMS[0], SUGGESTED_TEAMS[1], 11, 12, 10)).toThrow(
+      /\(seed 11\).*botSeed 12.*Relâmpagos de Vermilion.*Chamas de Cinnabar/,
+    );
+  });
+});
+
+describe('runSim: contexto e validação', () => {
+  it('erro de partida informa a seed do runSim e o índice do par', () => {
+    expect(() => runSim({ games: 2, seed: 5, maxSteps: 5 })).toThrow(/--seed 5.*par 0/);
+  });
+
+  it.each([-1, 1.5, 2 ** 32, Number.NaN])('rejeita seed inválida %s', (seed) => {
+    expect(() => runSim({ games: 2, seed })).toThrow(/seed inválida/);
   });
 });

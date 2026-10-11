@@ -1,5 +1,5 @@
 import { pathToFileURL } from 'node:url';
-import { runSim } from './runner';
+import { MAX_SEED, runSim } from './runner';
 import { DEFAULT_GATE, MIN_SAMPLED_CARDS, balanceGate, buildReport, formatReport } from './report';
 
 export interface CliOptions {
@@ -11,26 +11,39 @@ export interface CliOptions {
 
 export const USAGE = 'uso: npm run sim -- --games N [--seed S] [--min-sample M] [--gate]';
 
-function positiveInt(flag: string, raw: string | undefined, allowZero = false): number {
+function positiveInt(flag: string, raw: string | undefined, allowZero = false, max = Number.MAX_SAFE_INTEGER): number {
   const n = Number(raw);
-  if (raw === undefined || raw.startsWith('--') || !Number.isInteger(n) || n < (allowZero ? 0 : 1)) {
-    throw new Error(`${flag} precisa de um inteiro ${allowZero ? '≥ 0' : 'positivo'} (recebido: ${raw ?? 'nada'})\n${USAGE}`);
+  if (raw === undefined || !/^\d+$/.test(raw) || n < (allowZero ? 0 : 1) || n > max) {
+    const range = allowZero ? `entre 0 e ${max}` : 'positivo';
+    throw new Error(`${flag} precisa de um inteiro ${range} (recebido: ${raw ?? 'nada'})\n${USAGE}`);
   }
   return n;
 }
 
-export function parseArgs(argv: readonly string[]): CliOptions {
+/** Aceita `--opção valor` e `--opção=valor`. */
+function normalize(argv: readonly string[]): string[] {
+  return argv.flatMap((a) => {
+    const eq = a.startsWith('--') ? a.indexOf('=') : -1;
+    return eq > 0 ? [a.slice(0, eq), a.slice(eq + 1)] : [a];
+  });
+}
+
+export function parseArgs(input: readonly string[]): CliOptions {
+  const argv = normalize(input);
   const options: CliOptions = { games: 0, seed: 1, minSample: DEFAULT_GATE.minSample, gate: false };
-  let sawGames = false;
+  const seen = new Set<string>();
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i];
+    if (['--games', '--seed', '--min-sample', '--gate'].includes(flag)) {
+      if (seen.has(flag)) throw new Error(`${flag} repetido\n${USAGE}`);
+      seen.add(flag);
+    }
     switch (flag) {
       case '--games':
         options.games = positiveInt(flag, argv[++i]);
-        sawGames = true;
         break;
       case '--seed':
-        options.seed = positiveInt(flag, argv[++i], true);
+        options.seed = positiveInt(flag, argv[++i], true, MAX_SEED);
         break;
       case '--min-sample':
         options.minSample = positiveInt(flag, argv[++i]);
@@ -42,7 +55,7 @@ export function parseArgs(argv: readonly string[]): CliOptions {
         throw new Error(`opção desconhecida: ${flag}\n${USAGE}`);
     }
   }
-  if (!sawGames) throw new Error(`--games é obrigatório\n${USAGE}`);
+  if (!seen.has('--games')) throw new Error(`--games é obrigatório\n${USAGE}`);
   return options;
 }
 
@@ -56,6 +69,10 @@ export function main(
   err: (line: string) => void = console.error,
   simulate: typeof runSim = runSim,
 ): number {
+  if (argv.includes('--help') || argv.includes('-h')) {
+    out(USAGE);
+    return 0;
+  }
   let options: CliOptions;
   try {
     options = parseArgs(argv);
