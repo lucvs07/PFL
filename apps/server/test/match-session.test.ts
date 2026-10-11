@@ -131,6 +131,48 @@ describe('ações inválidas', () => {
   });
 });
 
+describe('a sessão se protege sozinha', () => {
+  it('antes do start: handle responde NOT_READY e sendCurrent não envia nada', () => {
+    const { session, rec } = setup();
+    vi.advanceTimersByTime(60_000);
+    session.handle('A', { kind: 'formation', turnId: session.state.turnId, formation: 'PISTOL' });
+    expect(rec.last('A', 'error')!.code).toBe('NOT_READY');
+    expect(rec.events('B')).toEqual([]);
+    expect(session.actions).toEqual([]);
+    rec.clear();
+    session.sendCurrent('A');
+    expect(rec.sent).toEqual([]);
+  });
+
+  it('pausada: handle responde NOT_READY (Partida pausada) sem chamar o motor', () => {
+    const { session, rec } = setup();
+    session.start();
+    session.pause();
+    rec.clear();
+    session.handle('A', { kind: 'formation', turnId: session.state.turnId, formation: 'PISTOL' });
+    expect(rec.last('A', 'error')).toEqual({ code: 'NOT_READY', message: 'Partida pausada' });
+    expect(rec.events('A')).toEqual(['error']);
+    expect(session.actions).toEqual([]);
+  });
+
+  it('depois de dispose: nada é enviado nem muda, e start/resume/refreshAbsence são no-op', () => {
+    const { session, rec } = setup();
+    session.start();
+    session.dispose();
+    rec.clear();
+    const before = structuredClone(session.state);
+    session.handle('A', { kind: 'formation', turnId: session.state.turnId, formation: 'PISTOL' });
+    session.start();
+    session.resume();
+    session.refreshAbsence();
+    vi.advanceTimersByTime(60_000);
+    expect(rec.sent).toEqual([]);
+    expect(session.actions).toEqual([]);
+    expect(session.state).toEqual(before);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+});
+
 describe('timers e padrões de timeout', () => {
   it('o servidor aplica TIMEOUT quando o deadline expira', () => {
     const { session, rec } = setup();
@@ -184,7 +226,26 @@ describe('timers e padrões de timeout', () => {
     vi.advanceTimersByTime(1000);
     absent.add('A');
     session.refreshAbsence();
+    expect(rec.last('A', 'match:phase')!.deadline).toBe(T0 + 1000);
     expect(rec.last('B', 'match:phase')!.deadline).toBe(T0 + 1000);
+    vi.advanceTimersByTime(1);
+    expect(rec.all('B', 'match:reveal')).toHaveLength(1);
+  });
+
+  it('quando o ausente volta, o deadline volta ao cheio e os dois são avisados', () => {
+    const { session, rec, absent } = setup();
+    session.start();
+    vi.advanceTimersByTime(1000);
+    absent.add('A');
+    session.refreshAbsence();
+    expect(rec.last('A', 'match:phase')!.deadline).toBe(T0 + 1000);
+    rec.clear();
+    absent.delete('A');
+    session.refreshAbsence();
+    for (const k of KEYS) expect(rec.last(k, 'match:phase')!.deadline).toBe(T0 + 5000);
+    expect(session.deadline).toBe(T0 + 5000);
+    vi.advanceTimersByTime(3999);
+    expect(rec.all('B', 'match:reveal')).toHaveLength(0);
     vi.advanceTimersByTime(1);
     expect(rec.all('B', 'match:reveal')).toHaveLength(1);
   });

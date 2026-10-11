@@ -40,6 +40,8 @@ export class MatchSession {
   private cancelTimer: (() => void) | null = null;
   private pausedOffsets: { start: number; full: number } | null = null;
   private endMessage: EndMessage | null = null;
+  private started = false;
+  private disposed = false;
 
   constructor(teams: Record<TeamKey, Team>, readonly seed: number, private readonly deps: SessionDeps) {
     this.teams = structuredClone(teams);
@@ -68,11 +70,15 @@ export class MatchSession {
   }
 
   start(): void {
+    if (this.disposed || this.started) return;
+    this.started = true;
     this.enterPhase(0);
   }
 
   handle(key: TeamKey, req: PlayRequest): void {
-    if (this.pausedOffsets) return;
+    if (this.disposed) return;
+    if (!this.started) return this.error(key, 'NOT_READY', 'A partida ainda não começou');
+    if (this.pausedOffsets) return this.error(key, 'NOT_READY', 'Partida pausada');
     this.expireIfDue();
     if (req.turnId !== this.current.turnId) {
       this.error(key, 'STALE_TURN', `turnId ${req.turnId} não é o turno atual (${this.current.turnId})`);
@@ -83,6 +89,7 @@ export class MatchSession {
   }
 
   sendCurrent(key: TeamKey): void {
+    if (this.disposed || !this.started) return;
     if (this.endMessage) {
       this.deps.send(key, { event: 'match:end', payload: this.endMessage });
       return;
@@ -105,7 +112,7 @@ export class MatchSession {
   }
 
   resume(): void {
-    if (!this.pausedOffsets) return;
+    if (this.disposed || !this.pausedOffsets) return;
     const now = this.deps.scheduler.now();
     this.phaseStartsAt = now + this.pausedOffsets.start;
     this.fullDeadline = now + this.pausedOffsets.full;
@@ -115,17 +122,19 @@ export class MatchSession {
   }
 
   refreshAbsence(): void {
-    if (this.endMessage || this.pausedOffsets) return;
+    if (this.disposed || !this.started || this.endMessage || this.pausedOffsets) return;
     const before = this.deadlineAt;
     this.armTimer();
     if (this.deadlineAt !== before) for (const k of KEYS) this.sendCurrent(k);
   }
 
   dispose(): void {
+    this.disposed = true;
     this.clearTimer();
   }
 
-  private apply(action: Action, from: TeamKey | null): void {
+  /** false se o motor recusou a ação (o estado não muda). */
+  private apply(action: Action, from: TeamKey | null): boolean {
     const prev = this.current;
     let result: StepResult;
     try {
@@ -133,13 +142,14 @@ export class MatchSession {
     } catch (err) {
       if (!(err instanceof EngineError)) console.error('[pfl] erro inesperado do motor', err);
       if (from) this.error(from, 'ENGINE_ERROR', err instanceof EngineError ? err.message : 'Ação inválida');
-      return;
+      return false;
     }
     this.current = result.state;
     if (action.type === 'SET_DEPTH') this.dropSupersededDepth(action.team);
     this.log.push(action);
     this.history.push(...result.events);
     this.dispatch(prev, action, result.events, from);
+    return true;
   }
 
   /**
@@ -235,9 +245,10 @@ export class MatchSession {
   }
 
   private onDeadline(seq: number): void {
-    if (seq !== this.phaseSeq || this.endMessage || this.pausedOffsets) return;
-    this.cancelTimer = null;
-    this.apply({ type: 'TIMEOUT' }, null);
+    if (this.disposed || seq !== this.phaseSeq || this.endMessage || this.pausedOffsets) return;
+    this.clearTimer();
+    // se o motor recusar o TIMEOUT, rearma para a sessão não ficar sem timer
+    if (!this.apply({ type: 'TIMEOUT' }, null)) this.armTimer();
   }
 
   /** Corrida entre a ação e o timer: se o deadline já passou, o padrão vale primeiro. */

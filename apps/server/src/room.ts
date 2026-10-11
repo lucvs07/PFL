@@ -171,6 +171,7 @@ export class Room {
   play(key: TeamKey, req: PlayRequest): void {
     if (this.closed || !this.seats[key]) return;
     if (!this.matchSession) return this.error(key, 'NOT_READY', 'A partida ainda não começou');
+    if (this.roomStatus === 'FINISHED') return this.error(key, 'NOT_READY', 'A partida já terminou');
     this.matchSession.handle(key, req);
   }
 

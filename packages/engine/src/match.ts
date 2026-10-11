@@ -156,7 +156,7 @@ function onSetDepth(s: MatchState, action: Extract<Action, { type: 'SET_DEPTH' }
   const candidate = { ...rt.team, depth: action.depth, keepOnField: action.keepOnField };
   const errors = validateTeam(candidate);
   if (errors.length) throw new EngineError('INVALID_DEPTH', errors.map((e) => e.code).join(', '));
-  rt.team = structuredClone(candidate);
+  rt.team = deepFreeze(structuredClone(candidate));
 }
 
 export function playableCards(s: MatchState, team: TeamKey): string[] {

@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { io as connectClient, type Socket } from 'socket.io-client';
 import { replay } from '@pfl/engine';
 import {
@@ -210,6 +210,31 @@ describe('servidor Socket.io (integração)', () => {
     expect(reveal.payload.events[0]).toMatchObject({ t: 'FORMATION', formation: 'HEAVY' });
   });
 
+  it('ack de room:create sempre responde, mesmo se o handler lançar', async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      server = await createPflServer({
+        port: 0,
+        random: () => {
+          throw new Error('x');
+        },
+      });
+      const a = client();
+      const res = await a.timeout(2000).emitWithAck('room:create');
+      expect(res).toMatchObject({ ok: false, error: { code: 'ENGINE_ERROR' } });
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
+  it('socket de uma sala fechada recebe NOT_IN_ROOM no resync', async () => {
+    const { a, logA, code } = await lobby({ phaseMs: { FORMATION: 10_000 } });
+    server!.rooms.get(code)!.close();
+    a.emit('match:resync');
+    const err = await waitFor(() => lastOf(logA, 'error'));
+    expect(err.payload.code).toBe('NOT_IN_ROOM');
+  });
+
   it('segunda conexão com o mesmo token derruba a primeira', async () => {
     const { a, code, tokenA, logB } = await lobby({ phaseMs: { FORMATION: 10_000 } });
     let kicked = false;
@@ -220,10 +245,11 @@ describe('servidor Socket.io (integração)', () => {
     const res = await a2.emitWithAck('room:join', { code, token: tokenA });
     expect(res.ok).toBe(true);
     await waitFor(() => (kicked ? true : undefined));
-    await new Promise((r) => setTimeout(r, 50));
-    const state = lastOf(logB, 'room:state')!.payload as RoomState;
+    const state = await waitFor(() => {
+      const m = lastOf(logB, 'room:state')?.payload as RoomState | undefined;
+      return m && m.status === 'IN_MATCH' && m.players.every((p) => p.connected) ? m : undefined;
+    });
     expect(state.status).toBe('IN_MATCH');
-    expect(state.players.every((p) => p.connected)).toBe(true);
   });
 
   it('terceiro cliente, código inexistente e token de outra sala', async () => {

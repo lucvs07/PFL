@@ -46,4 +46,18 @@ describe('realScheduler', () => {
     vi.advanceTimersByTime(1000);
     expect(fn).not.toHaveBeenCalled();
   });
+
+  it('uma exceção no callback é logada e não propaga', () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      realScheduler.schedule(10, () => {
+        throw new Error('boom');
+      });
+      expect(() => vi.advanceTimersByTime(10)).not.toThrow();
+      expect(spy).toHaveBeenCalledOnce();
+      expect(spy.mock.calls[0][0]).toBe('[pfl] erro em timer');
+    } finally {
+      spy.mockRestore();
+    }
+  });
 });

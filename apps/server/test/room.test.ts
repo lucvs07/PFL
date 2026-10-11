@@ -177,6 +177,21 @@ describe('lobby', () => {
     expect(rec.last('B', 'error')!.code).toBe('NOT_READY');
   });
 
+  it('token de outra sala num lobby com vaga livre recebe uma vaga nova com token novo', () => {
+    const { room } = makeRoom();
+    expect(room.claimSeat('token-de-outra-sala')).toEqual({ key: 'A', token: 'tok-1' });
+  });
+
+  it('partida encerrada: play responde NOT_READY em vez de encaminhar à sessão', () => {
+    const { room, rec } = started({ resultAnimationMs: 0 });
+    for (let i = 0; i < 10_000 && room.status === 'IN_MATCH'; i++) vi.advanceTimersToNextTimer();
+    expect(room.status).toBe('FINISHED');
+    rec.clear();
+    room.play('A', { kind: 'formation', turnId: 1, formation: 'PISTOL' });
+    expect(rec.events('A')).toEqual(['error']);
+    expect(rec.last('A', 'error')).toEqual({ code: 'NOT_READY', message: 'A partida já terminou' });
+  });
+
   it('play encaminha para a partida', () => {
     const { room, rec } = started();
     room.play('A', { kind: 'formation', turnId: room.session!.state.turnId, formation: 'SPREAD' });
@@ -254,6 +269,22 @@ describe('desconexão e reconexão', () => {
     expect(rec.all('A', 'match:reveal').map((r) => r.events[0]?.t)).toEqual(['FORMATION', 'PACKAGE']);
   });
 
+  it('tolerância parcialmente gasta antes da pausa: só o restante vale depois da retomada', () => {
+    const { room, rec } = started({ reconnectGraceMs: 1000 });
+    room.disconnect('A', 'conn-a');
+    vi.advanceTimersByTime(400);
+    room.disconnect('B', 'conn-b');
+    expect(room.status).toBe('PAUSED');
+    vi.advanceTimersByTime(100_000);
+    const resumedAt = T0 + 400 + 100_000;
+    room.connect('B', 'conn-b2');
+    expect(rec.last('B', 'match:phase')!.deadline).toBe(resumedAt + 4600);
+    vi.advanceTimersByTime(599);
+    expect(rec.last('B', 'match:phase')!.deadline).toBe(resumedAt + 4600); // A ainda dentro da tolerância
+    vi.advanceTimersByTime(1);
+    expect(rec.last('B', 'match:phase')!.deadline).toBe(resumedAt + 600); // 600 ms depois da retomada, não 1000
+  });
+
   it('resync reenvia room:state e a etapa atual', () => {
     const { room, rec } = started();
     rec.clear();
@@ -293,6 +324,14 @@ describe('salas abandonadas', () => {
     room.disconnect('B', 'conn-b');
     vi.advanceTimersByTime(300_000);
     expect(closedCount()).toBe(1);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('close() em partida com tolerância ativa não deixa timers para trás', () => {
+    const { room } = started();
+    room.disconnect('A', 'conn-a');
+    expect(vi.getTimerCount()).toBeGreaterThan(0);
+    room.close();
     expect(vi.getTimerCount()).toBe(0);
   });
 

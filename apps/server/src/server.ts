@@ -94,6 +94,23 @@ export async function createPflServer(options: PflServerOptions = {}): Promise<P
           fail('ENGINE_ERROR', 'Erro interno');
         }
       };
+    /** Como guard, mas o ack sempre é respondido: se o handler lançar antes de responder, devolve ENGINE_ERROR. */
+    const guardAck =
+      <A extends unknown[]>(fn: (answered: { done: boolean }, ...args: A) => void, ackOf: (args: A) => unknown) =>
+      (...args: A): void => {
+        const answered = { done: false };
+        try {
+          fn(answered, ...args);
+        } catch (err) {
+          console.error('[pfl] erro no handler', err);
+          fail('ENGINE_ERROR', 'Erro interno');
+          const ack = ackOf(args);
+          if (typeof ack === 'function' && !answered.done) {
+            answered.done = true;
+            (ack as SeatAck)({ ok: false, error: { code: 'ENGINE_ERROR', message: 'Erro interno' } });
+          }
+        }
+      };
     const current = (): { room: Room; key: TeamKey } | null => {
       const room = socket.data.code ? rooms.get(socket.data.code) : undefined;
       return room && socket.data.key ? { room, key: socket.data.key } : null;
@@ -110,6 +127,7 @@ export async function createPflServer(options: PflServerOptions = {}): Promise<P
       socket.data.key = null;
     };
     const bind = (room: Room, key: TeamKey): void => {
+      if (room.isClosed) return;
       socket.data.code = room.code;
       socket.data.key = key;
       const previous = room.connect(key, socket.id);
@@ -125,20 +143,24 @@ export async function createPflServer(options: PflServerOptions = {}): Promise<P
 
     socket.on(
       'room:create',
-      guard((ack: unknown) => {
+      guardAck((answered, ack: unknown) => {
         if (typeof ack !== 'function') return;
         leave();
         const { room, key, token } = rooms.create();
+        answered.done = true;
         (ack as SeatAck)({ ok: true, data: { code: room.code, you: key, token } });
         bind(room, key);
-      }),
+      }, ([ack]) => ack),
     );
 
     socket.on(
       'room:join',
-      guard((payload: unknown, ack: unknown) => {
+      guardAck((answered, payload: unknown, ack: unknown) => {
         if (typeof ack !== 'function') return;
-        const reply = ack as SeatAck;
+        const reply = ((res) => {
+          answered.done = true;
+          (ack as SeatAck)(res);
+        }) as SeatAck;
         const here = current();
         if (here && normalizeRoomCode(field(payload, 'code')) === here.room.code) {
           // já está nesta sala: devolve a própria vaga em vez de ocupar a outra
@@ -155,7 +177,7 @@ export async function createPflServer(options: PflServerOptions = {}): Promise<P
         leave();
         reply({ ok: true, data: { code: result.room.code, you: result.key, token: result.token } });
         bind(result.room, result.key);
-      }),
+      }, ([, ack]) => ack),
     );
 
     socket.on(

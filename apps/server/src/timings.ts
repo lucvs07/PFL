@@ -48,7 +48,14 @@ export interface Scheduler {
 export const realScheduler: Scheduler = {
   now: () => Date.now(),
   schedule: (ms, fn) => {
-    const handle = setTimeout(fn, ms);
+    // um callback que lança não pode derrubar o processo
+    const handle = setTimeout(() => {
+      try {
+        fn();
+      } catch (err) {
+        console.error('[pfl] erro em timer', err);
+      }
+    }, ms);
     return () => clearTimeout(handle);
   },
 };

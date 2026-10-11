@@ -138,6 +138,22 @@ describe('SET_DEPTH', () => {
     const direct = run(start(), ...actions);
     expect(replay(A, B, 1, actions).state).toEqual(direct.state);
   });
+
+  it('o time editado fica congelado no estado e isolado da ação original', () => {
+    const depth = qbSwap();
+    const { state } = run(start(), setDepth('A', depth));
+    expect(Object.isFrozen(state.teams.A.team)).toBe(true);
+    expect(Object.isFrozen(state.teams.A.team.depth)).toBe(true);
+    expect(Object.isFrozen(state.teams.A.team.depth.QB)).toBe(true);
+    depth.QB!.push(99);
+    expect(state.teams.A.team.depth.QB).toEqual([54, 63]);
+  });
+
+  it('time desconhecido: WRONG_TEAM', () => {
+    expect(() =>
+      step(start(), { type: 'SET_DEPTH', team: 'C' as TeamKey, depth: A.depth, keepOnField: [] }),
+    ).toThrow(/WRONG_TEAM/);
+  });
 });
 
 describe('playerView.canEditDepth', () => {

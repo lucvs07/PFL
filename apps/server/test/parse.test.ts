@@ -34,6 +34,12 @@ describe('parsePlay', () => {
     for (const [event, payload] of cases) expect(parsePlay(event, payload)).toBeNull();
   });
 
+  it('team:depth com chave __proto__ ou constructor vinda de JSON é rejeitado', () => {
+    for (const raw of ['{"__proto__":[1]}', '{"constructor":[1]}']) {
+      expect(parsePlay('team:depth', { turnId: 3, depth: JSON.parse(raw), keepOnField: [] })).toBeNull();
+    }
+  });
+
   it('limita o tamanho e as chaves do payload de team:depth', () => {
     const big = Array.from({ length: 17 }, (_, i) => i);
     const cases: unknown[] = [
