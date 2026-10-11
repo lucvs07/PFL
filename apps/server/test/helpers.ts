@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, expect, vi, type MockInstance } from 'vitest';
 import type { TeamKey } from '@pfl/engine';
 import type { Outgoing } from '../src/outgoing';
 
@@ -25,4 +26,21 @@ export function recorder() {
       sent.length = 0;
     },
   };
+}
+
+/**
+ * Falha o teste se console.error for chamado sem querer (o realScheduler engole erros de timer
+ * e só os loga). Testes que esperam console.error devem fazer o próprio vi.spyOn dentro do teste.
+ */
+export function failOnConsoleError(): void {
+  let spy: MockInstance<typeof console.error> | null = null;
+  beforeEach(() => {
+    spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+  });
+  afterEach(() => {
+    const calls = spy?.mock.calls ?? [];
+    spy?.mockRestore();
+    spy = null;
+    expect(calls, 'console.error inesperado (erro em timer ou handler?)').toEqual([]);
+  });
 }

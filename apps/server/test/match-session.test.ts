@@ -4,7 +4,7 @@ import { computeStats, type EndMessage } from '@pfl/protocol';
 import { MatchSession } from '../src/match-session';
 import { realScheduler, resolveTimings, type TimingsInput } from '../src/timings';
 import { electricTeam } from './fixtures';
-import { recorder } from './helpers';
+import { failOnConsoleError, recorder } from './helpers';
 
 const T0 = 1_000_000;
 const KEYS = ['A', 'B'] as const;
@@ -25,6 +25,8 @@ function setup(opts: { absent?: TeamKey[]; timings?: TimingsInput } = {}) {
   });
   return { session, rec, absent, ends };
 }
+
+failOnConsoleError();
 
 beforeEach(() => {
   vi.useFakeTimers();

@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
+import { failOnConsoleError } from './helpers';
 import { RoomManager } from '../src/rooms';
 import { realScheduler, resolveTimings } from '../src/timings';
+
+failOnConsoleError();
 
 const manager = () => {
   let n = 0;

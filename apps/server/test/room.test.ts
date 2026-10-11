@@ -3,7 +3,7 @@ import { encodeTeam } from '@pfl/protocol';
 import { Room } from '../src/room';
 import { realScheduler, resolveTimings, type TimingsInput } from '../src/timings';
 import { electricTeam } from './fixtures';
-import { recorder } from './helpers';
+import { failOnConsoleError, recorder } from './helpers';
 
 const T0 = 1_000_000;
 
@@ -37,6 +37,8 @@ function started(timings?: TimingsInput) {
   h.room.setReady('B', true);
   return { ...h, tokenA: a.token, tokenB: b.token };
 }
+
+failOnConsoleError();
 
 beforeEach(() => {
   vi.useFakeTimers();
