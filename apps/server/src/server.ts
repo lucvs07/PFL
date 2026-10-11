@@ -120,9 +120,11 @@ export async function createPflServer(options: PflServerOptions = {}): Promise<P
       if (!b) fail('NOT_IN_ROOM', 'Entre numa sala primeiro');
       return b;
     };
-    const leave = (): void => {
+    /** `voluntary`: o socket foi para outra sala (uma sala de lobby que fica vazia fecha na hora). */
+    const leave = (voluntary = false): void => {
       const b = current();
-      if (b) b.room.disconnect(b.key, socket.id);
+      if (b && voluntary) b.room.leave(b.key, socket.id);
+      else if (b) b.room.disconnect(b.key, socket.id);
       socket.data.code = null;
       socket.data.key = null;
     };
@@ -145,9 +147,14 @@ export async function createPflServer(options: PflServerOptions = {}): Promise<P
       'room:create',
       guardAck((answered, ack: unknown) => {
         if (typeof ack !== 'function') return;
-        leave();
-        const { room, key, token } = rooms.create();
+        leave(true);
+        const created = rooms.create();
         answered.done = true;
+        if (!created) {
+          (ack as SeatAck)({ ok: false, error: { code: 'SERVER_BUSY', message: 'Servidor cheio, tente mais tarde' } });
+          return;
+        }
+        const { room, key, token } = created;
         (ack as SeatAck)({ ok: true, data: { code: room.code, you: key, token } });
         bind(room, key);
       }, ([ack]) => ack),
@@ -174,7 +181,7 @@ export async function createPflServer(options: PflServerOptions = {}): Promise<P
           reply({ ok: false, error: { code: result.code, message } });
           return;
         }
-        leave();
+        leave(true);
         reply({ ok: true, data: { code: result.room.code, you: result.key, token: result.token } });
         bind(result.room, result.key);
       }, ([, ack]) => ack),

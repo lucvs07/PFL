@@ -78,7 +78,9 @@ export type ErrorCode =
   | 'TEAM_INVALID'
   | 'NOT_READY'
   | 'STALE_TURN'
-  | 'ENGINE_ERROR';
+  | 'ENGINE_ERROR'
+  /** teto de salas abertas atingido; tente de novo mais tarde */
+  | 'SERVER_BUSY';
 export interface ErrorMessage {
   code: ErrorCode;
   message: string;

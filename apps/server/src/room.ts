@@ -1,4 +1,6 @@
-import { validateTeam, type Team, type TeamError, type TeamKey } from '@pfl/engine';
+import {
+  DEFENSE_SLOTS, OFFENSE_SLOTS, validateTeam, type SlotId, type Team, type TeamError, type TeamKey,
+} from '@pfl/engine';
 import { decodeTeam, type ErrorCode, type RoomState, type RoomStatus } from '@pfl/protocol';
 import { MatchSession } from './match-session';
 import type { Outgoing, Send } from './outgoing';
@@ -8,6 +10,25 @@ import type { Scheduler, Timings } from './timings';
 const KEYS: readonly TeamKey[] = ['A', 'B'];
 const TEAM_NAME_MAX = 40;
 const SEED_RANGE = 0x7fffffff;
+const SLOTS: readonly SlotId[] = [...OFFENSE_SLOTS, ...DEFENSE_SLOTS];
+
+/** Só os campos do contrato, com o nome cortado: nada além disso vai para a partida nem para o replay. */
+function normalizeTeam(team: Team): Team {
+  const depth: Team['depth'] = {};
+  for (const slot of SLOTS) {
+    const ids = team.depth[slot];
+    if (ids) depth[slot] = [...ids];
+  }
+  return {
+    name: team.name.slice(0, TEAM_NAME_MAX),
+    roster: [...team.roster],
+    specialist: team.specialist,
+    depth,
+    keepOnField: [...team.keepOnField],
+    offenseDeck: [...team.offenseDeck],
+    defenseDeck: [...team.defenseDeck],
+  };
+}
 
 interface Seat {
   key: TeamKey;
@@ -97,6 +118,10 @@ export class Room {
     seat.connId = connId;
     seat.absent = false;
     this.clearGrace(seat);
+    if (this.roomStatus === 'WAITING') {
+      // a vaga de quem saiu enquanto a sala estava vazia volta a contar a tolerância
+      for (const s of this.seatList()) if (s.connId === null && !s.cancelGrace) this.startGrace(s, this.deps.timings.reconnectGraceMs);
+    }
     if (this.roomStatus !== 'FINISHED') this.clearCloseTimer();
     const wasPaused = this.roomStatus === 'PAUSED';
     if (wasPaused) this.roomStatus = 'IN_MATCH';
@@ -104,8 +129,7 @@ export class Room {
     if (wasPaused) {
       this.resumeGraces();
       this.matchSession?.resume();
-    } else if (this.matchSession) {
-      this.matchSession.refreshAbsence();
+    } else if (this.matchSession && !this.matchSession.refreshAbsence()) {
       this.matchSession.sendCurrent(key);
     }
     this.tryStart();
@@ -127,10 +151,18 @@ export class Room {
       } else {
         this.startGrace(seat, this.deps.timings.reconnectGraceMs);
       }
-    } else if (this.roomStatus === 'WAITING' && nobody) {
-      this.scheduleClose();
+    } else if (this.roomStatus === 'WAITING') {
+      // no lobby, a vaga de quem não volta dentro da tolerância é liberada para outro jogador
+      this.startGrace(seat, this.deps.timings.reconnectGraceMs);
+      if (nobody) this.scheduleClose();
     }
     this.broadcastState();
+  }
+
+  /** Saída voluntária (o socket foi criar ou entrar em outra sala): sala de lobby sem ninguém fecha na hora. */
+  leave(key: TeamKey, connId: string): void {
+    this.disconnect(key, connId);
+    if (!this.closed && this.roomStatus === 'WAITING' && this.seatList().every((s) => s.connId === null)) this.close();
   }
 
   submitTeam(key: TeamKey, teamCode: unknown): void {
@@ -150,7 +182,7 @@ export class Room {
         typeof decoded === 'object' && typeof (decoded as Record<string, unknown>).name === 'string'
           ? ((decoded as Record<string, unknown>).name as string).slice(0, TEAM_NAME_MAX)
           : null;
-      seat.team = errors.length === 0 ? (decoded as Team) : null;
+      seat.team = errors.length === 0 ? normalizeTeam(decoded as Team) : null;
       seat.teamName = name;
       seat.teamErrors = errors;
     }
@@ -260,6 +292,15 @@ export class Room {
     seat.cancelGrace = this.deps.scheduler.schedule(ms, () => {
       seat.cancelGrace = null;
       seat.graceEndsAt = null;
+      if (this.roomStatus === 'WAITING') {
+        // só libera a vaga se alguém está esperando o adversário; a sala vazia já tem o timer de fechamento
+        const someoneWaiting = this.seatList().some((s) => s.connId !== null);
+        if (this.seats[seat.key] === seat && seat.connId === null && someoneWaiting) {
+          delete this.seats[seat.key];
+          this.broadcastState();
+        }
+        return;
+      }
       seat.absent = true;
       this.matchSession?.refreshAbsence();
     });

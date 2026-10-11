@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { actingTeams } from '@pfl/engine';
 import { encodeTeam } from '@pfl/protocol';
 import { Room } from '../src/room';
 import { realScheduler, resolveTimings, type TimingsInput } from '../src/timings';
@@ -352,5 +353,105 @@ describe('salas abandonadas', () => {
     vi.advanceTimersByTime(300_000);
     expect(closedCount()).toBe(1);
     expect(vi.getTimerCount()).toBe(0);
+  });
+});
+
+describe('ajustes da revisão do Plano 3', () => {
+  it('no lobby, a vaga de quem não volta em 60 s é liberada enquanto o outro espera', () => {
+    const { room, rec } = makeRoom();
+    room.claimSeat();
+    room.claimSeat();
+    room.connect('A', 'conn-a');
+    room.connect('B', 'conn-b');
+    room.disconnect('B', 'conn-b');
+    expect(room.claimSeat()).toBeNull();
+    vi.advanceTimersByTime(60_000);
+    expect(rec.last('A', 'room:state')!.players.map((p) => p.key)).toEqual(['A']);
+    expect(room.claimSeat()).toEqual({ key: 'B', token: 'tok-3' });
+    room.close();
+  });
+
+  it('no lobby, quem volta dentro da tolerância mantém a vaga', () => {
+    const { room } = makeRoom();
+    room.claimSeat();
+    const b = room.claimSeat()!;
+    room.connect('A', 'conn-a');
+    room.connect('B', 'conn-b');
+    room.disconnect('B', 'conn-b');
+    vi.advanceTimersByTime(59_000);
+    room.connect('B', 'conn-b2');
+    vi.advanceTimersByTime(60_000);
+    expect(room.claimSeat(b.token)).toEqual({ key: 'B', token: b.token });
+    room.close();
+  });
+
+  it('sala vazia: quem volta reativa a tolerância da vaga do outro', () => {
+    const { room } = makeRoom();
+    room.claimSeat();
+    room.claimSeat();
+    room.connect('A', 'conn-a');
+    room.connect('B', 'conn-b');
+    room.disconnect('B', 'conn-b');
+    room.disconnect('A', 'conn-a');
+    vi.advanceTimersByTime(100_000); // a tolerância de B venceu com a sala vazia: a vaga fica
+    room.connect('A', 'conn-a2');
+    expect(room.claimSeat()).toBeNull();
+    vi.advanceTimersByTime(60_000);
+    expect(room.claimSeat()).toEqual({ key: 'B', token: 'tok-3' });
+    room.close();
+  });
+
+  it('o time guardado tem só os campos do contrato e o nome cortado em 40', () => {
+    const { room } = makeRoom();
+    room.claimSeat();
+    room.claimSeat();
+    room.connect('A', 'conn-a');
+    room.connect('B', 'conn-b');
+    const raw = { ...electricTeam('x'.repeat(500)), junk: 'y'.repeat(1000), depth: { ...electricTeam().depth } };
+    room.submitTeam('A', encodeTeam(raw));
+    room.submitTeam('B', encodeTeam(electricTeam('Trovão')));
+    room.setReady('A', true);
+    room.setReady('B', true);
+    const team = room.session!.state.teams.A.team;
+    expect(team.name).toHaveLength(40);
+    expect(Object.keys(team).sort()).toEqual(
+      ['defenseDeck', 'depth', 'keepOnField', 'name', 'offenseDeck', 'roster', 'specialist'],
+    );
+    room.close();
+  });
+
+  it('leave(): sala de lobby que fica vazia fecha na hora', () => {
+    const { room, closedCount } = makeRoom();
+    room.claimSeat();
+    room.connect('A', 'conn-a');
+    room.leave('A', 'conn-a');
+    expect(closedCount()).toBe(1);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('leave(): com o outro jogador conectado a sala continua aberta', () => {
+    const { room, closedCount } = makeRoom();
+    room.claimSeat();
+    room.claimSeat();
+    room.connect('A', 'conn-a');
+    room.connect('B', 'conn-b');
+    room.leave('A', 'conn-a');
+    expect(closedCount()).toBe(0);
+    room.close();
+  });
+
+  it('reconexão de quem estava ausente: um único match:phase para quem voltou', () => {
+    const { room, rec } = started();
+    room.disconnect('A', 'conn-a');
+    vi.advanceTimersByTime(60_000); // A fica ausente
+    // avança até só A precisar agir (na folga de animação): a volta muda o deadline
+    const onlyA = (): boolean => actingTeams(room.session!.state).join() === 'A';
+    for (let i = 0; i < 10_000 && !onlyA(); i++) vi.advanceTimersByTime(100);
+    expect(onlyA()).toBe(true);
+    rec.clear();
+    room.connect('A', 'conn-a2');
+    expect(rec.all('A', 'match:phase')).toHaveLength(1);
+    expect(rec.all('B', 'match:phase')).toHaveLength(1);
+    room.close();
   });
 });

@@ -19,7 +19,7 @@ const manager = () => {
 describe('RoomManager', () => {
   it('cria salas com código de 6 letras sem I/O; o criador fica com a vaga A', () => {
     const m = manager();
-    const { room, key, token } = m.create();
+    const { room, key, token } = m.create()!;
     expect(room.code).toMatch(/^[A-HJ-NP-Z]{6}$/);
     expect(key).toBe('A');
     expect(token).toBe('tok-1');
@@ -30,7 +30,7 @@ describe('RoomManager', () => {
 
   it('entra pelo código sem diferenciar maiúsculas; a segunda vaga é B', () => {
     const m = manager();
-    const { room } = m.create();
+    const { room } = m.create()!;
     const joined = m.join(` ${room.code.toLowerCase()} `);
     expect(joined).toMatchObject({ ok: true, key: 'B' });
     m.closeAll();
@@ -38,7 +38,7 @@ describe('RoomManager', () => {
 
   it('ROOM_NOT_FOUND para código inexistente ou malformado; ROOM_FULL para o terceiro', () => {
     const m = manager();
-    const { room } = m.create();
+    const { room } = m.create()!;
     m.join(room.code);
     const missing = room.code === 'ZZZZZZ' ? 'YYYYYY' : 'ZZZZZZ';
     expect(m.join(missing)).toEqual({ ok: false, code: 'ROOM_NOT_FOUND' });
@@ -49,9 +49,9 @@ describe('RoomManager', () => {
 
   it('token de outra sala não dá vaga numa sala cheia', () => {
     const m = manager();
-    const first = m.create();
+    const first = m.create()!;
     m.join(first.room.code);
-    const other = m.create();
+    const other = m.create()!;
     expect(m.join(first.room.code, other.token)).toEqual({ ok: false, code: 'ROOM_FULL' });
     m.closeAll();
   });
@@ -67,10 +67,28 @@ describe('RoomManager', () => {
       send: () => {},
       onRoomClosed: (code) => closed.push(code),
     });
-    const { room } = m.create();
+    const { room } = m.create()!;
     room.close();
     expect(m.get(room.code)).toBeUndefined();
     expect(m.join(room.code)).toEqual({ ok: false, code: 'ROOM_NOT_FOUND' });
     expect(closed).toEqual([room.code]);
+  });
+});
+
+describe('teto de salas', () => {
+  it('create devolve null quando o teto é atingido e volta a criar quando uma sala fecha', () => {
+    const m = new RoomManager({
+      scheduler: realScheduler,
+      timings: resolveTimings(),
+      random: Math.random,
+      newToken: () => 'tok',
+      send: () => {},
+      maxRooms: 1,
+    });
+    const first = m.create()!;
+    expect(m.create()).toBeNull();
+    first.room.close();
+    expect(m.create()).not.toBeNull();
+    m.closeAll();
   });
 });

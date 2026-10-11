@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Team, TeamKey } from '@pfl/engine';
-import { MatchSession } from '../src/match-session';
+import { MAX_TIMEOUT_RETRIES, MatchSession } from '../src/match-session';
 import { realScheduler, resolveTimings } from '../src/timings';
 import { electricTeam } from './fixtures';
 import { recorder } from './helpers';
@@ -58,6 +58,43 @@ describe('rearme do TIMEOUT que falhou', () => {
       expect(vi.getTimerCount()).toBe(1);
       session.dispose();
     } finally {
+      errors.mockRestore();
+    }
+  });
+});
+
+describe('teto de novas tentativas do TIMEOUT', () => {
+  it('cada nova tentativa avisa o deadline novo; passado o teto, encerra a partida e avisa os dois', () => {
+    failures.timeoutLeft = 100;
+    const errors = vi.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      const rec = recorder();
+      let ended = 0;
+      const session = new MatchSession(teams(), 42, {
+        scheduler: realScheduler,
+        timings: resolveTimings(),
+        send: rec.send,
+        isAbsent: () => false,
+        onEnd: () => {
+          ended += 1;
+        },
+      });
+      session.start();
+      vi.advanceTimersByTime(5000); // 1ª falha
+      expect(rec.last('A', 'match:phase')!.deadline).toBe(T0 + 6000);
+      vi.advanceTimersByTime(1000 * (MAX_TIMEOUT_RETRIES - 1));
+      expect(session.finished).toBe(false);
+      vi.advanceTimersByTime(1000); // passou do teto
+      expect(session.finished).toBe(true);
+      expect(ended).toBe(1);
+      for (const k of ['A', 'B'] as const) {
+        expect(rec.last(k, 'error')).toMatchObject({ code: 'ENGINE_ERROR' });
+        expect(rec.last(k, 'match:end')).toBeDefined();
+      }
+      expect(vi.getTimerCount()).toBe(0);
+      session.dispose();
+    } finally {
+      failures.timeoutLeft = 0;
       errors.mockRestore();
     }
   });

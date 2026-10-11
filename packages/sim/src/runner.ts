@@ -1,5 +1,5 @@
-import { SUGGESTED_TEAMS, createMatch, rngNext, step, type GameEvent, type Team, type TeamKey } from '@pfl/engine';
-import { actingTeams, botAction } from './bot';
+import { SUGGESTED_TEAMS, actingTeams, createMatch, rngNext, step, type GameEvent, type Team, type TeamKey } from '@pfl/engine';
+import { botAction } from './bot';
 import { randomTeam } from './random-team';
 
 export const MAX_STEPS_PER_MATCH = 5000;
