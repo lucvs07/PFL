@@ -62,7 +62,7 @@ Toda a lógica de tempo passa por um `Scheduler` injetável (`now`/`schedule`), 
 ## Review Focus
 
 1. **Cliente malicioso ou fora de vez.** Exemplos: ação do time adversário, formação `'constructor'`/`'__proto__'`, `turnId` que não é número, evento de jogo antes de entrar numa sala. Esperado: o servidor responde `error` e nunca cai nem altera o estado. Testes:
-   - Task 1: `Object.hasOwn` no motor, `'constructor'` vira `UNKNOWN_FORMATION`.
+   - Task 1: `Object.hasOwn` no motor (já aplicado no Plano 1), `'constructor'` vira `UNKNOWN_FORMATION`.
    - Task 4: `parsePlay` rejeita payloads malformados.
    - Task 5: `WRONG_TEAM` vira `ENGINE_ERROR` e o log de ações fica intacto.
    - Task 7: integração com payloads maliciosos e `NOT_IN_ROOM`.
@@ -89,7 +89,7 @@ pfl/
     engine/
       src/model.ts                   + ação SET_DEPTH (Task 1)
       src/errors.ts                  + INVALID_DEPTH, DEPTH_LOCKED (Task 1)
-      src/match.ts                   + snapInDrive, onSetDepth, canEditDepth, PlayerView.canEditDepth, Object.hasOwn (Task 1)
+      src/match.ts                   + snapInDrive, onSetDepth, canEditDepth, PlayerView.canEditDepth (Task 1; Object.hasOwn já veio do Plano 1)
       test/depth.test.ts             (Task 1)
     protocol/
       package.json                   @pfl/protocol — main: src/index.ts
@@ -162,7 +162,8 @@ pfl/
   - `PlayerView.canEditDepth: boolean`
   - `EngineErrorCode` ganha `'INVALID_DEPTH' | 'DEPTH_LOCKED'`
   - `canEditDepth(s: MatchState): boolean` (exportada de `match.ts`, portanto de `@pfl/engine`)
-  - Endurecimento: formação/pacote desconhecidos (inclusive `'constructor'`, `'__proto__'`, `'toString'`) lançam `UNKNOWN_FORMATION`/`UNKNOWN_PACKAGE` em vez de `TypeError`.
+  - Endurecimento: formação/pacote desconhecidos (inclusive `'constructor'`, `'__proto__'`, `'toString'`) lançam `UNKNOWN_FORMATION`/`UNKNOWN_PACKAGE` em vez de `TypeError`. **Já feito no Plano 1** (revisão final, `Object.hasOwn`); aqui o teste fica como regressão e passa de imediato.
+  - `EngineErrorCode` já tem `'INVALID_CHOICE'` (Plano 1). Não remova ao editar a union.
 
 - [ ] **Step 1: Escrever o teste (deve falhar)**
 
@@ -347,7 +348,7 @@ Expected: FAIL. Os motivos esperados (o Vitest não checa tipos, então não apa
 - os testes de `snapInDrive` recebem `undefined`, com mensagens como `expected undefined to be 1`;
 - `SET_DEPTH` cai no handler da FORMATION e lança `WRONG_PHASE: SET_DEPTH na fase de FORMATION`;
 - `canEditDepth` vem `undefined`;
-- `'constructor'` lança `TypeError` (`slots is not iterable`) em vez de `EngineError`.
+- O teste de `'constructor'`/`'__proto__'`/`'toString'` **já passa** (o Plano 1 aplicou `Object.hasOwn` na revisão final). Ele fica como regressão; não é um motivo de RED.
 
 - [ ] **Step 3: Adicionar a ação ao modelo**
 
@@ -437,6 +438,8 @@ function onSetDepth(s: MatchState, action: Extract<Action, { type: 'SET_DEPTH' }
   rt.team = structuredClone(candidate);
 }
 ```
+
+> Os passos 5d e 5e já foram aplicados no Plano 1. Confirme com `grep -n "hasOwn" packages/engine/src/match.ts`: se as duas linhas `Object.hasOwn` existirem, pule para 5f.
 
 5d. Em `onFormation`, substituir a linha
 ```ts

@@ -154,4 +154,20 @@ Os autores dos Planos 2–4 levantaram os pontos abaixo. Eles valem como contrat
   - sacks não são creditados a nenhum Pokémon.
 - **Janela de `SET_DEPTH`:** vale só na etapa FORMATION do primeiro snap do drive. O cliente (Plano 4) mantém um rascunho de depth editável a qualquer momento e o **envia automaticamente** assim que `canEditDepth` fica verdadeiro. Assim a janela curta não exige ação humana.
 - **Replay:** `ReplayData` usa `DEFAULT_CONFIG`. `teams` são os times iniciais e os `SET_DEPTH` ficam em `actions`.
+- **Ajustes do Plano 1 após a revisão final** (já no branch `pfl-1-engine`):
+  - `EngineErrorCode` ganha `'INVALID_CHOICE'` (escolha de conversão diferente de `'PAT'`/`'TWO'`). O Plano 3 acrescenta `'INVALID_DEPTH' | 'DEPTH_LOCKED'` sem remover esse.
+  - `UNKNOWN_FORMATION`/`UNKNOWN_PACKAGE` usam `Object.hasOwn`: `'constructor'`, `'__proto__'` e `'toString'` lançam `EngineError`, não `TypeError`.
+  - Turnover (interceptação/fumble) que passa da linha de gol adversária vira touchback: `advanceField` devolve `TURNOVER` com `spot: 75`, e o novo ataque começa na 25. `nextDriveStart` não mudou.
+  - `createMatch` faz `structuredClone` dos dois `Team`: editar o objeto do chamador depois não altera a partida nem o replay.
+  - `CARD` com `team` diferente de `'A'`/`'B'` lança `WRONG_TEAM`.
+  - Punt e FG aplicam a recuperação de fadiga (−1 por jogada fora de campo) aos dois times, sem atores.
+  - `pickLineup` prefere quem não descansa; se todos descansam, escala o menos cansado (empate: ordem do depth chart). Mantém o fallback `fillSlots` simples, que `validateTeam` garante ser viável.
+  - `DRIVE_START.possession` continua contando só as posses de tempo regulamentar. Na prorrogação, o cliente usa `overtimeRound` (o Plano 4 já faz isso).
+  - Snapshot golden do Plano 1 regenerado: placar 14 × 22, 357 ações, `turnId` 94.
+- **Ajustes da revisão do PR do Plano 1** (snapshot golden inalterado):
+  - `nextDriveStart` sempre devolve uma linha entre 1 e 99. FG errado chutado da própria 7 ou de mais perto da própria end zone deixa o adversário na 99 (antes: ≥ 100, TD de graça).
+  - `MAX_FG_DISTANCE = 70` (calibrável no Plano 2): acima disso `fieldGoalProbability` devolve 0. O piso de 5% vale só dentro do alcance.
+  - No TD, a passagem para `CONVERSION` limpa formação, pacote, escalações e cartas: `PlayerView.yourCard` é `null` e `opponentHasChosen` é `false` na conversão.
+  - `fillSlots(slots, depth, preferred?, fallback?)`: se a escolha gulosa falhar, tenta a ordem simples do depth chart e depois um emparelhamento completo. `validateTeam` só acusa `FORMATION_UNFILLABLE`/`PACKAGE_UNFILLABLE` quando não existe escalação. `pickLineup` usa `fillSlots` com `fallback` = o menos cansado.
+  - O `Team` dentro do `MatchState` é congelado (`Object.freeze` profundo) e compartilhado entre os estados de `step`; o resto do estado continua sendo copiado. Quem precisar mudar o time (ex.: `SET_DEPTH` no Plano 3) troca `rt.team` por um objeto novo, nunca muta o atual.
 - **Typecheck da raiz:** `tsconfig.json` exclui `apps/client`, e o script `typecheck` roda também `tsc -p apps/client/tsconfig.json`.
