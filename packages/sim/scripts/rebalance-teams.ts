@@ -1,6 +1,6 @@
 import {
   ALL_SPECIES, FORMATIONS, LEGENDARY_IDS, PACKAGES, SUGGESTED_TEAMS, canPlay, getCard, initialFatigue, pickLineup,
-  teamCost, validateTeam, type Team,
+  validateTeam, type Team,
 } from '@pfl/engine';
 import { playMatch } from '../src/runner';
 import { writeFileSync } from 'node:fs';
@@ -47,7 +47,7 @@ function propose(idx: number): Team | null {
     const inn = pick(pool as any[]).id;
     replaceEverywhere(t, out, inn);
   }
-  if (teamCost(t) > 120 || validateTeam(t).length || !deckOk(t)) return null;
+  if (validateTeam(t).length || !deckOk(t)) return null; // validateTeam já cobre o teto (OVER_CAP)
   return t;
 }
 // estado inicial

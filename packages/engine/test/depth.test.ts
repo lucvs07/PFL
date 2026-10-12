@@ -184,3 +184,17 @@ describe('formação e pacote desconhecidos (cliente malicioso)', () => {
     expect(() => step(state, { type: 'PACKAGE', team: 'B', package: 'toString' as PackageId })).toThrow(/UNKNOWN_PACKAGE/);
   });
 });
+
+describe('SET_DEPTH e o descanso', () => {
+  it('quem ganha o "manter em campo" sai do descanso na hora; quem perde e está no limiar passa a descansar', () => {
+    const s = start();
+    s.teams.A.fatigue = { levels: { 25: 2 }, resting: [25] }; // Pikachu, titular de RB, descansando
+    const kept = step(s, setDepth('A', A.depth, [25])).state;
+    expect(kept.teams.A.fatigue.resting).toEqual([]);
+    const { events } = run(kept, { type: 'FORMATION', team: 'A', formation: 'PISTOL' });
+    expect(events[0]).toMatchObject({ t: 'FORMATION', lineup: { RB: 25 } });
+
+    const dropped = step(kept, setDepth('A', A.depth, [])).state;
+    expect(dropped.teams.A.fatigue.resting).toEqual([25]);
+  });
+});

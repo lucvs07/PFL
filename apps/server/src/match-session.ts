@@ -1,5 +1,5 @@
 import {
-  EngineError, createMatch, playerView, step,
+  EngineError, actingTeams, createMatch, playerView, step,
   type Action, type GameEvent, type MatchState, type StepResult, type Team, type TeamKey,
 } from '@pfl/engine';
 import { computeStats, type EndMessage, type ErrorCode } from '@pfl/protocol';
@@ -9,9 +9,10 @@ import type { Scheduler, TimedPhase, Timings } from './timings';
 
 /** Espera antes de tentar de novo um TIMEOUT que o motor recusou (evita laço apertado de timers). */
 const TIMEOUT_RETRY_MS = 1000;
+/** Novas tentativas de TIMEOUT por etapa antes de encerrar a partida. */
+export const MAX_TIMEOUT_RETRIES = 3;
 
 const KEYS: readonly TeamKey[] = ['A', 'B'];
-const other = (k: TeamKey): TeamKey => (k === 'A' ? 'B' : 'A');
 
 export interface SessionDeps {
   scheduler: Scheduler;
@@ -41,6 +42,8 @@ export class MatchSession {
   /** deadline efetivo: o cheio, ou o início da etapa se todos que faltam agir estão ausentes */
   private deadlineAt = 0;
   private cancelTimer: (() => void) | null = null;
+  /** TIMEOUTs recusados seguidos na etapa atual */
+  private timeoutFailures = 0;
   private pausedOffsets: { start: number; full: number } | null = null;
   private endMessage: EndMessage | null = null;
   private started = false;
@@ -124,11 +127,14 @@ export class MatchSession {
     for (const k of KEYS) this.sendCurrent(k);
   }
 
-  refreshAbsence(): void {
-    if (this.disposed || !this.started || this.endMessage || this.pausedOffsets) return;
+  /** true se o deadline mudou e o match:phase já foi reenviado aos dois. */
+  refreshAbsence(): boolean {
+    if (this.disposed || !this.started || this.endMessage || this.pausedOffsets) return false;
     const before = this.deadlineAt;
     this.armTimer();
-    if (this.deadlineAt !== before) for (const k of KEYS) this.sendCurrent(k);
+    if (this.deadlineAt === before) return false;
+    for (const k of KEYS) this.sendCurrent(k);
+    return true;
   }
 
   dispose(): void {
@@ -206,6 +212,7 @@ export class MatchSession {
   }
 
   private enterPhase(delayMs: number): void {
+    this.timeoutFailures = 0;
     const now = this.deps.scheduler.now();
     this.phaseStartsAt = now + delayMs;
     this.fullDeadline = this.phaseStartsAt + this.deps.timings.phaseMs[this.current.phase as TimedPhase];
@@ -213,33 +220,15 @@ export class MatchSession {
     for (const k of KEYS) this.sendCurrent(k);
   }
 
-  /** Quem ainda precisa agir na etapa atual. */
-  private pendingActors(): TeamKey[] {
-    const s = this.current;
-    const defense = other(s.offense);
-    switch (s.phase) {
-      case 'FORMATION':
-      case 'CONVERSION':
-        return [s.offense];
-      case 'PACKAGE':
-        return [defense];
-      case 'PLAYCALL':
-        return [...(s.cards.offense === null ? [s.offense] : []), ...(s.cards.defense === null ? [defense] : [])];
-      default:
-        return [];
-    }
-  }
-
-  /** `minDelayMs` segura o disparo mesmo com o deadline já vencido. */
-  private armTimer(minDelayMs = 0): void {
+  private armTimer(): void {
     this.clearTimer();
     if (this.endMessage || this.pausedOffsets) return;
     const now = this.deps.scheduler.now();
-    const pending = this.pendingActors();
+    const pending = actingTeams(this.current);
     const allAbsent = pending.length > 0 && pending.every((k) => this.deps.isAbsent(k));
     this.deadlineAt = allAbsent ? Math.min(this.fullDeadline, Math.max(this.phaseStartsAt, now)) : this.fullDeadline;
     const seq = this.phaseSeq;
-    this.cancelTimer = this.deps.scheduler.schedule(Math.max(minDelayMs, this.deadlineAt - now), () => this.onDeadline(seq));
+    this.cancelTimer = this.deps.scheduler.schedule(Math.max(0, this.deadlineAt - now), () => this.onDeadline(seq));
   }
 
   private clearTimer(): void {
@@ -251,11 +240,21 @@ export class MatchSession {
   private onDeadline(seq: number): void {
     if (this.disposed || seq !== this.phaseSeq || this.endMessage || this.pausedOffsets) return;
     this.clearTimer();
-    // se o motor recusar o TIMEOUT, rearma para a sessão não ficar sem timer
-    if (!this.apply({ type: 'TIMEOUT' }, null)) {
-      console.error('[pfl] TIMEOUT recusado pelo motor; nova tentativa em', TIMEOUT_RETRY_MS, 'ms');
-      this.armTimer(TIMEOUT_RETRY_MS);
+    if (this.apply({ type: 'TIMEOUT' }, null)) return;
+    // o motor recusou o TIMEOUT: tenta de novo com um deadline novo (avisado aos dois) e, depois de
+    // MAX_TIMEOUT_RETRIES falhas seguidas, encerra a partida com o placar atual em vez de travar
+    this.timeoutFailures += 1;
+    if (this.timeoutFailures > MAX_TIMEOUT_RETRIES) {
+      console.error('[pfl] TIMEOUT recusado', this.timeoutFailures, 'vezes; partida encerrada');
+      for (const k of KEYS) this.error(k, 'ENGINE_ERROR', 'Erro interno: a partida foi encerrada');
+      this.finish();
+      return;
     }
+    console.error('[pfl] TIMEOUT recusado pelo motor; nova tentativa em', TIMEOUT_RETRY_MS, 'ms');
+    // início e deadline adiados juntos: mesmo com ausentes o disparo espera o intervalo
+    this.phaseStartsAt = this.fullDeadline = this.deps.scheduler.now() + TIMEOUT_RETRY_MS;
+    this.armTimer();
+    for (const k of KEYS) this.sendCurrent(k);
   }
 
   /** Corrida entre a ação e o timer: se o deadline já passou, o padrão vale primeiro. */

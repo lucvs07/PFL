@@ -11,7 +11,12 @@ export interface RoomManagerDeps {
   newToken: () => string;
   send: (code: string, to: TeamKey, msg: Outgoing) => void;
   onRoomClosed?: (code: string) => void;
+  /** teto de salas abertas ao mesmo tempo (padrão MAX_ROOMS) */
+  maxRooms?: number;
 }
+
+/** Cada sala vazia vive até 5 min; o teto impede que uma enxurrada de room:create esgote a memória. */
+export const MAX_ROOMS = 10_000;
 
 export type JoinResult =
   | { ok: true; room: Room; key: TeamKey; token: string }
@@ -23,7 +28,9 @@ export class RoomManager {
 
   constructor(private readonly deps: RoomManagerDeps) {}
 
-  create(): { room: Room; key: TeamKey; token: string } {
+  /** null quando o teto de salas foi atingido. */
+  create(): { room: Room; key: TeamKey; token: string } | null {
+    if (this.rooms.size >= (this.deps.maxRooms ?? MAX_ROOMS)) return null;
     const code = generateRoomCode(this.deps.random, (c) => this.rooms.has(c));
     const room = new Room(code, {
       scheduler: this.deps.scheduler,

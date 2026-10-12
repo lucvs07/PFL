@@ -67,7 +67,7 @@ export interface EndMessage { score: Record<TeamKey, number>; stats: MatchStats;
 
 export type ErrorCode =
   | 'ROOM_NOT_FOUND' | 'ROOM_FULL' | 'NOT_IN_ROOM' | 'INVALID_TEAM_CODE' | 'TEAM_INVALID'
-  | 'NOT_READY' | 'STALE_TURN' | 'ENGINE_ERROR';
+  | 'NOT_READY' | 'STALE_TURN' | 'ENGINE_ERROR' | 'SERVER_BUSY';
 export interface ErrorMessage { code: ErrorCode; message: string; }
 
 export type Ack<T> = (res: { ok: true; data: T } | { ok: false; error: ErrorMessage }) => void;
@@ -182,11 +182,25 @@ O código é a fonte de verdade onde o texto do Plano 2 divergir (ver o aviso no
 - **`@pfl/sim`** (`packages/sim/src/index.ts`): `weightedPick`, `botAction`, `botDecide`, `actingTeams`, `randomTeam`, `buildDepth`, `usableCards`, `playMatch`, `runSim`, `MAX_SEED`, `buildReport`, `balanceGate`, `formatReport`. `botAction` decide só com `playerView` e o próprio time.
 - **CLI** `npm run sim -- --games N [--seed S] [--min-sample M] [--gate]` (também `--opção=valor` e `--help`). Seed de 0 a 4294967295. Códigos de saída: 0 ok; 1 portão reprovado; 2 argumentos inválidos; 3 `--gate` sem amostra suficiente (menos de 30 cartas avaliadas); 4 erro de execução da simulação.
 - **Ferramenta:** `packages/sim/scripts/rebalance-teams.ts` refaz o rebalanceamento dos times sugeridos (uso manual, fora dos testes).
-- **Portão de balanceamento:** `packages/sim/test/balance-gate.test.ts` (2000 partidas, seed 2026, amostra mínima 600, faixa 45–55%, ao menos 30 cartas). `GATE_EXCEPTIONS` está vazio (`psychic_foresight` entrou na faixa).
-  - `npm test` agora leva cerca de 30 a 45 s por causa do portão. Para iterar em outros planos, rode arquivos isolados com `npx vitest run <arquivo>`.
+- **Portão de balanceamento:** `packages/sim/test/balance-gate.gate.test.ts` (2500 partidas, seed 2026, amostra mínima 600, faixa 45–55%, ao menos 30 cartas). `GATE_EXCEPTIONS` está vazio (`psychic_foresight` entrou na faixa).
+  - Roda à parte com `npm run test:gate` (cerca de 30 s); `npm test` exclui os arquivos `*.gate.test.ts` e tem só um smoke test do portão.
+  - O win rate por carta conta só as partidas em que **apenas um** dos lados jogou a carta (como já era nas categorias); antes, a carta jogada pelos dois lados somava uma vitória e uma derrota e puxava o resultado para 50%.
+  - **Critério estatístico:** `balanceGate` reprova só quando o intervalo de confiança de 95% (Wilson, `wilsonInterval`) fica inteiro fora da faixa. Fora só no ponto vai para `GateResult.borderline` e aparece no relatório como aviso (`~ fora, mas o IC … cruza a faixa`). Cada `GateCard` traz `ci`. O intervalo supõe partidas independentes; como uma carta se concentra em poucos times, a variância real é maior e o critério ainda é um pouco rigoroso.
+  - **Recalibração de 2026-10-11** (após a contagem exclusiva): `normal_tackle` 4→5, `normal_quick_attack` 5→6, `sig_dugtrio_dig` 6→5, `sig_alakazam_teleport` 9→8, `sig_fly_route` 21→18, `flying_sky_attack` 12→11 (`baseYards`). Seeds 7, 11, 3, 99 e 2026 (6000 partidas, amostra 1000): 0 reprovadas; fora só no ponto: `bug_twineedle`, `electric_thundershock`, `flying_sky_attack`, `grass_stun_spore`, `fire_blast_fake` (todas com o IC cruzando a faixa). Snapshot golden do Plano 1 inalterado.
   - O portão é sensível a qualquer mudança que altere a ordem de consumo do RNG, mesmo sem efeito de balanceamento. Se ele ficar vermelho depois de uma mudança do engine sem relação com balanceamento, **não recalibre de imediato**: confirme com `npm run sim -- --games 6000 --seed 7 --min-sample 1000 --gate` e com as seeds 11, 3 e 99. Na calibração só `OFFENSE_PROFILES` e `baseYards` são ajustáveis (os números da spec continuam fixos).
   - Mudanças do Plano 3 no engine (`SET_DEPTH`, `snapInDrive`, `canEditDepth`) não podem consumir RNG nem alterar o fluxo das ações do bot. O snapshot golden do Plano 1 deve continuar igual.
 - **Pendências conhecidas (decisão do usuário):**
   - Contribuição observada: leitura 74% / tipo 12% / stats 12% / variância 2%, contra os alvos 50/20/20/10 da spec 4.3. Não é atingível com os números fixados; a spec 7.3 já os trata como informativos.
   - Cartas que só aparecem nos times sugeridos ficam abaixo da amostra mínima e escapam do portão. O relatório as lista como aviso (por exemplo `ice_blizzard`, `sig_hitmonchan_counter`, `rock_throw_deep`, `sig_machamp_karate`, `sig_mewtwo_mind`).
   - Os temas dos times sugeridos derivaram um pouco: Cinnabar não tem carta de Lutador e Saffron tem 8 cartas Normal.
+
+## 7. Ajustes da revisão do PR do Plano 3 (branch `pfl-3-server`)
+
+- **`actingTeams(state)`** mudou para o `@pfl/engine` (quem precisa agir na etapa atual). O `@pfl/sim` e o servidor importam de lá; o `@pfl/sim` não o exporta mais.
+- **`SET_DEPTH` e o descanso:** depois de trocar o "manter em campo", o motor recalcula `fatigue.resting` (`refreshResting`). Quem ganha a marca volta na hora; quem a perde e está no limiar passa a descansar.
+- **`ErrorCode`** ganha `'SERVER_BUSY'`: `room:create` responde no Ack com esse código quando o servidor atinge o teto de salas abertas (`MAX_ROOMS = 10_000`).
+- **Saída voluntária:** quem cria ou entra em outra sala sai da atual; se ela estava no lobby e fica sem ninguém conectado, fecha na hora (não espera os 5 min).
+- **Vaga abandonada no lobby:** quem cai no lobby tem `RECONNECT_GRACE_MS` para voltar. Se não voltar enquanto o outro jogador espera conectado, a vaga é liberada (o token antigo deixa de valer) e `room:state` mostra só um jogador.
+- **Time do código:** o servidor guarda só os campos do contrato, com `name` cortado em 40 caracteres. É esse time que vai para a partida e para `replay.teams`.
+- **TIMEOUT recusado pelo motor:** cada nova tentativa reenvia `match:phase` com o deadline novo (+1 s). Depois de `MAX_TIMEOUT_RETRIES = 3` novas tentativas na mesma etapa, os dois recebem `error { code: 'ENGINE_ERROR' }` e a partida termina com o placar atual (`match:end`).
+- **Reconexão:** quem volta recebe um único `match:phase`.

@@ -21,6 +21,7 @@ export type Factor = 'read' | 'type' | 'stats' | 'variance';
 export interface Report {
   matches: number;
   winRateA: number;
+  /** por carta, nas partidas em que só um dos lados a jogou */
   cards: Record<string, WinStat>;
   categories: Record<string, WinStat>;
   reads: Record<ReadResult, ReadStat>;
@@ -113,11 +114,12 @@ export function buildReport(records: readonly MatchRecord[]): Report {
     }
     for (const key of ['A', 'B'] as const) {
       const won = rec.winner === key;
-      for (const id of played[key]) addWin(cards, id, won);
-      // Só cartas de deck e só categorias que apenas este lado jogou na partida: senão as básicas e
-      // as categorias espelhadas contam para os dois times e o win rate converge para 50% por construção.
+      const opponent = played[key === 'A' ? 'B' : 'A'];
+      // Só cartas e categorias que apenas este lado jogou na partida: senão as espelhadas (inclusive as
+      // básicas) contam uma vitória e uma derrota e o win rate converge para 50% por construção.
+      for (const id of played[key]) if (!opponent.has(id)) addWin(cards, id, won);
       const own = deckCategories(played[key]);
-      const other = deckCategories(played[key === 'A' ? 'B' : 'A']);
+      const other = deckCategories(opponent);
       for (const cat of own) if (!other.has(cat)) addWin(categories, cat, won);
     }
   }
@@ -155,16 +157,41 @@ export interface GateOptions {
   high: number;
   /** amostra mínima para entrar no aviso de subamostra (padrão UNDER_SAMPLE_FLOOR) */
   underSampleFloor?: number;
+  /** z do intervalo de confiança (padrão Z_95) */
+  z?: number;
 }
 /** Spec 7.3: win rate por carta (partidas em que foi jogada) entre 45% e 55%. */
 export const DEFAULT_GATE: GateOptions = { minSample: 1000, low: 0.45, high: 0.55 };
+/** Intervalo de confiança de 95%. */
+export const Z_95 = 1.96;
+
+export interface GateCard {
+  id: string;
+  games: number;
+  winRate: number;
+  /** intervalo de confiança de Wilson do win rate */
+  ci: [number, number];
+}
 
 export interface GateResult {
   /** cartas de deck (TYPE/SIGNATURE) com amostra ≥ minSample */
   sampled: string[];
-  failures: { id: string; games: number; winRate: number }[];
+  /** reprovam: o intervalo de confiança inteiro fica fora da faixa */
+  failures: GateCard[];
+  /** aviso (não reprova): win rate fora da faixa, mas o intervalo de confiança ainda cruza a faixa (pode ser ruído) */
+  borderline: GateCard[];
   /** aviso (não reprova): cartas de deck abaixo da amostra mínima, com amostra ≥ UNDER_SAMPLE_FLOOR e win rate fora da faixa */
   underSampled: { id: string; games: number; winRate: number }[];
+}
+
+/** Intervalo de Wilson para a proporção wins/games. */
+export function wilsonInterval(wins: number, games: number, z = Z_95): [number, number] {
+  if (games === 0) return [0, 1];
+  const p = wins / games;
+  const z2 = z * z;
+  const center = (p + z2 / (2 * games)) / (1 + z2 / games);
+  const half = (z * Math.sqrt((p * (1 - p)) / games + z2 / (4 * games * games))) / (1 + z2 / games);
+  return [Math.max(0, center - half), Math.min(1, center + half)];
 }
 
 /** Abaixo disso o win rate é ruído demais até para um aviso. */
@@ -180,9 +207,17 @@ export function balanceGate(report: Report, options: GateOptions = DEFAULT_GATE)
     })
     .map(([id]) => id)
     .sort();
-  const failures = sampled
-    .map((id) => ({ id, games: report.cards[id].games, winRate: report.cards[id].winRate }))
-    .filter((f) => f.winRate < options.low || f.winRate > options.high);
+  // Reprova só o que está fora da faixa com significância: o intervalo inteiro abaixo de `low` ou acima
+  // de `high`. Uma carta fica concentrada em poucos times, e o ponto sozinho reprovaria ruído.
+  const outside = sampled
+    .map((id): GateCard => {
+      const s = report.cards[id];
+      return { id, games: s.games, winRate: s.winRate, ci: wilsonInterval(s.wins, s.games, options.z) };
+    })
+    .filter((c) => c.winRate < options.low || c.winRate > options.high);
+  const significant = (c: GateCard): boolean => c.ci[1] < options.low || c.ci[0] > options.high;
+  const failures = outside.filter(significant);
+  const borderline = outside.filter((c) => !significant(c));
   const underSampled = Object.entries(report.cards)
     .filter(([id, c]) => {
       const origin = getCard(id).origin;
@@ -191,7 +226,7 @@ export function balanceGate(report: Report, options: GateOptions = DEFAULT_GATE)
     .map(([id, c]) => ({ id, games: c.games, winRate: c.winRate }))
     .filter((f) => f.winRate < options.low || f.winRate > options.high)
     .sort((a, b) => a.id.localeCompare(b.id));
-  return { sampled, failures, underSampled };
+  return { sampled, failures, borderline, underSampled };
 }
 
 const pct = (x: number): string => `${(x * 100).toFixed(1)}%`;
@@ -221,7 +256,13 @@ export function formatReport(report: Report, gate: GateResult): string {
   lines.push('');
   lines.push('Win rate por carta (jogos em que foi jogada)');
   for (const [id, s] of Object.entries(report.cards).sort((a, b) => b[1].winRate - a[1].winRate)) {
-    const flag = gate.failures.some((f) => f.id === id) ? '  <-- FORA' : '';
+    const failed = gate.failures.find((f) => f.id === id);
+    const borderline = gate.borderline.find((f) => f.id === id);
+    const flag = failed
+      ? `  <-- FORA (IC ${pct(failed.ci[0])}–${pct(failed.ci[1])})`
+      : borderline
+        ? `  ~ fora, mas o IC ${pct(borderline.ci[0])}–${pct(borderline.ci[1])} cruza a faixa`
+        : '';
     lines.push(`  ${id.padEnd(28)} ${pct(s.winRate).padStart(6)}  (${s.games} jogos)${flag}`);
   }
   lines.push('');
@@ -230,6 +271,9 @@ export function formatReport(report: Report, gate: GateResult): string {
     for (const f of gate.underSampled) lines.push(`  ${f.id.padEnd(28)} ${pct(f.winRate).padStart(6)}  (${f.games} jogos)`);
     lines.push('');
   }
-  lines.push(`Portão: ${gate.sampled.length} cartas com amostra suficiente, ${gate.failures.length} fora de 45–55%`);
+  lines.push(
+    `Portão: ${gate.sampled.length} cartas com amostra suficiente, ${gate.failures.length} fora de 45–55% ` +
+      `com IC 95% (${gate.borderline.length} fora só no ponto)`,
+  );
   return lines.join('\n');
 }

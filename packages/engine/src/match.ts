@@ -5,7 +5,7 @@ import { FORMATIONS, PACKAGES } from './formations';
 import { BASIC_DEFENSE_IDS, BASIC_OFFENSE_IDS, SPECIAL_IDS, getCard } from './cards/catalog';
 import { canPlay } from './cards/eligibility';
 import { drawCards, newHand, playFromHand } from './cards/deck';
-import { applyPlayFatigue, initialFatigue, pickLineup, recoverBetweenDrives } from './fatigue';
+import { applyPlayFatigue, initialFatigue, pickLineup, recoverBetweenDrives, refreshResting } from './fatigue';
 import { resolvePlay } from './resolve';
 import { resolveFieldGoal, resolvePat, resolvePunt } from './specials';
 import { advanceField, nextDriveStart, type DriveEnd } from './field';
@@ -157,6 +157,23 @@ function onSetDepth(s: MatchState, action: Extract<Action, { type: 'SET_DEPTH' }
   const errors = validateTeam(candidate);
   if (errors.length) throw new EngineError('INVALID_DEPTH', errors.map((e) => e.code).join(', '));
   rt.team = deepFreeze(structuredClone(candidate));
+  rt.fatigue = refreshResting(rt.fatigue, rt.team);
+}
+
+/** Quais times precisam agir agora. Vazio quando a partida acabou. */
+export function actingTeams(s: MatchState): TeamKey[] {
+  const defense = other(s.offense);
+  switch (s.phase) {
+    case 'FORMATION':
+    case 'CONVERSION':
+      return [s.offense];
+    case 'PACKAGE':
+      return [defense];
+    case 'PLAYCALL':
+      return [...(s.cards.offense === null ? [s.offense] : []), ...(s.cards.defense === null ? [defense] : [])];
+    case 'MATCH_END':
+      return [];
+  }
 }
 
 export function playableCards(s: MatchState, team: TeamKey): string[] {

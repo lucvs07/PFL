@@ -1,5 +1,5 @@
 import {
-  FORMATIONS, canPlay, fieldGoalDistance, fieldGoalProbability, getCard, pickLineup, playerView, readResult,
+  FORMATIONS, actingTeams, canPlay, fieldGoalDistance, fieldGoalProbability, getCard, pickLineup, playerView, readResult,
   type Action, type DefenseCategory, type FatigueState, type FormationId, type MatchState, type OffenseCategory,
   type PackageId, type PlayerView, type Team, type TeamKey,
 } from '@pfl/engine';
@@ -41,26 +41,6 @@ const READ_SHARPNESS = 2;
 
 export function distanceOf(yardsToGo: number): Distance {
   return yardsToGo <= 3 ? 'SHORT' : yardsToGo <= 7 ? 'MEDIUM' : 'LONG';
-}
-
-/** Quais times precisam agir agora. Vazio quando a partida acabou. */
-export function actingTeams(state: MatchState): TeamKey[] {
-  const defense: TeamKey = state.offense === 'A' ? 'B' : 'A';
-  switch (state.phase) {
-    case 'FORMATION':
-    case 'CONVERSION':
-      return [state.offense];
-    case 'PACKAGE':
-      return [defense];
-    case 'PLAYCALL': {
-      const out: TeamKey[] = [];
-      if (state.cards.offense === null) out.push(state.offense);
-      if (state.cards.defense === null) out.push(defense);
-      return out;
-    }
-    case 'MATCH_END':
-      return [];
-  }
 }
 
 /** Probabilidade prevista de cada categoria de ataque, dada a situação e a formação revelada. */
@@ -115,6 +95,8 @@ export function fourthDownDecision(view: PlayerView, specialist: number): 'GO' |
     if (deficit <= 3 && fgProb >= 0.3) return 'FIELD_GOAL';
     return 'GO';
   }
+  // na prorrogação o punt só entrega a posse sem pontos: chuta FG se der, senão tenta
+  if (view.overtimeRound > 0) return fgProb >= 0.3 ? 'FIELD_GOAL' : 'GO';
   if (yardsToGo <= 2 && ballOn >= 40) return 'GO';
   if (fgProb >= 0.5) return 'FIELD_GOAL';
   if (yardsToGo <= 4 && ballOn >= 60) return 'GO';

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { SUGGESTED_TEAMS, createMatch, step, playerView, type Action, type MatchState, type TeamKey } from '@pfl/engine';
-import { actingTeams, botAction, botDecide, distanceOf, fourthDownDecision, predictOffense } from '../src/bot';
+import { SUGGESTED_TEAMS, actingTeams, createMatch, step, playerView, type Action, type MatchState, type TeamKey } from '@pfl/engine';
+import { botAction, botDecide, distanceOf, fourthDownDecision, predictOffense } from '../src/bot';
 
 const [VERMILION, CINNABAR] = SUGGESTED_TEAMS;
 const start = (seed = 1): MatchState => createMatch(VERMILION, CINNABAR, seed).state;
@@ -85,6 +85,15 @@ describe('heurística de down & distance', () => {
     expect(at(80, 9)).toBe('FIELD_GOAL');
     const lastPossession = { possessions: { A: 6, B: 6 }, score: { A: 0, B: 7 } };
     expect(at(25, 8, lastPossession)).toBe('GO');
+  });
+
+  it('na prorrogação nunca chuta punt, nem empatado nem na frente', () => {
+    const view = playerView(start(), 'A');
+    const ot = (ballOn: number, score: { A: number; B: number }) =>
+      fourthDownDecision({ ...view, overtimeRound: 1, score, field: { down: 4, yardsToGo: 8, ballOn } }, 81);
+    expect(ot(40, { A: 7, B: 7 })).toBe('GO'); // fora do alcance do FG: antes era PUNT
+    expect(ot(40, { A: 10, B: 7 })).toBe('GO');
+    expect(ot(70, { A: 7, B: 7 })).toBe('FIELD_GOAL');
   });
 
   it('no 4º down escolhe a carta especial que decidiu', () => {
