@@ -1,3 +1,4 @@
+import { parseCorsOrigin } from './config';
 import { createPflServer } from './server';
 
 const port = Number(process.env.PORT ?? 3001);
@@ -8,7 +9,7 @@ process.on('unhandledRejection', (err) => {
   console.error('[pfl] promessa rejeitada sem tratamento', err);
 });
 
-const server = await createPflServer({ port });
+const server = await createPflServer({ port, corsOrigin: parseCorsOrigin(process.env.CORS_ORIGIN) });
 console.log(`PFL server em http://localhost:${server.port}`);
 
 const shutdown = (): void => {

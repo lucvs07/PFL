@@ -49,7 +49,17 @@ const field = (payload: unknown, name: string): unknown =>
   typeof payload === 'object' && payload !== null ? (payload as Record<string, unknown>)[name] : undefined;
 
 export async function createPflServer(options: PflServerOptions = {}): Promise<PflServer> {
-  const httpServer = createServer();
+  // O Socket.IO assume só /socket.io; o resto cai neste handler (healthcheck do Render/compose).
+  const httpServer = createServer((req, res) => {
+    const path = (req.url ?? '').split('?')[0];
+    if (path === '/health' && (req.method === 'GET' || req.method === 'HEAD')) {
+      res.writeHead(200, { 'content-type': 'text/plain' });
+      res.end(req.method === 'HEAD' ? undefined : 'ok');
+      return;
+    }
+    res.writeHead(404);
+    res.end();
+  });
   const io: PflIo = new Server<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData>(httpServer, {
     cors: { origin: options.corsOrigin ?? true },
     // um código de time tem ~2 KB; o padrão de 1 MB deixaria um jogador sobrecarregar o processo
