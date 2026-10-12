@@ -15,7 +15,7 @@ export interface Joined {
 export const ACK_TIMEOUT_MS = 8000;
 
 export function serverUrl(): string {
-  return import.meta.env.VITE_SERVER_URL ?? 'http://localhost:3001';
+  return import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
 }
 
 /** Só WebSocket: evita depender de CORS no long-polling entre :5173 e :3001. */

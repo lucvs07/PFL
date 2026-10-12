@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: pfl-server
+    runtime: docker
+    plan: free
+    dockerfilePath: ./docker/server.Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    autoDeployTrigger: checksPass
+    envVars:
+      - key: CORS_ORIGIN
+        value: https://lucvs07.github.io

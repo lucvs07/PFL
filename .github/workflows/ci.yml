@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Só PRs cancelam a rodada anterior; em main cada commit precisa do seu resultado (inclui o gate).
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      # --ignore-scripts pula o prebuild (download dos 302 sprites): aqui só importa o build compilar.
+      # Os sprites são baixados (com cache de camada) na imagem do cliente e, estritos, no Pages.
+      - run: npm run build -w @pfl/client --ignore-scripts
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/server.Dockerfile
+          tags: pfl-server:ci
+          load: true
+          cache-from: type=gha,scope=server
+          cache-to: type=gha,scope=server,mode=max
+      # Sobe a imagem como no Render e espera o /health: pega container quebrado antes do deploy.
+      - name: Smoke test do servidor
+        run: |
+          docker run -d --name pfl-server -p 3001:3001 pfl-server:ci
+          if ! curl -fsS --retry 15 --retry-delay 2 --retry-all-errors http://localhost:3001/health; then
+            docker logs pfl-server
+            exit 1
+          fi
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/client.Dockerfile
+          cache-from: type=gha,scope=client
+          cache-to: type=gha,scope=client,mode=max
+
+  # portão de balanceamento (milhares de partidas): mais lento, fora dos PRs
+  gate:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run test:gate

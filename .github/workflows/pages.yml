@@ -1,0 +1,77 @@
+name: Pages
+
+# Publica só depois que o CI da main passa (inclui o gate de balanceamento).
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Um deploy em andamento termina; o seguinte espera na fila.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  # CIs de pushes seguidos podem terminar fora de ordem: só publica se o commit testado ainda é a ponta
+  # da main, senão um build antigo sobrescreveria o novo (o CI do commit mais novo publica depois).
+  tip:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    outputs:
+      current: ${{ steps.check.outputs.current }}
+    steps:
+      - id: check
+        env:
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then echo "current=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          TIP=$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)
+          if [ "$TIP" = "$HEAD_SHA" ]; then
+            echo "current=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "current=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::$HEAD_SHA não é mais a ponta da main ($TIP); o deploy fica para o CI do commit mais novo."
+          fi
+
+  deploy:
+    needs: tip
+    if: needs.tip.outputs.current == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Exigir VITE_SERVER_URL
+        run: test -n "$VITE_SERVER_URL" || { echo "::error::Defina a variável de repositório VITE_SERVER_URL (veja docs/DEPLOY.md)"; exit 1; }
+        env:
+          VITE_SERVER_URL: ${{ vars.VITE_SERVER_URL }}
+      # Estrito: se algum sprite falhar, o deploy falha em vez de publicar um site com buracos.
+      - run: npm run sprites -w @pfl/client
+      # base_path do Pages (ex.: /PFL): acompanha renomear o repositório, fork ou domínio próprio
+      - id: pages
+        uses: actions/configure-pages@v5
+      - run: npm run build:client
+        env:
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}/
+          VITE_SERVER_URL: ${{ vars.VITE_SERVER_URL }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/client/dist
+      - id: deployment
+        uses: actions/deploy-pages@v4

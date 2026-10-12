@@ -1,0 +1,15 @@
+# Subir tudo: docker compose up --build  →  jogo em http://localhost:8080
+services:
+  server:
+    build:
+      context: .
+      dockerfile: docker/server.Dockerfile
+    ports: ["3001:3001"]
+  client:
+    build:
+      context: .
+      dockerfile: docker/client.Dockerfile
+      args:
+        VITE_SERVER_URL: http://localhost:3001
+    ports: ["8080:80"]
+    depends_on: [server]
