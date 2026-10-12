@@ -43,26 +43,31 @@
 .end-num,
 .end-x { font-family: var(--font-display); font-size: var(--fs-xl); }
 
-/* ---------- MVP (ref 1): sprite grande vazando pela borda da caixa ---------- */
+/* ---------- MVP (ref 1): sprite grande numa coluna própria, dentro da caixa ---------- */
 .mvp {
-  position: relative;
-  display: flex;
+  --mvp-size: 192px;
+  display: grid;
+  grid-template-columns: var(--mvp-size) minmax(0, 1fr);
   align-items: center;
   gap: var(--space-4);
   min-width: 0;
-  padding-left: 192px;
-  min-height: 120px;
   background: var(--gbc-paper);
 }
 
 .mvp-sprite {
-  position: absolute;
-  left: -20px;
-  bottom: var(--space-3);
+  width: var(--mvp-size);
+  height: var(--mvp-size);
+  overflow: hidden;
   line-height: 0;
-  z-index: 1;
 }
-.mvp-sprite .sprite { width: 192px; height: 192px; image-rendering: pixelated; }
+/* max-* também vale para o fallback com tamanho inline */
+.mvp-sprite .sprite {
+  width: var(--mvp-size);
+  height: var(--mvp-size);
+  max-width: var(--mvp-size);
+  max-height: var(--mvp-size);
+  image-rendering: pixelated;
+}
 .mvp-sprite .sprite-missing {
   display: grid;
   place-items: center;
@@ -155,5 +160,9 @@
   .end-top,
   .stats-grid,
   .replay-layout { grid-template-columns: minmax(0, 1fr); }
-  .mvp { margin-left: 20px; }
+}
+
+/* celular: MVP ×1 (96 px) para sobrar largura ao nome e às estatísticas */
+@media (max-width: 600px) {
+  .mvp { --mvp-size: 96px; }
 }

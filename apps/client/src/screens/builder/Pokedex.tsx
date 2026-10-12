@@ -101,10 +101,10 @@ export function Pokedex({ draft, onAdd, onSpecialist }: Props) {
                     aria-pressed={selected}
                     onClick={() => setSelectedId(s.id)}
                   >
-                    <span className="dex-ghost" aria-hidden="true">
-                      {String(s.id).padStart(3, '0')}
-                    </span>
                     <span className="dex-tile-sprite">
+                      <span className="dex-ghost" aria-hidden="true">
+                        {String(s.id).padStart(3, '0')}
+                      </span>
                       <Sprite id={s.id} size={96} />
                     </span>
                     <span className="dex-tile-no">{dexNumber(s.id)}</span>

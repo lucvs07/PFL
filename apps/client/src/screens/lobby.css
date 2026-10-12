@@ -160,18 +160,19 @@
   text-align: right;
 }
 
-/* cards de jogador: fatos à esquerda, sprite do QB titular sangrando a borda direita */
+/* cards de jogador: fatos à esquerda, sprite do QB titular numa coluna própria à direita, dentro do card */
 .lobby-players {
-  --lead-bleed: 24px;
+  --lead-size: 192px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: calc(var(--lead-bleed) + var(--space-4));
-  /* reserva o espaço do sangramento do segundo card para não gerar rolagem horizontal */
-  padding-right: var(--lead-bleed);
+  gap: var(--space-4);
 }
 
 .lobby-card {
   position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
   min-width: 0;
   min-height: 168px;
   padding: var(--space-3) var(--space-4);
@@ -186,7 +187,7 @@
   background: var(--gbc-panel);
 }
 
-.lobby-card.has-lead { padding-right: calc(192px - var(--lead-bleed) + var(--space-3)); }
+.lobby-card.has-lead { grid-template-columns: minmax(0, 1fr) var(--lead-size); }
 
 .lobby-card-facts {
   display: flex;
@@ -250,16 +251,20 @@
 }
 
 .lobby-lead {
-  position: absolute;
-  right: calc(-1 * var(--lead-bleed) - 3px);
-  bottom: var(--space-2);
+  align-self: end;
+  width: var(--lead-size);
+  height: var(--lead-size);
+  overflow: hidden;
   line-height: 0;
   pointer-events: none;
 }
 
+/* max-* também vale para o fallback com tamanho inline */
 .lobby-lead .sprite {
-  width: 192px;
-  height: 192px;
+  width: var(--lead-size);
+  height: var(--lead-size);
+  max-width: var(--lead-size);
+  max-height: var(--lead-size);
 }
 
 /* lista de times: faixa na cor da cidade de ginásio (fallback tinta) e fileira de sprites */
@@ -337,6 +342,11 @@
 .lobby-help {
   margin: 0;
   font-size: var(--fs-body-sm);
+}
+
+/* cards estreitos (duas colunas abaixo de ~960 px, ou empilhados no celular): sprite ×1 */
+@media (max-width: 960px) {
+  .lobby-players { --lead-size: 96px; }
 }
 
 /* ================= celular ================= */
