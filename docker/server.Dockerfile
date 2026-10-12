@@ -1,4 +1,4 @@
-FROM node:24-alpine
+FROM node:24.21.0-alpine3.24
 WORKDIR /app
 
 # Manifestos primeiro: o npm ci só reexecuta quando as dependências mudam.
@@ -14,7 +14,9 @@ RUN npm ci -w @pfl/server --omit=dev \
  && npm i -g "tsx@$(node -p "require('./package.json').devDependencies.tsx.replace('^','')")" \
  && npm cache clean --force
 
-COPY packages packages
+# Só o código que o servidor usa: mudanças no sim/data não invalidam esta camada.
+COPY packages/engine packages/engine
+COPY packages/protocol packages/protocol
 COPY apps/server apps/server
 
 ENV PORT=3001

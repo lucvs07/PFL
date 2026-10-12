@@ -9,8 +9,10 @@ process.on('unhandledRejection', (err) => {
   console.error('[pfl] promessa rejeitada sem tratamento', err);
 });
 
-const server = await createPflServer({ port, corsOrigin: parseCorsOrigin(process.env.CORS_ORIGIN) });
+const corsOrigin = parseCorsOrigin(process.env.CORS_ORIGIN);
+const server = await createPflServer({ port, corsOrigin });
 console.log(`PFL server em http://localhost:${server.port}`);
+console.log(`Origens aceitas: ${corsOrigin === true ? 'qualquer uma (CORS_ORIGIN vazio)' : [corsOrigin].flat().join(', ')}`);
 
 const shutdown = (): void => {
   void server.close().then(() => process.exit(0));

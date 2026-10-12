@@ -19,8 +19,31 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  # CIs de pushes seguidos podem terminar fora de ordem: só publica se o commit testado ainda é a ponta
+  # da main, senão um build antigo sobrescreveria o novo (o CI do commit mais novo publica depois).
+  tip:
     if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    outputs:
+      current: ${{ steps.check.outputs.current }}
+    steps:
+      - id: check
+        env:
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then echo "current=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          TIP=$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)
+          if [ "$TIP" = "$HEAD_SHA" ]; then
+            echo "current=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "current=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::$HEAD_SHA não é mais a ponta da main ($TIP); o deploy fica para o CI do commit mais novo."
+          fi
+
+  deploy:
+    needs: tip
+    if: needs.tip.outputs.current == 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -40,9 +63,12 @@ jobs:
           VITE_SERVER_URL: ${{ vars.VITE_SERVER_URL }}
       # Estrito: se algum sprite falhar, o deploy falha em vez de publicar um site com buracos.
       - run: npm run sprites -w @pfl/client
+      # base_path do Pages (ex.: /PFL): acompanha renomear o repositório, fork ou domínio próprio
+      - id: pages
+        uses: actions/configure-pages@v5
       - run: npm run build:client
         env:
-          BASE_PATH: /PFL/
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}/
           VITE_SERVER_URL: ${{ vars.VITE_SERVER_URL }}
       - uses: actions/upload-pages-artifact@v3
         with:

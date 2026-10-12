@@ -1,14 +1,28 @@
 /**
  * CORS_ORIGIN: origens permitidas, separadas por vírgula. Sem valor útil, libera qualquer origem
- * (o cliente Vite do dev roda em outra porta). A barra final é removida: o header Origin nunca a tem.
+ * (o cliente Vite do dev roda em outra porta). Cada valor vira a origem serializada que o navegador
+ * manda no header Origin (`new URL(v).origin`): host em minúsculas, sem porta padrão, sem caminho nem
+ * barra final. Valor que não é URL lança erro, para o servidor não subir recusando todo mundo em silêncio.
  */
 export function parseCorsOrigin(raw: string | undefined): string | string[] | true {
   const origins = (raw ?? '')
     .split(',')
-    .map((s) => s.trim().replace(/\/+$/, ''))
-    .filter(Boolean);
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .map(normalizeOrigin);
   if (origins.length === 0) return true;
   return origins.length === 1 ? origins[0]! : origins;
+}
+
+function normalizeOrigin(value: string): string {
+  let origin: string;
+  try {
+    origin = new URL(value).origin;
+  } catch {
+    throw new Error(`CORS_ORIGIN inválido: "${value}" não é uma URL (ex.: https://lucvs07.github.io)`);
+  }
+  if (origin === 'null') throw new Error(`CORS_ORIGIN inválido: "${value}" não tem origem http(s)`);
+  return origin;
 }
 
 /**

@@ -26,7 +26,9 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
-      - run: npm run build:client
+      # --ignore-scripts pula o prebuild (download dos 302 sprites): aqui só importa o build compilar.
+      # Os sprites são baixados (com cache de camada) na imagem do cliente e, estritos, no Pages.
+      - run: npm run build -w @pfl/client --ignore-scripts
 
   docker:
     runs-on: ubuntu-latest
@@ -37,8 +39,18 @@ jobs:
         with:
           context: .
           file: docker/server.Dockerfile
+          tags: pfl-server:ci
+          load: true
           cache-from: type=gha,scope=server
           cache-to: type=gha,scope=server,mode=max
+      # Sobe a imagem como no Render e espera o /health: pega container quebrado antes do deploy.
+      - name: Smoke test do servidor
+        run: |
+          docker run -d --name pfl-server -p 3001:3001 pfl-server:ci
+          if ! curl -fsS --retry 15 --retry-delay 2 --retry-all-errors http://localhost:3001/health; then
+            docker logs pfl-server
+            exit 1
+          fi
       - uses: docker/build-push-action@v6
         with:
           context: .
