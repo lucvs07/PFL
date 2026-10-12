@@ -58,7 +58,7 @@ export function LobbyScreen({ room, myTeam, onSubmitTeam, onReady, onLeave }: Pr
           <button type="button" className="btn" onClick={onLeave}>
             Sair da sala
           </button>
-          <p className="muted lobby-leave-note">Sair libera esta aba; a vaga continua reservada até a sala fechar.</p>
+          <p className="muted lobby-leave-note">Ao sair, sua vaga fica reservada por 1 minuto e depois é liberada.</p>
         </div>
       </header>
 
