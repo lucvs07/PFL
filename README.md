@@ -43,4 +43,4 @@ npm run sim          # simulador de balanceamento (CLI)
 | `BASE_PATH` | build do cliente | `/` |
 
 ## CI e deploy
-O CI (`.github/workflows/ci.yml`) roda typecheck, testes, build e as imagens Docker em todo PR; o gate roda em push na `main`. A publicação (Render + GitHub Pages) está em [docs/DEPLOY.md](docs/DEPLOY.md).
+O CI (`.github/workflows/ci.yml`) roda typecheck, testes, build e as imagens Docker em todo PR; o gate roda em push na `main`, e só com o CI verde o Render e o GitHub Pages publicam. A publicação (Render + GitHub Pages) está em [docs/DEPLOY.md](docs/DEPLOY.md).

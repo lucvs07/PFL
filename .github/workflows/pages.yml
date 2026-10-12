@@ -1,7 +1,10 @@
 name: Pages
 
+# Publica só depois que o CI da main passa (inclui o gate de balanceamento).
 on:
-  push:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
     branches: [main]
   workflow_dispatch:
 
@@ -10,18 +13,22 @@ permissions:
   pages: write
   id-token: write
 
+# Um deploy em andamento termina; o seguinte espera na fila.
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -31,6 +38,8 @@ jobs:
         run: test -n "$VITE_SERVER_URL" || { echo "::error::Defina a variável de repositório VITE_SERVER_URL (veja docs/DEPLOY.md)"; exit 1; }
         env:
           VITE_SERVER_URL: ${{ vars.VITE_SERVER_URL }}
+      # Estrito: se algum sprite falhar, o deploy falha em vez de publicar um site com buracos.
+      - run: npm run sprites -w @pfl/client
       - run: npm run build:client
         env:
           BASE_PATH: /PFL/

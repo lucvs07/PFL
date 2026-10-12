@@ -11,8 +11,12 @@ Servidor no Render (plano grátis) e cliente no GitHub Pages. Passos manuais, um
 1. No repositório: **Settings → Pages → Source: GitHub Actions**.
 2. **Settings → Secrets and variables → Actions → Variables → New repository variable**:
    `VITE_SERVER_URL` = a URL do Render (sem barra final).
-3. Rode o workflow **Pages** (Actions → Pages → Run workflow) ou faça push na `main`.
+3. O workflow **Pages** roda sozinho depois que o CI de um push na `main` passa (o Render também espera os checks). Para publicar na hora, use Actions → Pages → Run workflow.
 4. O jogo abre em `https://lucvs07.github.io/PFL/`.
+
+## O que bloqueia o deploy
+- CI vermelho na `main` (testes, typecheck, build, imagens ou gate): nem o Render nem o Pages publicam.
+- `VITE_SERVER_URL` ausente ou algum sprite que não baixou: o workflow Pages falha com mensagem clara, sem publicar um site quebrado. Rode de novo.
 
 ## Limites do plano grátis
 - O servidor dorme após ~15 min sem tráfego; o primeiro acesso depois disso leva ~1 min (cold start). Abra a página e aguarde antes de chamar os amigos.

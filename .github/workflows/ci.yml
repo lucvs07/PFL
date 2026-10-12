@@ -6,9 +6,13 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+# Só PRs cancelam a rodada anterior; em main cada commit precisa do seu resultado (inclui o gate).
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   check:
@@ -28,8 +32,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: docker build -f docker/server.Dockerfile -t pfl-server .
-      - run: docker build -f docker/client.Dockerfile -t pfl-client .
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/server.Dockerfile
+          cache-from: type=gha,scope=server
+          cache-to: type=gha,scope=server,mode=max
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/client.Dockerfile
+          cache-from: type=gha,scope=client
+          cache-to: type=gha,scope=client,mode=max
 
   # portão de balanceamento (milhares de partidas): mais lento, fora dos PRs
   gate:
