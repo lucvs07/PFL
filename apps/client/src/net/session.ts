@@ -50,6 +50,7 @@ export const ERROR_MESSAGES: Record<ErrorCode, string> = {
   NOT_READY: 'A partida não está aceitando essa ação agora (pausada, encerrada ou ainda não começou).',
   STALE_TURN: 'Essa ação chegou atrasada.',
   ENGINE_ERROR: 'Ação recusada pelo servidor.',
+  SERVER_BUSY: 'O servidor está cheio agora. Tente de novo em alguns minutos.',
 };
 
 /** Códigos do engine que chegam em ENGINE_ERROR.message e merecem texto próprio. */

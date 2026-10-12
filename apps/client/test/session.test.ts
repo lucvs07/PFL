@@ -81,6 +81,9 @@ describe('errorReaction', () => {
     expect(describeFailure(new AckError({ code: 'ROOM_FULL', message: 'full' }))).toBe(ERROR_MESSAGES.ROOM_FULL);
     expect(describeFailure(new Error('O servidor não respondeu.'))).toBe('O servidor não respondeu.');
     expect(describeFailure('???')).toBe('Erro inesperado.');
+    expect(describeFailure(new AckError({ code: 'SERVER_BUSY', message: 'cheio' }))).toBe(
+      'O servidor está cheio agora. Tente de novo em alguns minutos.',
+    );
   });
 
   it('describeFailure: ENGINE_ERROR no ack é falha do servidor ao abrir a sala', () => {
