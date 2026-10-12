@@ -5,6 +5,7 @@ import { Server, type Socket } from 'socket.io';
 import type { TeamKey } from '@pfl/engine';
 import type { Ack, ClientToServerEvents, ErrorCode, ServerToClientEvents } from '@pfl/protocol';
 import { normalizeRoomCode } from './codes';
+import { originAllowed } from './config';
 import type { Outgoing } from './outgoing';
 import { parsePlay, type PlayEvent } from './parse';
 import type { Room } from './room';
@@ -62,6 +63,7 @@ export async function createPflServer(options: PflServerOptions = {}): Promise<P
   });
   const io: PflIo = new Server<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData>(httpServer, {
     cors: { origin: options.corsOrigin ?? true },
+    allowRequest: (req, callback) => callback(null, originAllowed(options.corsOrigin ?? true, req.headers.origin)),
     // um código de time tem ~2 KB; o padrão de 1 MB deixaria um jogador sobrecarregar o processo
     maxHttpBufferSize: 64 * 1024,
   });

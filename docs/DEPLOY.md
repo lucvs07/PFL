@@ -20,5 +20,6 @@ Servidor no Render (plano grátis) e cliente no GitHub Pages. Passos manuais, um
 - Confira os termos atuais do Render na página oficial; eles mudam.
 
 ## Se o cliente não conectar
-- `CORS_ORIGIN` (no `render.yaml`/painel) precisa ser exatamente a origem do Pages, sem caminho: `https://lucvs07.github.io`.
+- `CORS_ORIGIN` (no `render.yaml`/painel) precisa ser exatamente a origem do Pages, sem caminho: `https://lucvs07.github.io`. Origens diferentes são recusadas no handshake do WebSocket.
+- Abra o console do navegador: se a URL do servidor aparecer como o próprio `github.io`, a variável `VITE_SERVER_URL` não estava definida no build.
 - `VITE_SERVER_URL` é lida no **build**: depois de mudá-la, rode o workflow Pages de novo.

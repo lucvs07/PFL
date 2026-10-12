@@ -27,6 +27,10 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - name: Exigir VITE_SERVER_URL
+        run: test -n "$VITE_SERVER_URL" || { echo "::error::Defina a variável de repositório VITE_SERVER_URL (veja docs/DEPLOY.md)"; exit 1; }
+        env:
+          VITE_SERVER_URL: ${{ vars.VITE_SERVER_URL }}
       - run: npm run build:client
         env:
           BASE_PATH: /PFL/
