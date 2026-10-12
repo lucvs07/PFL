@@ -7,7 +7,9 @@ export type EngineErrorCode =
   | 'CARD_NOT_PLAYABLE'
   | 'UNKNOWN_FORMATION'
   | 'UNKNOWN_PACKAGE'
-  | 'INVALID_CHOICE';
+  | 'INVALID_CHOICE'
+  | 'INVALID_DEPTH'
+  | 'DEPTH_LOCKED';
 
 export class EngineError extends Error {
   readonly code: EngineErrorCode;

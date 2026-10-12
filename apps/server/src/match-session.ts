@@ -1,0 +1,280 @@
+import {
+  EngineError, actingTeams, createMatch, playerView, step,
+  type Action, type GameEvent, type MatchState, type StepResult, type Team, type TeamKey,
+} from '@pfl/engine';
+import { computeStats, type EndMessage, type ErrorCode } from '@pfl/protocol';
+import type { Send } from './outgoing';
+import { toAction, type PlayRequest } from './parse';
+import type { Scheduler, TimedPhase, Timings } from './timings';
+
+/** Espera antes de tentar de novo um TIMEOUT que o motor recusou (evita laço apertado de timers). */
+const TIMEOUT_RETRY_MS = 1000;
+/** Novas tentativas de TIMEOUT por etapa antes de encerrar a partida. */
+export const MAX_TIMEOUT_RETRIES = 3;
+
+const KEYS: readonly TeamKey[] = ['A', 'B'];
+
+export interface SessionDeps {
+  scheduler: Scheduler;
+  timings: Timings;
+  /** A Room filtra quem está desconectado. */
+  send: Send;
+  /** Tolerância de reconexão esgotada. */
+  isAbsent: (key: TeamKey) => boolean;
+  onEnd: (end: EndMessage) => void;
+}
+
+/**
+ * Uma partida em andamento: o servidor é a autoridade (spec 7.1).
+ * Guarda o estado do motor, o log de ações (replay) e os timers de etapa, e projeta a visão de cada jogador.
+ */
+export class MatchSession {
+  private current: MatchState;
+  private readonly log: Action[] = [];
+  private readonly history: GameEvent[];
+  private readonly teams: Record<TeamKey, Team>;
+  /** muda a cada timer programado; um callback de timer antigo não faz nada */
+  private phaseSeq = 0;
+  /** início da etapa (depois da folga de animação) */
+  private phaseStartsAt = 0;
+  /** deadline cheio da etapa */
+  private fullDeadline = 0;
+  /** deadline efetivo: o cheio, ou o início da etapa se todos que faltam agir estão ausentes */
+  private deadlineAt = 0;
+  private cancelTimer: (() => void) | null = null;
+  /** TIMEOUTs recusados seguidos na etapa atual */
+  private timeoutFailures = 0;
+  private pausedOffsets: { start: number; full: number } | null = null;
+  private endMessage: EndMessage | null = null;
+  private started = false;
+  private disposed = false;
+
+  constructor(teams: Record<TeamKey, Team>, readonly seed: number, private readonly deps: SessionDeps) {
+    this.teams = structuredClone(teams);
+    const created = createMatch(this.teams.A, this.teams.B, seed);
+    this.current = created.state;
+    this.history = [...created.events];
+  }
+
+  get state(): MatchState {
+    return this.current;
+  }
+  get actions(): readonly Action[] {
+    return this.log;
+  }
+  get events(): readonly GameEvent[] {
+    return this.history;
+  }
+  get deadline(): number {
+    return this.deadlineAt;
+  }
+  get finished(): boolean {
+    return this.endMessage !== null;
+  }
+  get paused(): boolean {
+    return this.pausedOffsets !== null;
+  }
+
+  start(): void {
+    if (this.disposed || this.started) return;
+    this.started = true;
+    this.enterPhase(0);
+  }
+
+  handle(key: TeamKey, req: PlayRequest): void {
+    if (this.disposed) return;
+    if (!this.started) return this.error(key, 'NOT_READY', 'A partida ainda não começou');
+    if (this.pausedOffsets) return this.error(key, 'NOT_READY', 'Partida pausada');
+    this.expireIfDue();
+    if (req.turnId !== this.current.turnId) {
+      this.error(key, 'STALE_TURN', `turnId ${req.turnId} não é o turno atual (${this.current.turnId})`);
+      this.sendCurrent(key);
+      return;
+    }
+    this.apply(toAction(key, req), key);
+  }
+
+  sendCurrent(key: TeamKey): void {
+    if (this.disposed || !this.started) return;
+    if (this.endMessage) {
+      this.deps.send(key, { event: 'match:end', payload: this.endMessage });
+      return;
+    }
+    const s = this.current;
+    this.deps.send(key, {
+      event: 'match:phase',
+      payload: { turnId: s.turnId, phase: s.phase, deadline: this.deadlineAt, view: playerView(s, key) },
+    });
+  }
+
+  pause(): void {
+    if (this.endMessage || this.pausedOffsets) return;
+    const now = this.deps.scheduler.now();
+    this.pausedOffsets = {
+      start: Math.max(0, this.phaseStartsAt - now),
+      full: Math.max(0, this.fullDeadline - now),
+    };
+    this.clearTimer();
+  }
+
+  resume(): void {
+    if (this.disposed || !this.pausedOffsets) return;
+    const now = this.deps.scheduler.now();
+    this.phaseStartsAt = now + this.pausedOffsets.start;
+    this.fullDeadline = now + this.pausedOffsets.full;
+    this.pausedOffsets = null;
+    this.armTimer();
+    for (const k of KEYS) this.sendCurrent(k);
+  }
+
+  /** true se o deadline mudou e o match:phase já foi reenviado aos dois. */
+  refreshAbsence(): boolean {
+    if (this.disposed || !this.started || this.endMessage || this.pausedOffsets) return false;
+    const before = this.deadlineAt;
+    this.armTimer();
+    if (this.deadlineAt === before) return false;
+    for (const k of KEYS) this.sendCurrent(k);
+    return true;
+  }
+
+  dispose(): void {
+    this.disposed = true;
+    this.clearTimer();
+  }
+
+  /** false se o motor recusou a ação (o estado não muda). */
+  private apply(action: Action, from: TeamKey | null): boolean {
+    const prev = this.current;
+    let result: StepResult;
+    try {
+      result = step(prev, action);
+    } catch (err) {
+      if (!(err instanceof EngineError)) console.error('[pfl] erro inesperado do motor', err);
+      if (from) this.error(from, 'ENGINE_ERROR', err instanceof EngineError ? err.message : 'Ação inválida');
+      return false;
+    }
+    this.current = result.state;
+    if (action.type === 'SET_DEPTH') this.dropSupersededDepth(action.team);
+    this.log.push(action);
+    this.history.push(...result.events);
+    this.dispatch(prev, action, result.events, from);
+    return true;
+  }
+
+  /**
+   * SET_DEPTH substitui depth/keepOnField por inteiro e não consome RNG; só o último de cada time
+   * depois da última ação de outro tipo importa. Descartar os anteriores mantém o replay equivalente
+   * e impede que um jogador infle o log (e o match:end) reenviando o depth.
+   */
+  private dropSupersededDepth(team: TeamKey): void {
+    let i = this.log.length;
+    while (i > 0 && this.log[i - 1].type === 'SET_DEPTH') i -= 1;
+    for (let j = this.log.length - 1; j >= i; j -= 1) {
+      const a = this.log[j];
+      if (a.type === 'SET_DEPTH' && a.team === team) this.log.splice(j, 1);
+    }
+  }
+
+  private dispatch(prev: MatchState, action: Action, events: GameEvent[], from: TeamKey | null): void {
+    const s = this.current;
+    if (action.type === 'SET_DEPTH') {
+      // confirmação: mesma etapa e mesmo deadline, só para quem pediu
+      if (from) this.sendCurrent(from);
+      return;
+    }
+    if (s.phase === 'MATCH_END') {
+      this.clearTimer();
+      this.sendResult(prev.turnId, events);
+      this.finish();
+      return;
+    }
+    if (s.turnId === prev.turnId && s.phase === prev.phase) {
+      // PLAYCALL: um lado escolheu; o outro passa a ver opponentHasChosen
+      this.armTimer();
+      for (const k of KEYS) this.sendCurrent(k);
+      return;
+    }
+    if (s.turnId === prev.turnId) {
+      // FORMATION → PACKAGE ou PACKAGE → PLAYCALL
+      for (const k of KEYS) this.deps.send(k, { event: 'match:reveal', payload: { turnId: prev.turnId, events } });
+      this.enterPhase(0);
+      return;
+    }
+    // jogada resolvida ou conversão
+    this.sendResult(prev.turnId, events);
+    this.enterPhase(events.length > 0 ? this.deps.timings.resultAnimationMs : 0);
+  }
+
+  private sendResult(turnId: number, events: GameEvent[]): void {
+    for (const k of KEYS) {
+      this.deps.send(k, { event: 'match:result', payload: { turnId, events, view: playerView(this.current, k) } });
+    }
+  }
+
+  private enterPhase(delayMs: number): void {
+    this.timeoutFailures = 0;
+    const now = this.deps.scheduler.now();
+    this.phaseStartsAt = now + delayMs;
+    this.fullDeadline = this.phaseStartsAt + this.deps.timings.phaseMs[this.current.phase as TimedPhase];
+    this.armTimer();
+    for (const k of KEYS) this.sendCurrent(k);
+  }
+
+  private armTimer(): void {
+    this.clearTimer();
+    if (this.endMessage || this.pausedOffsets) return;
+    const now = this.deps.scheduler.now();
+    const pending = actingTeams(this.current);
+    const allAbsent = pending.length > 0 && pending.every((k) => this.deps.isAbsent(k));
+    this.deadlineAt = allAbsent ? Math.min(this.fullDeadline, Math.max(this.phaseStartsAt, now)) : this.fullDeadline;
+    const seq = this.phaseSeq;
+    this.cancelTimer = this.deps.scheduler.schedule(Math.max(0, this.deadlineAt - now), () => this.onDeadline(seq));
+  }
+
+  private clearTimer(): void {
+    this.cancelTimer?.();
+    this.cancelTimer = null;
+    this.phaseSeq += 1;
+  }
+
+  private onDeadline(seq: number): void {
+    if (this.disposed || seq !== this.phaseSeq || this.endMessage || this.pausedOffsets) return;
+    this.clearTimer();
+    if (this.apply({ type: 'TIMEOUT' }, null)) return;
+    // o motor recusou o TIMEOUT: tenta de novo com um deadline novo (avisado aos dois) e, depois de
+    // MAX_TIMEOUT_RETRIES falhas seguidas, encerra a partida com o placar atual em vez de travar
+    this.timeoutFailures += 1;
+    if (this.timeoutFailures > MAX_TIMEOUT_RETRIES) {
+      console.error('[pfl] TIMEOUT recusado', this.timeoutFailures, 'vezes; partida encerrada');
+      for (const k of KEYS) this.error(k, 'ENGINE_ERROR', 'Erro interno: a partida foi encerrada');
+      this.finish();
+      return;
+    }
+    console.error('[pfl] TIMEOUT recusado pelo motor; nova tentativa em', TIMEOUT_RETRY_MS, 'ms');
+    // início e deadline adiados juntos: mesmo com ausentes o disparo espera o intervalo
+    this.phaseStartsAt = this.fullDeadline = this.deps.scheduler.now() + TIMEOUT_RETRY_MS;
+    this.armTimer();
+    for (const k of KEYS) this.sendCurrent(k);
+  }
+
+  /** Corrida entre a ação e o timer: se o deadline já passou, o padrão vale primeiro. */
+  private expireIfDue(): void {
+    if (this.endMessage || this.pausedOffsets) return;
+    if (this.deps.scheduler.now() >= this.deadlineAt) this.onDeadline(this.phaseSeq);
+  }
+
+  private finish(): void {
+    const s = this.current;
+    this.endMessage = {
+      score: { ...s.score },
+      stats: computeStats(this.history),
+      replay: { seed: this.seed, teams: structuredClone(this.teams), actions: structuredClone(this.log) },
+    };
+    for (const k of KEYS) this.deps.send(k, { event: 'match:end', payload: this.endMessage });
+    this.deps.onEnd(this.endMessage);
+  }
+
+  private error(to: TeamKey, code: ErrorCode, message: string): void {
+    this.deps.send(to, { event: 'error', payload: { code, message } });
+  }
+}
