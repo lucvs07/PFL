@@ -426,7 +426,7 @@ Exemplo de `events[]` (consumidos pela animação e pelo log):
   - pontos por posse
   - duração em jogadas
   - impacto observado de tipo e de stats
-- **Portão de balanceamento:** nenhuma carta com win rate (das partidas em que foi jogada) fora de **45%–55%**, exceto as **exceções documentadas** (hoje: `psychic_foresight`, revisar após os playtests).
+- **Portão de balanceamento:** nenhuma carta com win rate (das partidas em que só um dos lados a jogou) fora de **45%–55%** com significância: reprova quando o intervalo de confiança de 95% (Wilson) fica inteiro fora da faixa; fora só no ponto é aviso (decisão do usuário, 2026-10-11). Exceto as **exceções documentadas** (hoje: nenhuma; `psychic_foresight` saiu da lista em 2026-10-11 depois do rebalanceamento dos times sugeridos).
 - **Pesos da seção 4.3 são informativos:** o relatório mede a participação de leitura/tipo/stats/variância, mas o portão não depende dela. Medição de 2026-10-10 com a escala antiga de tipos: leitura ~79%, tipo ~6%, stats ~13%, variância ~2%. Por isso a escala de tipos foi dobrada (decisão do usuário em 2026-10-10).
 
 ---
