@@ -67,7 +67,7 @@ export interface EndMessage { score: Record<TeamKey, number>; stats: MatchStats;
 
 export type ErrorCode =
   | 'ROOM_NOT_FOUND' | 'ROOM_FULL' | 'NOT_IN_ROOM' | 'INVALID_TEAM_CODE' | 'TEAM_INVALID'
-  | 'NOT_READY' | 'STALE_TURN' | 'ENGINE_ERROR';
+  | 'NOT_READY' | 'STALE_TURN' | 'ENGINE_ERROR' | 'SERVER_BUSY';
 export interface ErrorMessage { code: ErrorCode; message: string; }
 
 export type Ack<T> = (res: { ok: true; data: T } | { ok: false; error: ErrorMessage }) => void;
@@ -193,3 +193,14 @@ O código é a fonte de verdade onde o texto do Plano 2 divergir (ver o aviso no
   - Contribuição observada: leitura 74% / tipo 12% / stats 12% / variância 2%, contra os alvos 50/20/20/10 da spec 4.3. Não é atingível com os números fixados; a spec 7.3 já os trata como informativos.
   - Cartas que só aparecem nos times sugeridos ficam abaixo da amostra mínima e escapam do portão. O relatório as lista como aviso (por exemplo `ice_blizzard`, `sig_hitmonchan_counter`, `rock_throw_deep`, `sig_machamp_karate`, `sig_mewtwo_mind`).
   - Os temas dos times sugeridos derivaram um pouco: Cinnabar não tem carta de Lutador e Saffron tem 8 cartas Normal.
+
+## 7. Ajustes da revisão do PR do Plano 3 (branch `pfl-3-server`)
+
+- **`actingTeams(state)`** mudou para o `@pfl/engine` (quem precisa agir na etapa atual). O `@pfl/sim` e o servidor importam de lá; o `@pfl/sim` não o exporta mais.
+- **`SET_DEPTH` e o descanso:** depois de trocar o "manter em campo", o motor recalcula `fatigue.resting` (`refreshResting`). Quem ganha a marca volta na hora; quem a perde e está no limiar passa a descansar.
+- **`ErrorCode`** ganha `'SERVER_BUSY'`: `room:create` responde no Ack com esse código quando o servidor atinge o teto de salas abertas (`MAX_ROOMS = 10_000`).
+- **Saída voluntária:** quem cria ou entra em outra sala sai da atual; se ela estava no lobby e fica sem ninguém conectado, fecha na hora (não espera os 5 min).
+- **Vaga abandonada no lobby:** quem cai no lobby tem `RECONNECT_GRACE_MS` para voltar. Se não voltar enquanto o outro jogador espera conectado, a vaga é liberada (o token antigo deixa de valer) e `room:state` mostra só um jogador.
+- **Time do código:** o servidor guarda só os campos do contrato, com `name` cortado em 40 caracteres. É esse time que vai para a partida e para `replay.teams`.
+- **TIMEOUT recusado pelo motor:** cada nova tentativa reenvia `match:phase` com o deadline novo (+1 s). Depois de `MAX_TIMEOUT_RETRIES = 3` novas tentativas na mesma etapa, os dois recebem `error { code: 'ENGINE_ERROR' }` e a partida termina com o placar atual (`match:end`).
+- **Reconexão:** quem volta recebe um único `match:phase`.

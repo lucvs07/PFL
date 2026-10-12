@@ -24,10 +24,10 @@ Tudo isso roda no Vitest em ambiente node. Os componentes React (`components/`, 
 - TypeScript `strict: true`.
 - Stack: "Monorepo TypeScript (npm workspaces): `engine` puro + `server` Node/Socket.io + `client` React/Phaser".
 - Phaser **3** (fixar `phaser@^3`; o Phaser 4 tem outra API).
-- Visual: "Pixel art 2D, sprites Gen 1 (Pokémon Yellow, GBC) da PokéAPI".
+- Visual: pixel art 2D, sprites Gen 5 Black/White (front/back) do repositório de sprites da PokéAPI, baixados no setup (decisão do usuário em 2026-10-11, substitui "sprites Gen 1 (Pokémon Yellow, GBC)"); dados e tipagens continuam Gen 1.
 - "Sem dependência em tempo de execução: ... Os sprites também são baixados no build e servidos pelo próprio client." O jogo nunca chama a PokéAPI em runtime.
 - Estilo: "fonte bitmap, paleta inspirada no Game Boy Color, componentes React com visual pixel art".
-- Sprites: "ataque com `back_gbc`, defesa com `front_gbc` (Yellow)".
+- Sprites: ataque com o sprite B/W de costas (`generation-v/black-white/back/{id}.png`), defesa com o de frente (`generation-v/black-white/{id}.png`), servidos de `apps/client/public/sprites/bw/{front,back}` (decisão do usuário em 2026-10-11, substitui `back_gbc`/`front_gbc` do Yellow). Tamanhos em múltiplos de 48 px.
 - "O client só envia intenções e anima os `events` recebidos. Não calcula resultados."
 - "O servidor revalida o time recebido. O client nunca é confiável."
 - "toda ação `play:*` e `team:depth` carrega o `turnId`". Se o `turnId` estiver errado, o servidor responde `STALE_TURN` e reenvia o `match:phase` atual.

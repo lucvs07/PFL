@@ -102,6 +102,7 @@ export type Action =
   | { type: 'PACKAGE'; team: TeamKey; package: PackageId }
   | { type: 'CARD'; team: TeamKey; cardId: string }
   | { type: 'CONVERSION'; team: TeamKey; choice: 'PAT' | 'TWO' }
+  | { type: 'SET_DEPTH'; team: TeamKey; depth: Team['depth']; keepOnField: number[] }
   | { type: 'TIMEOUT' };
 
 export type PlayKind = 'GAIN' | 'SACK' | 'INCOMPLETE' | 'INTERCEPTION' | 'FUMBLE';

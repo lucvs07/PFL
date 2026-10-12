@@ -1,0 +1,31 @@
+{
+  "name": "@pfl/client",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "sprites": "tsx scripts/download-sprites.ts",
+    "sprites:dev": "tsx scripts/download-sprites.ts --allow-missing",
+    "prebuild": "npm run sprites:dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@fontsource/pixelify-sans": "^5.3.0",
+    "@fontsource/press-start-2p": "^5.3.0",
+    "@pfl/engine": "*",
+    "@pfl/protocol": "*",
+    "phaser": "^3.90.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "socket.io-client": "^4.8.4"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "vite": "^8.3.4"
+  }
+}

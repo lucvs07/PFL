@@ -9,9 +9,12 @@
   "scripts": {
     "test": "vitest run",
     "test:gate": "vitest run --config vitest.gate.config.ts",
-    "typecheck": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json && tsc -p apps/client/tsconfig.json",
     "data:build": "npm run build -w @pfl/data",
-    "sim": "tsx packages/sim/src/cli.ts"
+    "sim": "tsx packages/sim/src/cli.ts",
+    "dev:server": "npm run dev -w @pfl/server",
+    "dev:client": "npm run sprites:dev -w @pfl/client && npm run dev -w @pfl/client",
+    "build:client": "npm run build -w @pfl/client"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",

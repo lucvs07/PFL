@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { SUGGESTED_TEAMS, createMatch, step, playerView, type Action, type MatchState, type TeamKey } from '@pfl/engine';
-import { actingTeams, botAction, botDecide, distanceOf, fourthDownDecision, predictOffense } from '../src/bot';
+import { SUGGESTED_TEAMS, actingTeams, createMatch, step, playerView, type Action, type MatchState, type TeamKey } from '@pfl/engine';
+import { botAction, botDecide, distanceOf, fourthDownDecision, predictOffense } from '../src/bot';
 
 const [VERMILION, CINNABAR] = SUGGESTED_TEAMS;
 const start = (seed = 1): MatchState => createMatch(VERMILION, CINNABAR, seed).state;

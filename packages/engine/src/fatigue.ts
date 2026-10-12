@@ -75,6 +75,15 @@ export function applyPlayFatigue(
   return { levels, resting: updateResting(team, levels, state.resting) };
 }
 
+/**
+ * Recalcula quem descansa depois de mudar o "manter em campo" (SET_DEPTH): quem ganhou a marca volta na
+ * hora; quem a perdeu e está no limiar passa a descansar.
+ */
+export function refreshResting(state: FatigueState, team: Team): FatigueState {
+  const kept = state.resting.filter((id) => !team.keepOnField.includes(id));
+  return { levels: state.levels, resting: updateResting(team, state.levels, kept) };
+}
+
 export function recoverBetweenDrives(state: FatigueState, team: Team): FatigueState {
   const levels: Record<number, number> = {};
   for (const [id, level] of Object.entries(state.levels)) {

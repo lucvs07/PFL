@@ -5,7 +5,7 @@ import { FORMATIONS, PACKAGES } from './formations';
 import { BASIC_DEFENSE_IDS, BASIC_OFFENSE_IDS, SPECIAL_IDS, getCard } from './cards/catalog';
 import { canPlay } from './cards/eligibility';
 import { drawCards, newHand, playFromHand } from './cards/deck';
-import { applyPlayFatigue, initialFatigue, pickLineup, recoverBetweenDrives } from './fatigue';
+import { applyPlayFatigue, initialFatigue, pickLineup, recoverBetweenDrives, refreshResting } from './fatigue';
 import { resolvePlay } from './resolve';
 import { resolveFieldGoal, resolvePat, resolvePunt } from './specials';
 import { advanceField, nextDriveStart, type DriveEnd } from './field';
@@ -37,6 +37,8 @@ export interface MatchState {
   rng: number;
   phase: Phase;
   turnId: number;
+  /** número do snap dentro do drive atual: 1 no primeiro snap (contrato, seção 2) */
+  snapInDrive: number;
   score: Record<TeamKey, number>;
   offense: TeamKey;
   /** posses de tempo regulamentar já iniciadas */
@@ -86,6 +88,7 @@ export function createMatch(teamA: Team, teamB: Team, seed: number, config: Matc
     rng,
     phase: 'FORMATION',
     turnId: 0,
+    snapInDrive: 0,
     score: { A: 0, B: 0 },
     offense: 'A',
     possessions: { A: 0, B: 0 },
@@ -120,6 +123,10 @@ export function step(state: MatchState, action: Action): StepResult {
   if (state.phase === 'MATCH_END') throw new EngineError('MATCH_OVER');
   const s = cloneState(state);
   const events: GameEvent[] = [];
+  if (action.type === 'SET_DEPTH') {
+    onSetDepth(s, action);
+    return { state: s, events };
+  }
   switch (s.phase) {
     case 'FORMATION':
       onFormation(s, action, events);
@@ -135,6 +142,38 @@ export function step(state: MatchState, action: Action): StepResult {
       break;
   }
   return { state: s, events };
+}
+
+/** Ajuste manual do depth chart (spec 5.4): só na FORMATION do primeiro snap do drive. */
+export function canEditDepth(s: MatchState): boolean {
+  return s.phase === 'FORMATION' && s.snapInDrive === 1;
+}
+
+function onSetDepth(s: MatchState, action: Extract<Action, { type: 'SET_DEPTH' }>): void {
+  if (action.team !== 'A' && action.team !== 'B') throw new EngineError('WRONG_TEAM');
+  if (!canEditDepth(s)) throw new EngineError('DEPTH_LOCKED');
+  const rt = s.teams[action.team];
+  const candidate = { ...rt.team, depth: action.depth, keepOnField: action.keepOnField };
+  const errors = validateTeam(candidate);
+  if (errors.length) throw new EngineError('INVALID_DEPTH', errors.map((e) => e.code).join(', '));
+  rt.team = deepFreeze(structuredClone(candidate));
+  rt.fatigue = refreshResting(rt.fatigue, rt.team);
+}
+
+/** Quais times precisam agir agora. Vazio quando a partida acabou. */
+export function actingTeams(s: MatchState): TeamKey[] {
+  const defense = other(s.offense);
+  switch (s.phase) {
+    case 'FORMATION':
+    case 'CONVERSION':
+      return [s.offense];
+    case 'PACKAGE':
+      return [defense];
+    case 'PLAYCALL':
+      return [...(s.cards.offense === null ? [s.offense] : []), ...(s.cards.defense === null ? [defense] : [])];
+    case 'MATCH_END':
+      return [];
+  }
 }
 
 export function playableCards(s: MatchState, team: TeamKey): string[] {
@@ -310,6 +349,7 @@ function beginSnap(s: MatchState): void {
   clearSnap(s);
   s.phase = 'FORMATION';
   s.turnId += 1;
+  s.snapInDrive += 1;
 }
 
 /** Limpa as escolhas do snap anterior (formação, pacote, escalações e cartas). */
@@ -348,6 +388,7 @@ function startDrive(s: MatchState, offense: TeamKey, ballOn: number, events: Gam
     possession: s.possessions[offense],
     overtimeRound: s.overtime?.round ?? 0,
   });
+  s.snapInDrive = 0;
   beginSnap(s);
 }
 
@@ -398,6 +439,8 @@ export interface PlayerView {
   yourCard: string | null;
   opponentHasChosen: boolean;
   fatigue: Record<TeamKey, Record<number, number>>;
+  /** o jogador pode enviar SET_DEPTH agora (FORMATION do primeiro snap do drive) */
+  canEditDepth: boolean;
 }
 
 /** Visão de um jogador: a própria mão; do adversário, só a contagem (spec 7.1). */
@@ -425,5 +468,6 @@ export function playerView(s: MatchState, you: TeamKey): PlayerView {
     yourCard: s.cards[side],
     opponentHasChosen: s.cards[opponentSide] !== null,
     fatigue: { A: { ...s.teams.A.fatigue.levels }, B: { ...s.teams.B.fatigue.levels } },
+    canEditDepth: canEditDepth(s),
   };
 }

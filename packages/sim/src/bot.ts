@@ -1,5 +1,5 @@
 import {
-  FORMATIONS, canPlay, fieldGoalDistance, fieldGoalProbability, getCard, pickLineup, playerView, readResult,
+  FORMATIONS, actingTeams, canPlay, fieldGoalDistance, fieldGoalProbability, getCard, pickLineup, playerView, readResult,
   type Action, type DefenseCategory, type FatigueState, type FormationId, type MatchState, type OffenseCategory,
   type PackageId, type PlayerView, type Team, type TeamKey,
 } from '@pfl/engine';
@@ -41,26 +41,6 @@ const READ_SHARPNESS = 2;
 
 export function distanceOf(yardsToGo: number): Distance {
   return yardsToGo <= 3 ? 'SHORT' : yardsToGo <= 7 ? 'MEDIUM' : 'LONG';
-}
-
-/** Quais times precisam agir agora. Vazio quando a partida acabou. */
-export function actingTeams(state: MatchState): TeamKey[] {
-  const defense: TeamKey = state.offense === 'A' ? 'B' : 'A';
-  switch (state.phase) {
-    case 'FORMATION':
-    case 'CONVERSION':
-      return [state.offense];
-    case 'PACKAGE':
-      return [defense];
-    case 'PLAYCALL': {
-      const out: TeamKey[] = [];
-      if (state.cards.offense === null) out.push(state.offense);
-      if (state.cards.defense === null) out.push(defense);
-      return out;
-    }
-    case 'MATCH_END':
-      return [];
-  }
 }
 
 /** Probabilidade prevista de cada categoria de ataque, dada a situação e a formação revelada. */

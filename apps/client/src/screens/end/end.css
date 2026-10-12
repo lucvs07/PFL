@@ -1,0 +1,168 @@
+/* Fim de jogo (Task 17). Caixa de menu do GBC; saturação só para lado/tipo; MVP é o momento ousado. */
+.end { min-width: 0; }
+
+.end-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: center;
+}
+
+/* ---------- resultado ---------- */
+.end-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  text-align: center;
+  min-width: 0;
+}
+
+.end-result {
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  line-height: 1.3;
+  margin: 0;
+  color: var(--gbc-ink);
+  text-shadow: 3px 3px 0 var(--gbc-panel-dark);
+}
+.end-win { color: var(--gbc-green-1); }
+.end-loss { color: var(--side-offense); }
+
+.end-line {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+}
+.end-team { overflow-wrap: anywhere; }
+.end-num,
+.end-x { font-family: var(--font-display); font-size: var(--fs-xl); }
+
+/* ---------- MVP (ref 1): sprite grande numa coluna própria, dentro da caixa ---------- */
+.mvp {
+  --mvp-size: 192px;
+  display: grid;
+  grid-template-columns: var(--mvp-size) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-4);
+  min-width: 0;
+  background: var(--gbc-paper);
+}
+
+.mvp-sprite {
+  width: var(--mvp-size);
+  height: var(--mvp-size);
+  overflow: hidden;
+  line-height: 0;
+}
+/* max-* também vale para o fallback com tamanho inline */
+.mvp-sprite .sprite {
+  width: var(--mvp-size);
+  height: var(--mvp-size);
+  max-width: var(--mvp-size);
+  max-height: var(--mvp-size);
+  image-rendering: pixelated;
+}
+.mvp-sprite .sprite-missing {
+  display: grid;
+  place-items: center;
+  background: var(--dmg-3);
+  border: 3px dashed var(--dmg-0);
+  color: var(--dmg-0);
+  font-family: var(--font-display);
+}
+
+.mvp-info { min-width: 0; }
+.mvp-tag {
+  display: inline-block;
+  margin: 0 0 var(--space-2);
+  padding: 2px 6px;
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+  background: var(--gbc-yellow);
+  border: 2px solid var(--gbc-ink);
+}
+.mvp-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.mvp-team { margin: var(--space-1) 0; font-family: var(--font-body); font-size: var(--fs-body); }
+.mvp-stats { margin: 0; font-family: var(--font-body); font-size: var(--fs-body-sm); }
+.mvp-stats b { font-family: var(--font-display); font-size: var(--fs-sm); font-weight: 400; }
+
+/* ---------- estatísticas ---------- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-4);
+}
+.stats-grid > .panel { min-width: 0; }
+
+.stats-summary { margin: 0 0 var(--space-3); font-family: var(--font-body); font-size: var(--fs-body-sm); }
+.stats-summary b { font-family: var(--font-display); font-size: var(--fs-sm); font-weight: 400; }
+
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: var(--fs-body-sm);
+}
+.stats-table th,
+.stats-table td {
+  padding: var(--space-1);
+  border-bottom: 2px solid var(--gbc-panel);
+  text-align: right;
+  vertical-align: middle;
+}
+.stats-table th { font-weight: 400; color: var(--gbc-muted); }
+.stats-table th:first-child,
+.stats-table td:first-child { text-align: left; }
+.stats-table .num { font-family: var(--font-display); font-size: var(--fs-sm); }
+
+.stats-name { display: flex; align-items: center; gap: var(--space-2); font-size: var(--fs-body-sm); }
+.stats-name > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+
+.yards-bar {
+  display: block;
+  height: 8px;
+  margin-top: 2px;
+  background: var(--gbc-panel);
+  border: 2px solid var(--gbc-ink);
+  box-sizing: border-box;
+}
+.yards-fill { display: block; height: 100%; background: var(--side-offense); }
+
+/* ---------- replay ---------- */
+.replay-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 480px) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+.replay-layout > * { min-width: 0; }
+.replay .row span { font-family: var(--font-display); font-size: var(--fs-xs); }
+.replay-lines {
+  max-height: 360px;
+  border: 3px solid var(--gbc-ink);
+  padding: var(--space-2);
+  background: var(--gbc-paper);
+}
+
+@media (max-width: 900px) {
+  .end-top,
+  .stats-grid,
+  .replay-layout { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* celular: MVP ×1 (96 px) para sobrar largura ao nome e às estatísticas */
+@media (max-width: 600px) {
+  .mvp { --mvp-size: 96px; }
+}

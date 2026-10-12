@@ -1,0 +1,384 @@
+/* Início e Lobby (Task 15). Caixa de menu do GBC como único chrome; saturação só para tipo ou lado. */
+
+/* ================= Início (ref 3): palavra gigante na janela DMG ================= */
+.home {
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+/* janela com moldura grossa: borda de tinta, filete claro e sombra deslocada */
+.home-window {
+  width: min(880px, 100%);
+  min-width: 0;
+  background: var(--gbc-paper);
+  border: 6px solid var(--gbc-ink);
+  box-shadow: 8px 8px 0 var(--gbc-ink);
+  outline: 3px solid var(--gbc-panel-dark);
+  outline-offset: -12px;
+}
+
+/* fundo: listras de gramado em duotone DMG; palavra e subtítulo centrados na janela */
+.home-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  min-height: 336px;
+  padding: var(--space-6) var(--space-4);
+  margin: 6px;
+  background-color: var(--dmg-3);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--dmg-3) 0,
+    var(--dmg-3) 24px,
+    var(--dmg-2) 24px,
+    var(--dmg-2) 48px
+  );
+  border: 3px solid var(--dmg-0);
+  overflow: hidden;
+}
+
+.home-wordmark {
+  max-width: 100%;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(80px, 24vw, 216px);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--dmg-0);
+  text-align: center;
+  text-shadow: 6px 6px 0 var(--dmg-1);
+  user-select: none;
+}
+
+.home-subtitle {
+  margin: 0;
+  padding: var(--space-1) var(--space-3);
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+  line-height: 1.6;
+  text-align: center;
+  color: var(--dmg-3);
+  background: var(--dmg-0);
+}
+
+/* barra de ação embaixo da janela */
+.home-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  border-top: 4px solid var(--gbc-ink);
+}
+
+.home-join {
+  display: flex;
+  gap: var(--space-2);
+  flex: 1 1 240px;
+  min-width: 0;
+  max-width: 360px;
+}
+
+.home-code {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  text-align: center;
+}
+
+.home-code::placeholder {
+  color: var(--gbc-muted);
+  letter-spacing: 0.15em;
+}
+
+.home-code[aria-invalid='true'] { border-color: var(--gbc-red); }
+
+.home-error {
+  padding: 0 var(--space-4) var(--space-3);
+  font-size: var(--fs-body-sm);
+}
+
+.home-hint {
+  max-width: 440px;
+  margin: 0;
+  text-align: center;
+  font-size: var(--fs-body-sm);
+  color: var(--gbc-ink);
+}
+
+
+/* ================= Lobby (ref 1) ================= */
+.lobby > * { min-width: 0; }
+
+.lobby-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.lobby-header p { margin: 0; }
+
+.lobby-code-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.lobby-code-block .muted { font-size: var(--fs-body-sm); }
+
+.room-code {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 7vw, 40px);
+  line-height: 1.3;
+  letter-spacing: 0.3em;
+  color: var(--gbc-ink);
+  overflow-wrap: anywhere;
+}
+
+.lobby-leave {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+  max-width: 260px;
+}
+
+.lobby-leave-note {
+  font-size: var(--fs-body-sm);
+  line-height: 1.4;
+  text-align: right;
+}
+
+/* cards de jogador: fatos à esquerda, sprite do QB titular numa coluna própria à direita, dentro do card */
+.lobby-players {
+  --lead-size: 192px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.lobby-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+  min-width: 0;
+  min-height: 168px;
+  padding: var(--space-3) var(--space-4);
+  background: var(--gbc-paper);
+  border: 3px solid var(--gbc-ink);
+  box-shadow: 3px 3px 0 var(--gbc-ink);
+}
+
+.lobby-card.is-you {
+  border-width: 4px;
+  box-shadow: 6px 6px 0 var(--gbc-ink);
+  background: var(--gbc-panel);
+}
+
+.lobby-card.has-lead { grid-template-columns: minmax(0, 1fr) var(--lead-size); }
+
+.lobby-card-facts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.lobby-card-facts p {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: 1.4;
+}
+
+.lobby-card-title {
+  margin: 0 0 var(--space-1);
+  font-size: var(--fs-md);
+  line-height: 1.5;
+}
+
+.lobby-you {
+  font-family: var(--font-body);
+  font-size: var(--fs-body-sm);
+  color: var(--gbc-muted);
+}
+
+.lobby-card-facts .lobby-team {
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.lobby-card-facts .lobby-team-none {
+  font-family: var(--font-body);
+  font-size: var(--fs-body-sm);
+}
+
+.lobby-card-facts .lobby-cost {
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+}
+
+.lobby-card-facts .lobby-ready {
+  align-self: flex-start;
+  margin-top: var(--space-1);
+  padding: 2px 6px;
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+  line-height: 1.6;
+  background: var(--gbc-ink);
+  color: var(--gbc-paper);
+}
+
+.lobby-card-facts .lobby-ready.is-waiting {
+  background: transparent;
+  color: var(--gbc-muted);
+  border: 2px dashed var(--gbc-muted);
+  font-family: var(--font-body);
+  font-size: var(--fs-body-sm);
+}
+
+.lobby-lead {
+  align-self: end;
+  width: var(--lead-size);
+  height: var(--lead-size);
+  overflow: hidden;
+  line-height: 0;
+  pointer-events: none;
+}
+
+/* max-* também vale para o fallback com tamanho inline */
+.lobby-lead .sprite {
+  width: var(--lead-size);
+  height: var(--lead-size);
+  max-width: var(--lead-size);
+  max-height: var(--lead-size);
+}
+
+/* lista de times: faixa na cor da cidade de ginásio (fallback tinta) e fileira de sprites */
+.team-options {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.team-option {
+  --gym-color: var(--gbc-ink);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-2) var(--space-3);
+  background: var(--gbc-paper);
+  border: 2px solid var(--gbc-ink);
+  border-left: 10px solid var(--gym-color);
+  cursor: pointer;
+}
+
+.team-option:hover { background: var(--gbc-panel); }
+
+.team-option.is-selected {
+  border-width: 3px;
+  border-left-width: 10px;
+  box-shadow: 3px 3px 0 var(--gbc-ink);
+  background: var(--gbc-panel);
+}
+
+
+.team-option input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--gbc-ink);
+}
+
+.team-option-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.team-option-name {
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.team-option-source {
+  font-size: var(--fs-body-sm);
+  color: var(--gbc-muted);
+}
+
+.team-option-sprites {
+  display: flex;
+  gap: 2px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.team-option-sprites .sprite {
+  width: 32px;
+  height: 32px;
+}
+
+.lobby-help {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+}
+
+/* cards estreitos (duas colunas abaixo de ~960 px, ou empilhados no celular): sprite ×1 */
+@media (max-width: 960px) {
+  .lobby-players { --lead-size: 96px; }
+}
+
+/* ================= celular ================= */
+@media (max-width: 720px) {
+  .home-window {
+    border-width: 4px;
+    box-shadow: 4px 4px 0 var(--gbc-ink);
+    outline-offset: -10px;
+  }
+
+  .home-stage {
+    min-height: 224px;
+    padding: var(--space-4) var(--space-2);
+  }
+
+  .home-subtitle { font-size: var(--fs-xs); }
+
+  .home-bar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: var(--space-3);
+  }
+
+  .home-join { max-width: none; flex: none; }
+  .home-error { padding: 0 var(--space-3) var(--space-3); }
+
+  .lobby-header { flex-direction: column; }
+  .lobby-leave { align-items: flex-start; max-width: none; }
+  .lobby-leave-note { text-align: left; }
+
+  .lobby-players { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
+
+  .team-option { grid-template-columns: auto minmax(0, 1fr); }
+  .team-option-sprites { grid-column: 2; }
+}
