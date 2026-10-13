@@ -1,7 +1,7 @@
 import type { GameEvent, OffenseCategory, PlayOutcome } from '@pfl/engine';
 import { findCard } from '@pfl/engine';
 import { RESULT_ANIMATION_MS } from '@pfl/protocol';
-import { typeEffect, type TypeEffect } from './effect';
+import { typeEffect, typeMultiplier, type Mult, type TypeEffect } from './effect';
 
 interface Timed {
   /** ms desde o início da animação */
@@ -12,10 +12,10 @@ interface Timed {
 export type AnimStep = Timed &
   (
     | { kind: 'SNAP' }
-    | { kind: 'BLOCK' }
-    | { kind: 'CLASH'; off: number; def: number; effect: TypeEffect | null }
-    | { kind: 'THROW'; from: number | null; to: number }
-    | { kind: 'RUN'; carrier: number; yards: number; big?: boolean }
+    | { kind: 'BLOCK'; category?: OffenseCategory; blitz?: boolean }
+    | { kind: 'CLASH'; off: number; def: number; effect: TypeEffect | null; category?: OffenseCategory; mult?: Mult | null }
+    | { kind: 'THROW'; from: number | null; to: number; category?: OffenseCategory }
+    | { kind: 'RUN'; carrier: number; yards: number; big?: boolean; category?: OffenseCategory }
     | { kind: 'TACKLE'; by: number; carrier: number }
     | { kind: 'INCOMPLETE' }
     | { kind: 'SACK'; qb: number; by: number; yards: number }
@@ -66,6 +66,7 @@ export function buildTimeline(events: readonly GameEvent[]): AnimStep[] {
   };
   const scored = events.some((e) => e.t === 'TOUCHDOWN' || (e.t === 'CONVERSION' && e.choice === 'TWO' && e.good));
   let offenseCard: string | null = null;
+  let blitz = false;
 
   const playSteps = (o: PlayOutcome) => {
     const card = offenseCard ? findCard(offenseCard) : undefined;
@@ -77,16 +78,19 @@ export function buildTimeline(events: readonly GameEvent[]): AnimStep[] {
     const defender = o.defActors[0];
 
     push({ kind: 'SNAP' }, D.snap);
-    if (isProtected) push({ kind: 'BLOCK' }, D.block);
+    if (isProtected) push({ kind: 'BLOCK', category, blitz }, D.block);
     if (o.kind === 'SACK') {
       const by = o.defActors.at(-1);
       if (qb !== undefined && by !== undefined) push({ kind: 'SACK', qb, by, yards: o.yards }, D.sack);
       return;
     }
     if (carrier !== undefined && defender !== undefined) {
-      push({ kind: 'CLASH', off: carrier, def: defender, effect: typeEffect(card?.element ?? null, o.defActors) }, D.clash);
+      push(
+        { kind: 'CLASH', off: carrier, def: defender, effect: typeEffect(card?.element ?? null, o.defActors), category, mult: typeMultiplier(card?.element ?? null, o.defActors) },
+        D.clash,
+      );
     }
-    if (isPass && carrier !== undefined) push({ kind: 'THROW', from: qb ?? null, to: carrier }, D.throw);
+    if (isPass && carrier !== undefined) push({ kind: 'THROW', from: qb ?? null, to: carrier, category }, D.throw);
     switch (o.kind) {
       case 'INCOMPLETE':
         push({ kind: 'INCOMPLETE' }, D.incomplete);
@@ -97,7 +101,7 @@ export function buildTimeline(events: readonly GameEvent[]): AnimStep[] {
         break;
       case 'GAIN':
         if (carrier !== undefined) {
-          push({ kind: 'RUN', carrier, yards: o.yards, big: o.bigPlay }, o.bigPlay ? D.runBig : D.run);
+          push({ kind: 'RUN', carrier, yards: o.yards, big: o.bigPlay, category }, o.bigPlay ? D.runBig : D.run);
           if (!scored && defender !== undefined) push({ kind: 'TACKLE', by: defender, carrier }, D.tackle);
         }
         break;
@@ -108,6 +112,7 @@ export function buildTimeline(events: readonly GameEvent[]): AnimStep[] {
     switch (e.t) {
       case 'CARDS':
         offenseCard = e.offense;
+        blitz = findCard(e.defense)?.category === 'BLITZ';
         break;
       case 'PLAY':
         playSteps(e.outcome);
