@@ -28,7 +28,7 @@ Skills usadas na execução: `impeccable`, `design-taste-frontend` (só as regra
 
 ### 1. Fundação (compartilhada pelas telas)
 
-**Mobile-first de verdade.** O CSS atual é desktop-first (17 blocos `@media (max-width)` em 8 arquivos). Em cada arquivo o estilo-base passa a ser o do celular e o desktop é acrescentado com `@media (min-width: 720px)` e `(min-width: 1040px)` (pontos que já existem no código). Os blocos `max-width` são removidos, não somados. Paisagem de celular é tratada por `(orientation: landscape) and (max-height: 500px)`, não por largura.
+**Mobile-first de verdade.** O CSS atual é desktop-first (17 blocos `@media (max-width)` em 8 arquivos). Em cada arquivo o estilo-base passa a ser o do celular e o desktop é acrescentado com `@media (min-width)` nos pontos que já existem no código: 600, 720, 900, 960 e 1040 px (o antigo 520 passa a ser a base). Os blocos `max-width` são removidos, não somados. Paisagem de celular é tratada por `(orientation: landscape) and (max-height: 500px)`, não por largura.
 
 **Tokens e foco** (`styles/tokens.css`, `styles/app.css`)
 - `--hit-min: 44px` aplicado a todo elemento interativo (botões, abas, opções, cartas, controles de áudio).
@@ -98,12 +98,14 @@ Regras gerais: `viewport-fit=cover` com padding de safe-area, `dvh` no lugar de 
 ## Plano de commits (um PR)
 
 1. `feat(client/mobile)`: camada de plataforma (viewport, hover condicionado, tap-highlight, `dvh`, `touch-action`, overscroll, inputs de 16 px).
-2. `feat(client/a11y)`: tokens de alvo de toque, `:focus-visible` global e ajustes de contraste nos tokens + script de contraste.
+2. `feat(client/a11y)`: contraste AA nos tokens e alvos de toque de 44 px.
 3. `feat(client/net)`: `connectionState`, ping em `/health` e `ConnectionBanner` (substitui o aviso da partida).
-4. `feat(client/a11y)`: `useArrowNav` e navegação por teclado em formação, pacote, carta e conversão.
-5. `feat(client/mobile)`: tooltip de carta por toque e posicionamento seguro.
-6. `feat(client/mobile)`: varredura por tela (início, montagem, lobby, partida, fim) em retrato e paisagem; sem repetir a camada de plataforma.
-7. `test(client)`: verificação em viewport emulado (overflow e alvos) e documentação do resultado.
+4. `feat(client/a11y)`: `useArrowNav` e cartas não jogáveis focáveis (`aria-disabled`).
+5. `feat(client/mobile)`: tooltip de carta por toque.
+6. a 9. `feat(client/mobile)`: CSS mobile-first de partida/campo (com paisagem), montagem, início/lobby e fim de jogo, mais o teste de regressão de `max-width`.
+10. `test(client)`: auditoria em viewport emulado e registro do que precisa de aparelho real.
+
+Detalhes e código em `docs/superpowers/plans/2026-10-13-a11y-e-celular.md`.
 
 Cada commit termina com a suíte e o typecheck verdes.
 
