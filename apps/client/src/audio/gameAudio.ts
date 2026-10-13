@@ -46,6 +46,11 @@ export function replayCues(events: readonly GameEvent[], steps: readonly AnimSte
   return animationCues({ events, steps, endsAt: Number.POSITIVE_INFINITY }, null, 0);
 }
 
+/** O replay mostra o 1º quadro ao montar a tela de fim (seq 1); esse quadro não soa por cima do jingle. */
+export function shouldSoundReplay(seq: number): boolean {
+  return seq > 1;
+}
+
 /** Toca ao entrar numa etapa em que o jogador precisa escolher. */
 export function turnStartCue(prev: PanelMode | null, next: PanelMode): Cue | null {
   return next.startsWith('PICK_') && prev !== next ? 'turn-start' : null;

@@ -9,6 +9,7 @@ export class FakeBackend implements AudioBackend {
   tones: { channel: Channel; tone: Tone }[] = [];
   gains: { node: 'master' | Channel; value: number; seconds: number }[] = [];
   fades: { value: number; seconds: number }[] = [];
+  buses = 0;
 
   resume(): void {
     this.resumed += 1;
@@ -19,6 +20,9 @@ export class FakeBackend implements AudioBackend {
   }
   fadeMusic(value: number, seconds: number): void {
     this.fades.push({ value, seconds });
+  }
+  newMusicBus(): void {
+    this.buses += 1;
   }
   playTone(channel: Channel, tone: Tone): void {
     this.tones.push({ channel, tone });

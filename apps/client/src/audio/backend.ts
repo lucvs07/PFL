@@ -28,5 +28,10 @@ export interface AudioBackend {
   setGain(node: 'master' | Channel, value: number, rampSeconds: number): void;
   /** fade do trecho de música atual, separado do volume do jogador */
   fadeMusic(value: number, seconds: number): void;
+  /**
+   * Começa uma faixa num barramento de fade novo e cheio. As notas longas da faixa anterior seguem no
+   * barramento antigo (já em fade-out) e não vazam para a nova.
+   */
+  newMusicBus(): void;
   playTone(channel: Channel, tone: Tone): void;
 }

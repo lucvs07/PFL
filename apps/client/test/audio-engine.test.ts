@@ -62,6 +62,22 @@ describe('desbloqueio', () => {
   });
 });
 
+describe('contexto suspenso depois do desbloqueio', () => {
+  it('efeitos e jingle são descartados enquanto o contexto não está tocando', () => {
+    const { backend, audio } = setup();
+    audio.unlock();
+    backend.running = false; // iOS suspendeu o contexto (tela bloqueada, ligação)
+    audio.play('tackle');
+    audio.playCues([{ at: 0, cue: 'td' }]);
+    audio.playJingle('win');
+    expect(backend.tones).toHaveLength(0);
+    expect(backend.fades).toHaveLength(0);
+    audio.unlock(); // próximo gesto retoma
+    audio.play('tackle');
+    expect(backend.tones).toHaveLength(RECIPES.tackle.length);
+  });
+});
+
 describe('sem Web Audio', () => {
   it('tudo vira no-op e available é falso', () => {
     const { backend, audio } = setup({ available: false });

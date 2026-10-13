@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { GameEvent } from '@pfl/engine';
 import { shouldClickSound } from '../src/audio/browser';
 import {
-  READ_DELAY_MS, STALE_GRACE_MS, animationCues, jingleFor, musicForScreen, replayCues, turnStartCue,
+  READ_DELAY_MS, STALE_GRACE_MS, animationCues, jingleFor, musicForScreen, replayCues, shouldSoundReplay, turnStartCue,
 } from '../src/audio/gameAudio';
 import type { AnimStep } from '../src/match/timeline';
 
@@ -66,6 +66,13 @@ describe('animationCues', () => {
 
   it('replayCues usa os eventos do quadro, sem lado e sem prazo', () => {
     expect(names(replayCues([cards('RIGHT')], steps))).toEqual(['reveal', 'snap', 'tackle']);
+  });
+});
+
+describe('shouldSoundReplay', () => {
+  it('o primeiro quadro, mostrado ao montar a tela de fim, não soa por cima do jingle', () => {
+    expect(shouldSoundReplay(1)).toBe(false);
+    expect(shouldSoundReplay(2)).toBe(true);
   });
 });
 

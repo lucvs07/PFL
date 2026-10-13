@@ -78,7 +78,7 @@ export function createAudio({ backend, storage, scores }: AudioDeps): Audio {
   const applyMusic = () => sequencer.play(wanted ? scores[wanted] : null);
 
   const scheduleCue = (cue: Cue, delaySeconds: number) => {
-    if (!unlocked || !backend.available || hidden) return;
+    if (!unlocked || !backend.available || !backend.running || hidden) return;
     if (settings.muted || settings.sfx === 0) return;
     const when = backend.currentTime + delaySeconds;
     const last = lastScheduled.get(cue);
@@ -124,7 +124,7 @@ export function createAudio({ backend, storage, scores }: AudioDeps): Audio {
       if (unlocked && !jingling) applyMusic();
     },
     playJingle(name) {
-      if (!unlocked || !backend.available) return;
+      if (!unlocked || !backend.available || !backend.running) return;
       jingling = true;
       sequencer.playOnce(scores[name], () => {
         jingling = false;

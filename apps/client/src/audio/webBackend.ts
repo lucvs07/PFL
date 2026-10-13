@@ -19,6 +19,7 @@ const unavailable: AudioBackend = {
   resume: () => {},
   setGain: () => {},
   fadeMusic: () => {},
+  newMusicBus: () => {},
   playTone: () => {},
 };
 
@@ -91,7 +92,8 @@ export function createWebBackend(): AudioBackend {
     },
     resume() {
       const { ctx } = ensure();
-      if (ctx.state === 'suspended') void ctx.resume();
+      // O Safari usa "interrupted" (ligação, tela bloqueada); a promessa pode ser rejeitada.
+      if (ctx.state !== 'running') ctx.resume().catch(() => {});
     },
     setGain(node, value, seconds) {
       if (!graph) return;
@@ -100,6 +102,14 @@ export function createWebBackend(): AudioBackend {
     fadeMusic(value, seconds) {
       if (!graph) return;
       ramp(graph.fade.gain, graph.ctx, value, seconds);
+    },
+    newMusicBus() {
+      if (!graph) return;
+      const old = graph.fade;
+      const fresh = graph.ctx.createGain();
+      fresh.connect(graph.music);
+      graph.fade = fresh;
+      setTimeout(() => old.disconnect(), 4000); // as notas mais longas já terminaram
     },
     playTone(channel: Channel, tone: Tone) {
       if (!graph) return;

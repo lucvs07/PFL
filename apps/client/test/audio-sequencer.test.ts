@@ -61,7 +61,22 @@ describe('createSequencer', () => {
     run(seq, backend, 0.225, 0.4);
     expect(backend.tones.length).toBe(countBefore); // nada novo durante o fade
     vi.advanceTimersByTime(300);
-    expect(backend.fades.at(-1)).toEqual({ value: 1, seconds: 0 });
+    expect(backend.buses).toBe(2); // cada faixa começa num barramento novo: notas longas da antiga não vazam
+    expect(backend.on('music').at(-1)?.freq).toBeCloseTo(noteFrequency('G4')!, 6);
+    seq.play(null);
+  });
+
+  it('uma faixa nova durante o fade espera o fim do fade em vez de cortar a anterior', () => {
+    const backend = new FakeBackend();
+    const seq = createSequencer(backend);
+    seq.play(score('C4'));
+    run(seq, backend, 0, 0.2);
+    seq.play(score('E4')); // entra em fade, E4 fica pendente
+    const n = backend.tones.length;
+    seq.playOnce(score('G4'), () => {}); // chega antes de o fade acabar
+    expect(backend.tones.length).toBe(n); // não começa na hora
+    expect(backend.fades.filter((f) => f.value === 0)).toHaveLength(2);
+    vi.advanceTimersByTime(300);
     expect(backend.on('music').at(-1)?.freq).toBeCloseTo(noteFrequency('G4')!, 6);
     seq.play(null);
   });

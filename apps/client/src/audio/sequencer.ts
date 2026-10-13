@@ -124,13 +124,14 @@ export function createSequencer(backend: AudioBackend): Sequencer {
     track = next;
     step = 0;
     nextTime = backend.currentTime + START_DELAY_S;
-    backend.fadeMusic(1, 0);
+    backend.newMusicBus();
     if (timer === null) timer = setInterval(tick, TICK_MS);
     tick();
   }
 
   function replaceWith(next: Track) {
-    const wasPlaying = track !== null;
+    // Uma troca já em andamento (pending) conta como "tocando": a faixa nova espera o fim do fade.
+    const wasPlaying = track !== null || pending !== null;
     clearTimers();
     track = null;
     if (!wasPlaying) {
