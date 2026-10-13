@@ -1,5 +1,6 @@
 import type { FormationId, PackageId, SlotId, Team } from '@pfl/engine';
 import { FORMATIONS, PACKAGES } from '@pfl/engine';
+import { useArrowNav } from '../../app/useArrowNav';
 import { previewLineup } from '../../match/lineupPreview';
 import { FORMATION_LABELS, PACKAGE_LABELS, speciesName } from '../../lib/names';
 import './match.css';
@@ -33,11 +34,12 @@ interface Props<T extends string> {
 
 /** 4 botões, cada um com a lista de quem entra em campo (spec 6.2). A cor da vaga vem do lado (classe no pai). */
 export function LineupPicker<T extends string>({ title, hint, options, team, levels, onPick }: Props<T>) {
+  const { ref, onKeyDown } = useArrowNav<HTMLDivElement>();
   return (
     <div className="picker-wrap">
       <h3 className="match-panel-title">{title}</h3>
       {hint && <p className="match-hint">{hint}</p>}
-      <div className="picker">
+      <div className="picker" role="group" aria-label={title} ref={ref} onKeyDown={onKeyDown}>
         {options.map((o) => {
           const lineup = team ? previewLineup(o.slots, team, levels) : null;
           return (

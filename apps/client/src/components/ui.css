@@ -76,7 +76,7 @@
   outline-offset: 3px;
 }
 
-.card-face:disabled {
+.card-face[aria-disabled='true'] {
   cursor: not-allowed;
   filter: grayscale(1);
   opacity: 0.5;

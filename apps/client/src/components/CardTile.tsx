@@ -19,7 +19,15 @@ export function CardTile({ card, disabled = false, selected = false, badge, onCl
   const info = cardInfo(card);
   return (
     <div className={`card-tile${disabled ? ' is-disabled' : ''}${selected ? ' is-selected' : ''}`}>
-      <button type="button" className="card-face" disabled={disabled} onClick={onClick} aria-describedby={tipId}>
+      <button
+        type="button"
+        className="card-face"
+        aria-disabled={disabled || undefined}
+        onClick={() => {
+          if (!disabled) onClick?.();
+        }}
+        aria-describedby={tipId}
+      >
         <span className="card-name">{card.name}</span>
         <span className="card-category">{info.category}</span>
         <span className="card-meta">
