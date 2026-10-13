@@ -68,7 +68,7 @@
 |---|---|
 | Pool | **Exclusivo:** cada espécie só pode ir para um dos times |
 | Ordem | Snake A,B,B,A,A,B,B,A… com 34 picks (17 por time); quem começa é sorteado |
-| Teto de 120 pontos | **Reserva mínima:** um pick só é aceito se, depois dele, sobrar ao menos 1 ponto por vaga restante |
+| Teto de 120 pontos | **Reserva conjunta:** um pick só é aceito se, depois dele, o time ainda completa o elenco com as espécies mais baratas do pool **e** os dois times conseguem completar juntos (só 13 espécies custam até 3 pontos; checar cada time sozinho travava 10 de 30 drafts simulados) |
 | Regras mantidas | 16 de linha + 1 especialista, no máximo 1 lendário, só os 151 da Gen 1 |
 | Tempo por pick | **30 s**, com pick automático no timeout (maior BST disponível que respeite a reserva; empate pelo menor id) |
 | Após o draft | Fase BUILD de **3 min** na tela de montagem, com elenco travado e depth chart, deck e especialista editáveis; o servidor gera uma sugestão inicial para cada jogador |
@@ -84,8 +84,8 @@ Hoje a `Room` (`apps/server/src/room.ts`, 353 linhas) mistura presença, lobby, 
 - **Critério:** `room.test.ts`, `match-session.test.ts` e o teste de integração passam **sem nenhuma alteração**.
 
 #### Etapa 2 — Engine e protocolo
-- `packages/engine/src/draft.ts`: função pura e determinística. Estado: pool, picks e orçamento por time, ordem snake, índice da vez. Ações: `PICK { team, species }` e `AUTO_PICK { team }`. Validação: espécie no pool, vez, lendário, reserva de orçamento (erros via `EngineError`). Ao completar 34 picks devolve os dois elencos de 17 espécies.
-- `@pfl/protocol`: `room:mode { mode }`, `draft:pick { turnId, species }`, `draft:state { turnId, order, turn, deadline, pool, picks, budget, canPick, auto? }`, `draft:end { rosters }`. `room:state` ganha `mode`; `RoomStatus` ganha `DRAFTING` e `BUILDING`.
+- `packages/engine/src/draft.ts`: função pura e determinística. Estado: pool, picks e orçamento por time, ordem snake, índice da vez. Ações: `PICK { team, species }` e `AUTO_PICK { team }`. Validação: espécie no pool, vez, lendário, reserva conjunta de orçamento (erros via `EngineError`). Ao completar 34 picks devolve os dois elencos de 17 espécies.
+- `@pfl/protocol`: `room:mode { mode }`, `draft:pick { turnId, species }`, `draft:state { turnId, order, turn, deadline, pool, picks, spent, blocked, last }`, `build:start { deadline, roster, suggested }` (início da montagem, com os 17 de cada jogador e a sugestão do servidor). `room:state` ganha `mode`; `RoomStatus` ganha `DRAFTING` e `BUILDING`.
 - Reconexão e `match:resync` devolvem o `draft:state` atual.
 
 #### Etapa 3 — Servidor
