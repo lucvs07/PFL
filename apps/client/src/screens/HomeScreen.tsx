@@ -30,7 +30,10 @@ export function HomeScreen({ busy, onCreate, onJoin, onBuilder }: Props) {
     <main className="screen home">
       <div className="home-window">
         <div className="home-stage">
-          <h1 className="home-wordmark">PFL</h1>
+          <div className="home-title">
+            <h1 className="home-wordmark">PFL</h1>
+            <img className="home-logo" src={`${import.meta.env.BASE_URL}logo.svg`} alt="" width={160} height={160} />
+          </div>
           <p className="home-subtitle">Pokémon Football League</p>
         </div>
 
