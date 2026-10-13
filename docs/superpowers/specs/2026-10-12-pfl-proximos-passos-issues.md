@@ -57,42 +57,89 @@
 #### D5. Acessibilidade e feedback de interface
 **Critérios de aceite:** navegação por teclado nas escolhas de formação/pacote/carta, contraste mínimo AA, estados de conexão visíveis (reconectando, pausado, servidor acordando no Render).
 
-### Épico Draft snake ao vivo
+### Issue única: Refatoração da Room + modo Draft snake ao vivo
 
-> **Objetivo:** como hoje os dois jogadores entram em uma sala por código e escolhem um time pré-montado, um **modo alternativo** em que os dois montam o elenco **alternadamente, ao vivo**, na própria sala. Sem contas: o resultado do draft vale para a partida da sala (pode ser exportado como código de time para o localStorage).
+> **Decisão do usuário:** a refatoração da `Room` e o modo Draft entram na **mesma issue**, em etapas internas. A etapa 1 só avança com os testes existentes verdes e sem alterá-los.
 
-#### DR1. Spec do Draft (decisões a fechar antes de implementar)
-Perguntas em aberto que devem ser respondidas na brainstorming/spec do Draft:
-1. **Pool:** espécies **exclusivas** (cada Pokémon só pode ser escolhido por um dos dois, o que dá sentido ao draft) ou repetidas entre os times, como na regra atual de montagem?
-2. **Ordem snake:** A,B,B,A,A,B,B,A… para 17 picks cada (16 de linha + 1 especialista), 34 picks no total. Quem começa: sorteio ou o anfitrião?
-3. **Teto salarial (120 pontos):** continua valendo durante o draft? O que acontece se um jogador não consegue mais completar 17 Pokémon dentro do teto (regra de pick mínimo/ reserva de custo)?
-4. **Lendário:** máximo de 1 por time continua valendo.
-5. **Tempo por pick** (ex.: 20–30 s) e o **pick automático** no timeout (melhor custo-benefício disponível?).
-6. **Depois do draft:** depth chart e deck são montados pelos jogadores na tela de montagem existente, com tempo limite? Ou há atribuição automática de padrão?
-7. **Informação:** o pool e os picks de ambos são públicos (em um draft, sim).
+**Objetivo:** além do time pré-montado, os dois jogadores de uma sala podem **montar o elenco alternadamente, ao vivo**. Sem contas: o resultado vale para a partida da sala e pode ser exportado como código de time.
 
-#### DR2. Motor do draft no `engine`/`protocol`
-**Critérios de aceite**
-- Função pura determinística: estado do draft, ordem snake, validação de pick (pool, teto, lendário, vagas restantes), pick automático.
-- Tipos e mensagens no `@pfl/protocol`: `draft:start`, `draft:pick`, `draft:state` (pool restante, picks, de quem é a vez, `deadline`).
-- Testes: ordem snake, teto, lendário, impossibilidade de completar 17, timeout, determinismo por seed.
+#### Decisões fechadas (DR1)
+| Tema | Decisão |
+|---|---|
+| Pool | **Exclusivo:** cada espécie só pode ir para um dos times |
+| Ordem | Snake A,B,B,A,A,B,B,A… com 34 picks (17 por time); quem começa é sorteado |
+| Teto de 120 pontos | **Reserva mínima:** um pick só é aceito se, depois dele, sobrar ao menos 1 ponto por vaga restante |
+| Regras mantidas | 16 de linha + 1 especialista, no máximo 1 lendário, só os 151 da Gen 1 |
+| Tempo por pick | **30 s**, com pick automático no timeout (maior BST disponível que respeite a reserva; empate pelo menor id) |
+| Após o draft | Fase BUILD de **3 min** na tela de montagem, com elenco travado e depth chart, deck e especialista editáveis; o servidor gera uma sugestão inicial para cada jogador |
+| Informação | Pool e picks dos dois lados são públicos |
+| Modo | Escolhido pelo anfitrião no lobby (Pré-montado | Draft) e fixado quando o primeiro jogador marca "pronto" |
 
-#### DR3. Servidor: fase DRAFT na sala
-**Critérios de aceite**
-- Novo status de sala antes de `TEAM_SETUP`, com opção de modo (Pré-montado | Draft) escolhida pelo anfitrião no lobby.
-- Autoridade do servidor: valida cada pick, aplica timer e pick automático, rejeita pick fora da vez com `error`.
-- Desconexão: reutiliza a tolerância de 60 s e a pausa; ao reconectar, o jogador recebe o estado atual do draft.
-- Teste de integração com 2 clientes completando um draft, incluindo timeout e reconexão.
+#### Etapa 1 — Refatoração da `Room` (sem mudar comportamento)
+Hoje a `Room` (`apps/server/src/room.ts`, 353 linhas) mistura presença, lobby, ciclo da partida e ciclo de vida, com `if (roomStatus === ...)` espalhados.
+- **`SeatRegistry`** (`seats.ts`): vagas, tokens, conexão, tolerância de reconexão e pausa/retomada das tolerâncias. Não conhece partida nem draft; expõe `absent(key)`.
+- **`RoomPhase`** (interface): `start`, `handle`, `sendCurrent`, `pause`, `resume`, `refreshAbsence`, `dispose`. A `MatchSession` passa a implementá-la; a `DraftSession` entra do mesmo jeito.
+- **`LobbyPhase`**: recebe e valida o time, controla o "pronto" e decide quando começar. Leva junto `normalizeTeam`.
+- **`Room`**: guarda a fase atual e delega; as transições ficam numa tabela só: `LOBBY → [DRAFT → BUILD] → MATCH → FINISHED`.
+- **Critério:** `room.test.ts`, `match-session.test.ts` e o teste de integração passam **sem nenhuma alteração**.
 
-#### DR4. Cliente: tela de Draft
-**Critérios de aceite**
-- Pokédex com filtros (tipo, custo, aptidão) reaproveitando os componentes da montagem, mostrando disponíveis/escolhidos; vez, tempo e teto restante visíveis.
-- Os dois elencos se formam ao vivo; confirmação de pick; pick automático sinalizado.
-- Ao fim, segue para depth chart e deck e depois para o "pronto" do lobby.
-- Elenco do draft exportável como código de time.
+#### Etapa 2 — Engine e protocolo
+- `packages/engine/src/draft.ts`: função pura e determinística. Estado: pool, picks e orçamento por time, ordem snake, índice da vez. Ações: `PICK { team, species }` e `AUTO_PICK { team }`. Validação: espécie no pool, vez, lendário, reserva de orçamento (erros via `EngineError`). Ao completar 34 picks devolve os dois elencos de 17 espécies.
+- `@pfl/protocol`: `room:mode { mode }`, `draft:pick { turnId, species }`, `draft:state { turnId, order, turn, deadline, pool, picks, budget, canPick, auto? }`, `draft:end { rosters }`. `room:state` ganha `mode`; `RoomStatus` ganha `DRAFTING` e `BUILDING`.
+- Reconexão e `match:resync` devolvem o `draft:state` atual.
 
-#### DR5. Balanceamento e bot do draft
-**Critérios de aceite:** bot do simulador faz drafts para avaliar se o modo é equilibrado (win rate por ordem de pick, diferença de força entre os dois elencos).
+#### Etapa 3 — Servidor
+- `DraftSession` (implementa `RoomPhase`) sobre o módulo puro: timer, pick automático, pausa e reconexão (tolerância de 60 s, como na partida).
+- Fase BUILD: o servidor **rejeita** qualquer time cujo elenco não seja exatamente os 17 escolhidos pelo jogador; `validateTeam` continua valendo. Sugestão inicial de depth e deck por jogador; no fim do prazo vale o que estiver salvo.
+- `room:mode` só do anfitrião, só no lobby e antes de alguém marcar "pronto".
+
+#### Etapa 4 — Cliente (ver direção de interface abaixo)
+Tela de draft, fase BUILD com elenco travado, seletor de modo no lobby, estados de pausa e reconexão.
+
+#### Etapa 5 — Bot e balanceamento (DR5)
+O bot do simulador faz drafts para medir equilíbrio por ordem de pick e diferença de força entre os elencos.
+
+#### Testes
+- **Engine:** ordem snake, pool exclusivo, lendário, reserva de orçamento, pick automático determinístico, impossibilidade de completar o time, draft completo por seed.
+- **Servidor:** integração com 2 clientes: draft completo, pick fora da vez, espécie repetida, timeout com pick automático, reconexão no meio, BUILD rejeitando elenco diferente do draftado.
+- **Cliente:** testes de componente da tela de draft (vez, orçamento, pool) e do lobby com seletor.
+
+#### Direção de interface do Draft
+**Como foi guiada:** pelas skills `impeccable`, `frontend-design` e `design-taste-frontend`. A `impeccable` não encontrou `PRODUCT.md` nem `DESIGN.md`, mas há um sistema visual vivo em `apps/client/src/styles/tokens.css`; por ser extensão de uma tela, ele é a autoridade. A `design-taste-frontend` é voltada a landing pages: aplicam-se só as regras transversais (estados completos, contraste AA, `prefers-reduced-motion`, alvos de toque, sem cópia genérica).
+
+**Modo:** *Operate* — o jogador completa uma tarefa sob pressão de tempo. Leitura rápida e consistência vencem expressão; a marca aparece nos detalhes.
+
+**Sistema herdado (não reinventar):** paleta Game Boy Color, Press Start 2P em títulos/números/botões e Pixelify Sans no corpo (mín. 14 px), borda de 4 px com sombra rígida, lados `--side-offense` (vermelho) e `--side-defense` (azul), cores de tipo, componentes `Sprite`, `TypeBadge`, `Stars`, `StatBars`, `CapBar`, `Pokedex`.
+
+**Estrutura da tela (desktop)**
+```
++-----------------------------------------------------------------------+
+| Sua vez · Pick 5 de 34        [██████░░░░] 18 s     Livre 41 (reserva 11)|
++----------------------------------------+------------------------------+
+| POKÉDEX (filtros: tipo, custo, aptidão)| SEU ELENCO     ADVERSÁRIO    |
+|  [grade dos disponíveis]               |  1 Snorlax      1 Pidgeot    |
+|                                        |  2 ...          2 ...        |
+|  detalhe da espécie + [Escolher]       |  vagas restantes: 13 | 13    |
++----------------------------------------+------------------------------+
+```
+- Abaixo de ~1040 px os blocos empilham; no celular (390 px) viram abas **Pool | Meu time | Adversário**, com a barra de vez/tempo/orçamento fixa no topo.
+- A **vez** é dita em texto ("Sua vez", "Vez do adversário"), com a cor do lado como reforço, nunca como única pista.
+- O **tempo** é uma barra, não só número; nos últimos 5 s ela muda de padrão (listras) além de cor.
+- O **orçamento** mostra o valor livre real e a reserva exigida, para o jogador entender por que uma espécie cara está bloqueada.
+
+**Estados da espécie na grade:** disponível; escolhida por mim; escolhida pelo adversário; inviável pelo orçamento ou lendário já usado. Cada estado tem **rótulo e marcação de forma** (risco, ícone), não só cor. Espécies bloqueadas continuam selecionáveis para leitura do detalhe, com o motivo escrito no botão desabilitado ("Passa do orçamento", "Já tem um lendário").
+
+**Escolha em 2 passos:** clicar seleciona e abre o detalhe; o botão **Escolher** confirma. Evita pick por clique errado com o relógio correndo. Na vez do adversário a grade segue navegável, sem botão.
+
+**Movimento:** o único momento orquestrado é o pick (sprite voa para a vaga do elenco, ~400 ms). Com `prefers-reduced-motion`, a troca é instantânea. Pick automático ganha o rótulo "Escolhido automaticamente". Se o áudio (D1) existir, um som curto marca o pick e a vez.
+
+**Estados obrigatórios:** aguardando adversário entrar; vez do adversário; partida pausada por desconexão (com a contagem da tolerância); pick recusado (mensagem em linguagem simples e a grade volta ao estado válido); filtro sem resultado; transição para BUILD.
+
+**Texto:** português, frase com inicial maiúscula, verbos diretos ("Escolher", não "Enviar"); o mesmo nome para a mesma ação em todo o fluxo; erros dizem o que aconteceu e como resolver, sem pedir desculpa.
+
+**Acessibilidade:** grade navegável por teclado (setas, Enter para selecionar, atalho para escolher); `aria-live` educado anuncia mudança de vez e cada pick; foco visível; contraste AA; alvos de toque ≥ 44 px; sem rolagem horizontal em 390 px.
+
+**Processo de design antes de codar a etapa 4:** (1) `/impeccable init` para registrar `PRODUCT.md`; (2) `/impeccable document` para gerar `DESIGN.md` a partir do sistema atual; (3) `/impeccable shape` para o plano da tela; (4) implementação; (5) uma rodada de `critique` e do detector, em desktop e mobile, e então parar.
 
 ---
 
@@ -122,6 +169,6 @@ Perguntas em aberto que devem ser respondidas na brainstorming/spec do Draft:
 ## 6. Ordem sugerida
 
 1. H1–H3 (fechar o que está aberto).
-2. DR1 (decidir as regras do Draft) → DR2 → DR3 → DR4 → DR5.
+2. Issue única do Draft: etapa 1 (refatoração da Room) → 2 (engine e protocolo) → 3 (servidor) → 4 (cliente) → 5 (bot).
 3. D1, D2 e D3 em paralelo ao Draft, por serem independentes; D4 e D5 depois.
-4. H4 antes do DR3/DR4 terminar, para travar o fluxo; H5 antes de divulgar o link.
+4. H4 antes da etapa 4 do Draft terminar, para travar o fluxo; H5 antes de divulgar o link.
