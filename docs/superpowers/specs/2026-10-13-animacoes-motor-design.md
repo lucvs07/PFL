@@ -21,6 +21,21 @@ Trocar os tweens genéricos do `FieldScene` por coreografias distintas por categ
 - Identidade GBC pixel: Press Start 2P, paleta `--gbc-*`, `steps()` no DOM. Fora: blur, glassmorphism, curvas de "agência".
 - A cena não decide nada; só apresenta o que a timeline manda (comentário de classe do `FieldScene`).
 
+## 3.1 Skills de Phaser (locais, em `.agents/skills`)
+
+Elas descrevem o **Phaser 4**; o cliente usa **`phaser ^3.90.0`**. Valem como referência de conceito e de API comum às duas versões. Regra do plano: só usar API que exista no 3.90.
+
+| Skill | Uso nesta issue |
+| --- | --- |
+| `tweens` | `tweens.add`, `chain` (finta do play-action: handoff e depois passe), `addCounter` (progresso 0→1 para arcos), `stagger` (defensores do blitz), `yoyo`, `persist` |
+| `curves-and-paths` | `Curves.QuadraticBezier` e `getPoint(t)` para o arco do passe longo e da corrida por fora, dirigido por `addCounter` (sem `PathFollower`, que roda o sprite) |
+| `cameras` | `shake` e `flash` do CLASH, escalados pelo multiplicador |
+| `time-and-timers` | `delayedCall` do agendamento por `at`; cancelamento já feito por `layout()` |
+| `game-object-components` | `setTint`/`clearTint`, `alpha`, `setScale` no sprite do jogador |
+| `groups-and-containers` | `Container` não aceita tint; ver §6 |
+| `graphics-and-shapes`, `particles` | consultadas; nenhuma partícula é usada (ver rejeitados) |
+| `v3-to-v4-migration`, `v4-new-features` | só para não usar API exclusiva do v4: `setTintMode`, `Filters`, `tintMode` |
+
 ## 4. Triagem das skills de movimento
 
 Aplicada a `find-animation-opportunities`. Todo movimento nomeia um propósito e cabe no orçamento. A jogada se repete dezenas de vezes por partida, então o movimento é curto e sem bounce.
@@ -35,6 +50,7 @@ Aplicada a `find-animation-opportunities`. Todo movimento nomeia um propósito e
 | 6 | Resultado da leitura (DOM) | Feedback | Dezenas/partida | "Carimbo" ✔/·/✖ com cor e símbolo, 150 ms, sem bounce |
 
 **Rejeitados**
+- Partículas (poeira, faíscas): decoração; o flash e o shake já carregam o feedback e partículas custariam GPU no celular.
 - Animação contínua da bola ou dos sprites parados: decoração em tela funcional, sem propósito.
 - Confete ou shake no `FIRST_DOWN`: ocorre muitas vezes por partida; o banner atual basta.
 - Bounce/overshoot no carimbo da leitura: o jogador está decidindo e lendo; só atrasaria.
@@ -51,7 +67,7 @@ Hoje `RUN` e `CLASH` não sabem a categoria. A mudança é aditiva:
 
 ## 6. Coreografias no `FieldScene`
 
-O `switch` de `runStep` vira um mapa `kind → função`; quando o passo tem categoria, a função consulta uma tabela de coreografias em um módulo novo, `apps/client/src/phaser/choreography.ts`. Cada coreografia recebe uma interface mínima da cena (`tweens`, `time`, `cameras`, os sprites que ela precisa) e é testável com a cena falsa do `field-scene.test.ts`.
+O `switch` de `runStep` vira um mapa `kind → função`; quando o passo tem categoria, a função consulta uma tabela de coreografias em um módulo novo, `apps/client/src/phaser/choreography.ts`. `PlayerSprite` passa a guardar `body` (o `Image` ou `Circle` interno), porque o jogador é um `Container` e `Container` não tem tint: o cinza do ½x/¼x e o "atravessa" do 0x atuam em `body`. Cada coreografia recebe uma interface mínima da cena (`tweens`, `time`, `cameras`, os sprites que ela precisa) e é testável com a cena falsa do `field-scene.test.ts`.
 
 **Efetividade no CLASH**
 
@@ -60,7 +76,7 @@ O `switch` de `runStep` vira um mapa `kind → função`; quando o passo tem cat
 | 4 | flash amarelo forte + shake 0.008 + texto 14 px | É super efetivo! (×4) |
 | 2 | flash amarelo + shake 0.004 | É super efetivo! |
 | 1 | shake 0.002, sem texto | — |
-| ½ / ¼ | sprite do atacante em cinza (tint) por um instante, sem shake | Não é muito efetivo... |
+| ½ / ¼ | `body` do atacante em cinza (`setTint(0x888888)`, depois `clearTint()`) por um instante, sem shake | Não é muito efetivo... |
 | 0 | atacante "atravessa": alpha cai e volta; sem shake | Não teve efeito... |
 
 O texto continua em todos os casos de efeito, para a leitura não depender só de cor.
