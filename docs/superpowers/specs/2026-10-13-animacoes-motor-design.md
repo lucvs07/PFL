@@ -60,14 +60,19 @@ Aplicada a `find-animation-opportunities`. Todo movimento nomeia um propósito e
 
 Hoje `RUN` e `CLASH` não sabem a categoria. A mudança é aditiva:
 
-- Novo tipo `PlayCategory` com as seis categorias ofensivas do motor e `BLITZ` (da carta de defesa vinda em `CARDS`). `buildTimeline` lê `defense` do evento `CARDS` e guarda a categoria da carta de defesa ao lado da ofensiva.
-- Passos `SNAP`, `BLOCK`, `CLASH`, `RUN` e `THROW` ganham `category: PlayCategory`. `BLOCK` e `SACK` ganham `blitz: boolean`.
-- `CLASH` troca `effect: TypeEffect | null` por `effect` com `mult: 4 | 2 | 1 | 0.5 | 0.25 | 0 | null`, mantendo `TypeEffect` como categoria derivada. `typeEffect` em `effect.ts` passa a devolver os dois (`{ effect, mult }`), usando a média já calculada.
+- `buildTimeline` lê `defense` do evento `CARDS`; a carta de defesa com categoria `BLITZ` marca o bloqueio.
+- Passos `BLOCK`, `CLASH`, `RUN` e `THROW` ganham `category?: OffenseCategory` (a categoria da carta ofensiva, tipo que o motor já exporta). `BLOCK` ganha `blitz?: boolean`. `SNAP` e `SACK` não mudam.
+- `CLASH` ganha `mult?: Mult | null` (`Mult = 4 | 2 | 1 | 0.5 | 0.25 | 0`) **ao lado** de `effect`, que continua igual. `effect.ts` ganha `typeMultiplier(element, targets)`; `typeEffect` e `EFFECT_TEXT` ficam como estão, porque narração e áudio dependem deles.
+- Todos os campos novos são **opcionais**: os literais de `AnimStep` em `audio-cues.test.ts` continuam válidos sem edição, e a cena trata a ausência como a coreografia padrão (reta, sem blitz, multiplicador neutro).
 - As durações em `D` continuam as mesmas; coreografias novas vivem dentro delas. `fitToBudget` segue sem mudança.
 
 ## 6. Coreografias no `FieldScene`
 
-O `switch` de `runStep` vira um mapa `kind → função`; quando o passo tem categoria, a função consulta uma tabela de coreografias em um módulo novo, `apps/client/src/phaser/choreography.ts`. `PlayerSprite` passa a guardar `body` (o `Image` ou `Circle` interno), porque o jogador é um `Container` e `Container` não tem tint: o cinza do ½x/¼x e o "atravessa" do 0x atuam em `body`. Cada coreografia recebe uma interface mínima da cena (`tweens`, `time`, `cameras`, os sprites que ela precisa) e é testável com a cena falsa do `field-scene.test.ts`.
+O `switch` de `runStep` continua. A decisão do que animar sai da cena e vai para um módulo novo de **funções puras**, `apps/client/src/phaser/choreography.ts` (sem importar Phaser): `clashFx(mult, effect)`, `throwPlan(category)`, `runPlan(category)`, `blockPlan(blitz)`, `arcPoint(from, to, lift, t)` e `applyTint(body, color)`. Elas devolvem dados; o `FieldScene` só os aplica com `tweens`, `cameras` e `time`. Assim as regras são testadas sem o mock de Phaser, e a cena falsa existente cobre só a aplicação.
+
+O arco do passe longo e da corrida usa a fórmula da curva de Bézier quadrática em `arcPoint`, dirigida por `tweens.addCounter` (em vez de `Curves.QuadraticBezier`): é uma conta de seis linhas, testável e sem objeto de curva para destruir.
+
+`PlayerSprite` passa a guardar `body` (o `Image` ou `Arc` interno), porque o jogador é um `Container` e `Container` não tem tint: o cinza do ½x/¼x e o "atravessa" do 0x atuam em `body`. `applyTint` ignora corpos sem `setTint` (o círculo de reserva usado quando o sprite não carrega).
 
 **Efetividade no CLASH**
 
@@ -88,13 +93,13 @@ O texto continua em todos os casos de efeito, para a leitura não depender só d
 ## 7. Revelação e leitura (DOM)
 
 `RevealBanner.tsx` e `match.css`:
-- `reveal-drop` passa de `240ms steps(3, end)` para a mesma duração com as duas cartas entrando juntas (já é assim) e o carimbo da leitura entrando 150 ms depois, via `animation-delay`. Só `transform` e `opacity`.
-- A leitura ganha classes por resultado com cor da paleta (`--read-right`, `--read-neutral`, `--read-wrong`, já existentes em `tokens.css`).
-- Dentro de `@media (prefers-reduced-motion: reduce)` o carimbo aparece sem deslocamento (só `opacity`). O reset global de `app.css` já zera `animation`, então a regra da leitura sobrescreve com `animation: none` e mantém a cor.
+- `reveal-drop` (240 ms, `steps(3, end)`) continua, com as duas cartas entrando juntas. A leitura ganha a classe `reveal-stamp` e entra **depois** das cartas: `animation: reveal-stamp 150ms steps(2, end) 240ms both`, de `scale(1.25)` e `opacity: 0` para o estado normal. Só `transform` e `opacity`.
+- As cores por resultado (`--read-right`, `--read-neutral`, `--read-wrong`) já existem em `match.css`; não se cria nada.
+- Reduced motion: nenhuma regra nova. A animação só é declarada em `@media (prefers-reduced-motion: no-preference)` e o reset global de `app.css` zera `animation`, então o carimbo aparece direto, com cor e símbolo.
 
 ## 8. Testes
 
-- `timeline.test.ts`: cada categoria produz o `category` certo nos passos; blitz marca `BLOCK`/`SACK`; os seis valores de `mult`; a duração total continua `≤ TIMELINE_BUDGET_MS`.
+- `timeline.test.ts`: cada categoria produz o `category` certo nos passos; blitz marca `BLOCK`; `mult` no `CLASH`; funções puras de `choreography.ts` em `choreography.test.ts`; `typeMultiplier` em `effect.test.ts`; a duração total continua `≤ TIMELINE_BUDGET_MS`.
 - `field-scene.test.ts`: cada coreografia chama os tweens esperados (alvos e propriedades), e em modo `reduced` não chama `shake`/`flash`.
 - `audio-cues.test.ts`: continua passando sem alteração (prova de que o áudio não foi tocado).
 - Teste DOM do `RevealBanner`: classe de leitura certa por resultado.
