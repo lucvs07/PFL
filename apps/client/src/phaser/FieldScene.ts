@@ -39,9 +39,9 @@ const COLORS = {
   firstDown: 0xf8d030,
   endZoneOwn: 0x3058c0,
   endZoneOpp: 0xd03028,
-  ball: 0x8b4a20,
   barBg: 0x181010,
 };
+const BALL_KEY = 'ball';
 const TEXT_STYLE: Phaser.Types.GameObjects.Text.TextStyle = {
   fontFamily: '"Press Start 2P", monospace',
   resolution: 2,
@@ -80,17 +80,21 @@ export class FieldScene extends Phaser.Scene {
   private transient: Phaser.GameObjects.GameObject[] = [];
   private players = new Map<string, PlayerSprite>();
   private reduced = false;
-  private ball!: Phaser.GameObjects.Ellipse;
+  private ball!: Phaser.GameObjects.Image;
   private banner!: Phaser.GameObjects.Text;
 
   constructor() {
     super('field');
   }
 
+  preload(): void {
+    this.load.image(BALL_KEY, `${import.meta.env.BASE_URL}ball.png`);
+  }
+
   create(): void {
     this.reduced = reducedMotion();
     this.fieldGfx = this.add.graphics().setDepth(0);
-    this.ball = this.add.ellipse(FIELD_WIDTH / 2, LOS_Y, 10, 7, COLORS.ball).setStrokeStyle(1, COLORS.line).setDepth(20).setVisible(false);
+    this.ball = this.add.image(FIELD_WIDTH / 2, LOS_Y, BALL_KEY).setDepth(20).setVisible(false);
     this.banner = this.add
       .text(FIELD_WIDTH / 2, FIELD_HEIGHT / 2, '', { ...TEXT_STYLE, fontSize: '18px', strokeThickness: 6, align: 'center' })
       .setOrigin(0.5)
