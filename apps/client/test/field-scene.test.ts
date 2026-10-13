@@ -284,3 +284,106 @@ describe('FieldScene: efetividade no CLASH', () => {
     expect(tweens.some((c) => c.targets === body.proxy && c.alpha === 0.25)).toBe(false);
   });
 });
+
+const throwStep = (category?: string) => ({ kind: 'THROW', from: 63, to: 25, at: 0, duration: 450, category });
+const runStep = (category?: string) => ({ kind: 'RUN', carrier: 25, yards: 6, at: 0, duration: 700, category });
+
+describe('FieldScene: passes por categoria', () => {
+  it('passe curto: a bola voa reta (um tween, sem contador)', () => {
+    const { tweens, counters } = playSteps(t, [throwStep('SHORT_PASS')]);
+    const ball = t.of('image')[0].proxy;
+    expect(tweens.some((c) => c.targets === ball && c.ease === 'Sine.easeOut')).toBe(true);
+    expect(counters).toHaveLength(0);
+  });
+
+  it('passe longo: arco dirigido por contador, com sombra no chão', () => {
+    const { counters } = playSteps(t, [throwStep('DEEP_PASS')]);
+    expect(counters).toHaveLength(1);
+    expect(counters[0]).toMatchObject({ from: 0, to: 1, duration: 450 });
+    expect(t.of('ellipse').some((c) => c.args[2] === 10 && c.args[3] === 4)).toBe(true);
+  });
+
+  it('o contador do arco move a bola e a sombra', () => {
+    const { counters } = playSteps(t, [throwStep('DEEP_PASS')]);
+    const ball = t.of('image')[0];
+    const before = ball.calls.filter((c) => c.method === 'setPosition').length;
+    counters[0].onUpdate({ getValue: () => 0.5 });
+    expect(ball.calls.filter((c) => c.method === 'setPosition').length).toBe(before + 1);
+    const shadow = t.of('ellipse').find((c) => c.args[2] === 10 && c.args[3] === 4)!;
+    expect(shadow.calls.map((c) => c.method)).toContain('setPosition');
+  });
+
+  it('troca de estágio no meio do arco destrói a sombra', () => {
+    playSteps(t, [throwStep('DEEP_PASS')]);
+    const shadow = t.of('ellipse').find((c) => c.args[2] === 10 && c.args[3] === 4)!;
+    t.scene.sync(stage({ turnId: 9 }), null);
+    expect(shadow.calls.map((c) => c.method)).toContain('destroy');
+  });
+
+  it('play-action: a bola passa pelo RB antes do passe (dois movimentos, o segundo atrasado)', () => {
+    const { tweens, counters } = playSteps(t, [throwStep('PLAY_ACTION')]);
+    const ball = t.of('image')[0].proxy;
+    expect(tweens.filter((c) => c.targets === ball)).toHaveLength(1); // handoff
+    expect(counters[0].delay).toBeGreaterThan(0); // passe em arco, depois do handoff
+  });
+
+  it('screen: o QB recua', () => {
+    const { tweens } = playSteps(t, [throwStep('SCREEN')]);
+    const qb = t.of('container')[0].proxy;
+    expect(tweens.some((c) => c.targets === qb && c.y === 12)).toBe(true);
+  });
+
+  it('passo sem categoria: passe reto, sem erro', () => {
+    const { counters } = playSteps(t, [throwStep(undefined)]);
+    expect(counters).toHaveLength(0);
+  });
+
+  it('reduced motion: passe longo vai reto, sem arco nem sombra', () => {
+    const { counters } = playSteps(t, [throwStep('DEEP_PASS')], { reduced: true });
+    expect(counters).toHaveLength(0);
+    expect(t.of('ellipse').some((c) => c.args[2] === 10 && c.args[3] === 4)).toBe(false);
+  });
+});
+
+describe('FieldScene: corridas por categoria', () => {
+  it('por dentro: o RB sobe reto e as linhas tremem', () => {
+    const { tweens, counters } = playSteps(t, [runStep('RUN_INSIDE')]);
+    expect(counters).toHaveLength(0);
+    expect(tweens.filter((c) => c.yoyo && c.repeat === 3).length).toBeGreaterThan(0);
+  });
+
+  it('por fora: arco lateral por contador, sem tremor', () => {
+    const { tweens, counters } = playSteps(t, [runStep('RUN_OUTSIDE')]);
+    expect(counters).toHaveLength(1);
+    expect(counters[0]).toMatchObject({ from: 0, to: 1, duration: 700 });
+    expect(tweens.filter((c) => c.yoyo && c.repeat === 3)).toHaveLength(0);
+  });
+
+  it('reduced motion: sem tremor e sem arco, só o deslocamento', () => {
+    const { tweens, counters } = playSteps(t, [runStep('RUN_INSIDE')], { reduced: true });
+    expect(counters).toHaveLength(0);
+    expect(tweens.filter((c) => c.yoyo && c.repeat === 3)).toHaveLength(0);
+  });
+});
+
+describe('FieldScene: blitz', () => {
+  const block = (blitz: boolean) => ({ kind: 'BLOCK', category: 'SHORT_PASS', blitz, at: 0, duration: 350 });
+
+  it('com blitz a defesa cruza a linha, escalonada', () => {
+    const lineup = stage({ lineups: { offense: { QB: 63, OL1: 80 }, defense: { DL1: 95, DL2: 96, LB1: 97 } } });
+    const tweens: any[] = [];
+    t.scene.create();
+    t.scene.reduced = false;
+    t.scene.tweens = { killAll: () => {}, add: (c: any) => tweens.push(c), addCounter: () => {} };
+    t.scene.time = { removeAllEvents: () => {}, delayedCall: (_ms: number, cb: () => void) => cb() };
+    t.scene.sync(lineup, { seq: 1, stage: lineup, steps: [block(true)] });
+    const rushes = tweens.filter((c) => c.y === 14);
+    expect(rushes).toHaveLength(3);
+    expect(rushes.map((c) => c.delay)).toEqual([0, 40, 80]);
+  });
+
+  it('sem blitz ninguém avança', () => {
+    const { tweens } = playSteps(t, [block(false)]);
+    expect(tweens.filter((c) => c.y === 14)).toHaveLength(0);
+  });
+});
