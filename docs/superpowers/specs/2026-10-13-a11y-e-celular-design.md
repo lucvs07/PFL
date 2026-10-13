@@ -22,7 +22,7 @@ Issues #14 (épico D5) e #12 (épico D3) da spec `2026-10-12-pfl-proximos-passos
 
 ## Guia de design
 
-Skills usadas na execução: `impeccable`, `design-taste-frontend` (só as regras transversais: estados completos, contraste AA, `prefers-reduced-motion`, alvos de toque, sem cópia genérica) e `frontend-design`. Preocupações de mobile (safe-area, viewport dinâmico, alvos de toque) cobertas por elas e por este documento.
+Skills usadas na execução: `impeccable`, `design-taste-frontend` (só as regras transversais: estados completos, contraste AA, `prefers-reduced-motion`, alvos de toque, sem cópia genérica), `frontend-design` e `mobile-native` (local, em `.agents/skills/mobile-native`, camada de plataforma: viewport, toque, scroll, safe-area).
 
 ## Arquitetura: fundação → varredura → verificação
 
@@ -32,6 +32,22 @@ Skills usadas na execução: `impeccable`, `design-taste-frontend` (só as regra
 - `--hit-min: 44px` aplicado a todo elemento interativo (botões, abas, opções, cartas, controles de áudio).
 - `:focus-visible` global, com contorno de alto contraste que funcione sobre os fundos GBC e sobre o campo Phaser.
 - Cores de texto/fundo e de estado ajustadas nos tokens somente onde a medição reprovar.
+
+**Camada de plataforma** (`index.html`, `styles/app.css`; regras da skill `mobile-native`)
+
+Estado atual medido no cliente: 11 regras `:hover` sem `@media (hover: hover)`; `min-height: 100vh` em `app.css:51`; `index.html` sem `viewport-fit=cover` (então o `env(safe-area-inset-*)` já usado em `audio.css` vale sempre `0px`); nenhum `touch-action` nem supressão do tap-highlight.
+
+- **Viewport:** `viewport-fit=cover` e `interactive-widget=resizes-content`. Nunca `user-scalable=no` nem `maximum-scale=1`.
+- **Hover preso após o toque:** todo `:hover` passa para dentro de `@media (hover: hover) and (pointer: fine)`; o feedback de toque vem de `:active` (100–160 ms, `ease-out`, curva já usada pelo projeto).
+- **Flash no toque:** `-webkit-tap-highlight-color: transparent` em `html`, junto com `:active` em todo elemento tocável.
+- **Altura:** `100vh` do shell vira `100dvh`; o campo Phaser já usa `dvh`.
+- **Zoom no foco (iOS):** `input, textarea, select` com 16 px mínimo (o código da sala e o campo de importação do time). Código da sala com `inputmode`/`autocapitalize="characters"`/`autocorrect="off"`.
+- **Toque rápido:** `touch-action: manipulation` em botões, links e `[role=button]`.
+- **Scroll:** `overscroll-behavior: none` em `html, body` (o jogo não é documento rolável); `contain` nas listas internas (pokédex, narração, elenco).
+- **Seleção de texto:** `user-select: none` só em controles (botões, abas, cartas), nunca em `body`; o texto de erro e o código do time continuam selecionáveis.
+- **Safe-area:** `env(safe-area-inset-*)` com fallback `0px` em HUD, barra fixa de vez/tempo/orçamento e controle de áudio.
+- **`theme-color`:** o jogo é de um só esquema (GBC), então um único `theme-color`, conferido com a cor do topo da página.
+- **Hardware:** a skill é explícita de que o emulador não reproduz hover preso, atraso de toque, safe-area nem teclado virtual. Por isso a verificação relata separadamente o que foi comprovado em emulador e o que **precisa de aparelho real**, em vez de declarar tudo resolvido.
 
 **Estado de conexão** (`net/connectionState.ts`, função pura, testada em unidade)
 - Entrada: `socket.connected`, se já houve conexão antes (`everConnected`), tempo desde a primeira tentativa, `room.status`, presença do adversário, prazo de tolerância.
@@ -77,12 +93,13 @@ Regras gerais: `viewport-fit=cover` com padding de safe-area, `dvh` no lugar de 
 
 ## Plano de commits (um PR)
 
-1. `feat(client/a11y)`: tokens de alvo de toque, `:focus-visible` global e ajustes de contraste nos tokens + script de contraste.
-2. `feat(client/net)`: `connectionState`, ping em `/health` e `ConnectionBanner` (substitui o aviso da partida).
-3. `feat(client/a11y)`: `useRovingGroup` e navegação por teclado em formação, pacote e carta.
-4. `feat(client/mobile)`: tooltip de carta por toque e posicionamento seguro.
-5. `feat(client/mobile)`: varredura por tela (início, montagem, lobby, partida, fim) em retrato e paisagem; safe-area e `dvh`.
-6. `test(client)`: verificação em viewport emulado (overflow e alvos) e documentação do resultado.
+1. `feat(client/mobile)`: camada de plataforma (viewport, hover condicionado, tap-highlight, `dvh`, `touch-action`, overscroll, inputs de 16 px).
+2. `feat(client/a11y)`: tokens de alvo de toque, `:focus-visible` global e ajustes de contraste nos tokens + script de contraste.
+3. `feat(client/net)`: `connectionState`, ping em `/health` e `ConnectionBanner` (substitui o aviso da partida).
+4. `feat(client/a11y)`: `useRovingGroup` e navegação por teclado em formação, pacote e carta.
+5. `feat(client/mobile)`: tooltip de carta por toque e posicionamento seguro.
+6. `feat(client/mobile)`: varredura por tela (início, montagem, lobby, partida, fim) em retrato e paisagem; sem repetir a camada de plataforma.
+7. `test(client)`: verificação em viewport emulado (overflow e alvos) e documentação do resultado.
 
 Cada commit termina com a suíte e o typecheck verdes.
 
