@@ -14,6 +14,13 @@ Issues #14 (épico D5) e #12 (épico D3) da spec `2026-10-12-pfl-proximos-passos
 - Alvos de toque ≥ 44 px, sem rolagem horizontal; tooltips de carta acessíveis por toque.
 - Verificado em ao menos um navegador móvel real ou emulado.
 
+## Garantia: o desktop não muda
+
+O layout de desktop (a partir de 1041 px e cada faixa que hoje já é "desktop") permanece **idêntico ao de hoje**. A adaptação é só para telas menores.
+- No desktop com mouse o piso de alvo de toque vale `0px`, a linha `notice` do grid da partida é preservada, e o hover continua igual (só passa a ficar atrás de `(hover: hover) and (pointer: fine)`).
+- Diferenças deliberadas e únicas: o banner de conexão (só aparece em falha), a cor de `--gbc-muted` e do texto vermelho (`--gbc-red-text`), exigidas por AA, e o tooltip abrir por `:has(:focus-visible)` em vez de `:focus-within`.
+- Prova: antes de qualquer mudança, um baseline numérico (retângulo e tamanho de fonte de cada elemento em 1041, 1280 e 1920 px, nas cinco telas) é commitado; no fim, a comparação precisa dar "sem diferenças" (tolerância de 2 px).
+
 ## Fora de escopo
 
 - Mudanças no servidor ou no protocolo.
@@ -28,7 +35,7 @@ Skills usadas na execução: `impeccable`, `design-taste-frontend` (só as regra
 
 ### 1. Fundação (compartilhada pelas telas)
 
-**Mobile-first de verdade.** O CSS atual é desktop-first (17 blocos `@media (max-width)` em 8 arquivos). Em cada arquivo o estilo-base passa a ser o do celular e o desktop é acrescentado com `@media (min-width)` nos pontos que já existem no código: 600, 720, 900, 960 e 1040 px (o antigo 520 passa a ser a base). Os blocos `max-width` são removidos, não somados. Paisagem de celular é tratada por `(orientation: landscape) and (max-height: 500px)`, não por largura.
+**Mobile-first de verdade.** O CSS atual é desktop-first (17 blocos `@media (max-width)` em 8 arquivos). Em cada arquivo o estilo-base passa a ser o do celular e o desktop é acrescentado com `@media (min-width)` nos pontos que já existem no código, **com +1 px** para o desktop não se mover (`max-width: 1040px` incluía 1040, então o desktop passa a começar em `min-width: 1041px`): 721, 901, 961 e 1041 px. Os antigos 520 e 600 viram base e `600px`/`601px` (faixa de celular e tablet). Os blocos `max-width` são removidos, não somados. Paisagem de celular é tratada por `(orientation: landscape) and (max-height: 500px)`, não por largura.
 
 **Tokens e foco** (`styles/tokens.css`, `styles/app.css`)
 - `--hit-min: 44px` aplicado a todo elemento interativo (botões, abas, opções, cartas, controles de áudio).
@@ -97,13 +104,14 @@ Regras gerais: `viewport-fit=cover` com padding de safe-area, `dvh` no lugar de 
 
 ## Plano de commits (um PR)
 
+0. `test(client)`: baseline numérico do layout desktop (antes de tudo).
 1. `feat(client/mobile)`: camada de plataforma (viewport, hover condicionado, tap-highlight, `dvh`, `touch-action`, overscroll, inputs de 16 px).
 2. `feat(client/a11y)`: contraste AA nos tokens e alvos de toque de 44 px.
 3. `feat(client/net)`: `connectionState`, ping em `/health` e `ConnectionBanner` (substitui o aviso da partida).
 4. `feat(client/a11y)`: `useArrowNav` e cartas não jogáveis focáveis (`aria-disabled`).
 5. `feat(client/mobile)`: tooltip de carta por toque.
 6. a 9. `feat(client/mobile)`: CSS mobile-first de partida/campo (com paisagem), montagem, início/lobby e fim de jogo, mais o teste de regressão de `max-width`.
-10. `test(client)`: auditoria em viewport emulado e registro do que precisa de aparelho real.
+10. `test(client)`: auditoria em viewport emulado, comparação do desktop com o baseline e registro do que precisa de aparelho real.
 
 Detalhes e código em `docs/superpowers/plans/2026-10-13-a11y-e-celular.md`.
 
