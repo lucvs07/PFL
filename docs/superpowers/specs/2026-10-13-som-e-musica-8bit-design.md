@@ -31,7 +31,7 @@ Tudo em `apps/client/src/audio/`:
 
 | Arquivo | Responsabilidade |
 |---|---|
-| `cues.ts` | Funções puras: `cuesFor(steps, ctx) → [{ at, cue }]` e os cues de revelação, leitura e interface |
+| `cues.ts` | Funções puras: `cuesFor(steps) → [{ at, cue }]` e os cues de revelação, leitura e interface |
 | `recipes.ts` | Receita de cada cue como dados (onda, frequência ou rampa, duração, volume, envelope, ruído) |
 | `scores/*.ts` | As duas faixas e os dois jingles como partituras em dados |
 | `score.ts` | Parser da notação compacta de partitura |
@@ -58,7 +58,8 @@ efeitos (synth)       → sfxGain  ──┘
 ```ts
 audio.unlock()                          // idempotente
 audio.play(cue)                         // efeito avulso
-audio.playTimeline(steps, ctx)          // agenda cuesFor(steps) pelos `at`
+audio.playTimeline(steps)               // agenda cuesFor(steps) pelos `at`
+audio.playCues(timedCues)               // lista já montada (revelação, leitura, passos)
 audio.setMusic('menu' | 'match' | null) // troca de faixa com fade
 audio.playJingle('win' | 'lose')
 audio.getState() / audio.setVolume(channel, v) / audio.setMuted(b)
@@ -107,7 +108,7 @@ Uma faixa é `{ bpm, steps, channels }`, onde `steps` é o comprimento do loop e
 
 - **Menu e lobby:** ~96 bpm, modo maior, 8 compassos. Melodia simples, baixo caminhando, percussão mínima.
 - **Partida:** ~132 bpm, modo menor com virada no refrão, 8 compassos. Baixo pulsante, caixa nos tempos 2 e 4, arpejo no `pulse2`.
-- **Jingles:** vitória (~2 s, escala ascendente que fecha em acorde maior) e derrota (~2 s, descendente em modo menor). Tocam uma vez, e a música cai (*ducking*) enquanto soam.
+- **Jingles:** vitória (~2 s, escala ascendente que fecha em acorde maior) e derrota (~2 s, descendente em modo menor). Tocam uma vez: a faixa em curso faz fade-out, o jingle toca, e só no fim dele a música da tela volta.
 - A música tem ganho-base baixo, para os efeitos da jogada sempre passarem por cima. Os volumes do jogador escalam acima disso.
 
 ### 5.3 Sequenciador
@@ -121,7 +122,7 @@ Uma faixa é `{ bpm, steps, channels }`, onde `steps` é o comprimento do loop e
 - Estado: `{ muted, music, sfx }`, volumes de 0 a 1 em passos de 0,1. Padrão: **música 0,4, efeitos 0,7, não mudo**.
 - Persistência numa chave única, `pfl.audio.v1`, por `readJson`/`writeJson` de [storage.ts](../../../apps/client/src/lib/storage.ts). Valor inválido ou storage indisponível volta ao padrão. Falha de escrita é ignorada.
 - Mudanças de volume usam uma rampa de ~30 ms para não estalar.
-- **Desbloqueio:** nenhum `AudioContext` na carga da página. Um listener único de `pointerdown`/`keydown` no `window` cria e retoma o contexto na primeira interação e depois se remove. Antes disso, `play()` e `setMusic()` só guardam a intenção, e a música começa quando o contexto desbloqueia. Se o navegador suspender o contexto de novo, o listener volta a tentar na próxima interação.
+- **Desbloqueio:** nenhum `AudioContext` na carga da página. Um listener único de `pointerdown`/`keydown` no `window` cria e retoma o contexto na primeira interação e **continua instalado**: `unlock()` é idempotente e chama `resume()` de novo se o navegador suspendeu o contexto. Antes do primeiro gesto, só `setMusic()` guarda a intenção (a música começa quando o contexto desbloqueia); efeitos e jingles chamados antes do desbloqueio, ou com a aba oculta, são descartados. Subir um volume acima de 0 também desmuta.
 - Sem `window.AudioContext`, o backend é um no-op e `getState().available` é falso. O `AudioControl` então se esconde.
 
 ## 7. Ligação nas telas
@@ -135,9 +136,9 @@ Ponto de ligação: o reducer cria `animation` (com `seq`, `steps` e `startedAt`
 
 Sons de interface: um listener de `click` em captura no `document`, instalado pelo `AudioControl`, toca `ui-click` quando o alvo está dentro de `button` ou `[role=button]` não desabilitado.
 
-Replay: [ReplayViewer.tsx](../../../apps/client/src/screens/end/ReplayViewer.tsx) ganha um `useEffect` que chama `audio.playTimeline(frame.steps)` quando o quadro muda. Revelação e leitura no replay só entram se o quadro já tiver essa informação.
+Replay: [ReplayViewer.tsx](../../../apps/client/src/screens/end/ReplayViewer.tsx) ganha um `useEffect` que chama `audio.playTimeline(frame.steps)` quando o quadro muda. A revelação toca (os eventos do quadro trazem `CARDS`); a leitura não, porque o espectador do replay não tem lado.
 
-Arquivos alterados: `App.tsx` e `ReplayViewer.tsx`. Os demais são novos. `audio: { noAudio: true }` em `PhaserField.tsx` permanece, porque o áudio do Phaser é independente do nosso.
+Arquivos alterados: `App.tsx`, `ReplayViewer.tsx`, `match/timeline.ts` (o passo `RUN` ganha `big?: boolean` e o módulo exporta `TOUCHDOWN_BANNER`) e `match/matchState.ts` (exporta `revealFrom`). Os demais são novos. Nenhum desses arquivos está no diff do PR #8. `audio: { noAudio: true }` em `PhaserField.tsx` permanece, porque o áudio do Phaser é independente do nosso.
 
 ## 8. Direção de interface do controle
 
@@ -157,7 +158,7 @@ Arquivos alterados: `App.tsx` e `ReplayViewer.tsx`. Os demais são novos. `audio
 
 - **Botão:** 44×44 px, no estilo `.btn` (borda de 3 px, sombra rígida, deslocamento no `:active`). Ele alterna o mudo. Os volumes abrem por um gatilho secundário ao lado, um botão com seta (▲), também com alvo de toque de pelo menos 44 px. Os dois formam um grupo (`role="group"`, `aria-label="Som"`).
 - **Ícone:** alto-falante em pixel art, desenhado como retângulos a partir de um bitmap 8×8 com `shape-rendering: crispEdges`. As ondas mostram 0 a 3 arcos conforme o volume, e o mudo troca as ondas por um X. É o único toque de personalidade. Foge da regra "sem SVG feito à mão" da `design-taste-frontend` porque o projeto não tem biblioteca de ícones e um traço suave destoaria do pixel.
-- **Estado sem depender só de cor:** o mudo muda o fundo para `--gbc-panel-dark` e o ícone para o X, e `aria-pressed` e `aria-label` mudam junto ("Silenciar o som" / "Ativar o som").
+- **Estado sem depender só de cor:** o mudo muda o fundo para `--gbc-panel-dark` e o ícone para o X, e `aria-pressed` reflete o estado. O `aria-label` é estável ("Silenciar o som"), para o sentido não se inverter para leitores de tela.
 - **Popover:** `input type="range"` nativo estilizado (trilho e marcador quadrados), rótulos "Música" e "Efeitos". Ao soltar o volume de efeitos, toca um blip de amostra. Não é modal: `aria-expanded` no gatilho, Esc fecha e devolve o foco, clique fora fecha, sem armadilha de foco. Largura `min(260px, 100vw - 32px)` em 390 px.
 - **Movimento:** nenhum além do `:active`. A regra global de `prefers-reduced-motion` já cobre o resto.
 - **Textos:** frase com inicial maiúscula, verbos diretos, o mesmo termo para a mesma ação em todo lugar.
@@ -173,7 +174,7 @@ Arquivos alterados: `App.tsx` e `ReplayViewer.tsx`. Os demais são novos. `audio
 | `score.ts` e `scores/*` | Pausas, sustentação e nota inválida (erro claro). Cada faixa tem os passos declarados e só as 4 vozes |
 | `sequencer.ts` | Com relógio falso: agenda à frente, repete o loop sem buracos, fade-out na troca, pausa com a aba oculta e retomada |
 | `mixer.ts` | Padrões, clamp de 0 a 1, mudo, persistência, leitura com valor inválido ou storage nulo, escrita que falha |
-| `audio/index.ts` com `FakeBackend` | `play` antes do desbloqueio só guarda a intenção, `unlock` aplica, repetição em menos de 40 ms é descartada, `playTimeline` descarta cues atrasados, sem `AudioContext` tudo é no-op |
+| `audio/index.ts` com `FakeBackend` | `play` antes do desbloqueio é descartado e `setMusic` só guarda a intenção, `unlock` aplica, repetição em menos de 40 ms é descartada, `playTimeline` descarta cues atrasados, sem `AudioContext` tudo é no-op |
 | `useGameAudio` | A música muda com a tela. Um `seq` novo dispara reveal, leitura e timeline uma única vez. Resultado atrasado não soa. O jingle depende de `you` |
 | `AudioControl` | O botão alterna o mudo (`aria-pressed`). O popover abre e fecha com Esc, devolvendo o foco. Os dois volumes persistem. Some quando `available` é falso |
 
@@ -188,14 +189,14 @@ Efeitos e música são sintetizados em código e compostos para o projeto, sem a
 ## 11. Ordem de entrega
 
 Cada item é um commit que passa nos testes. A branch parte da `main`.
-1. Núcleo puro: tipos, `cues`, `recipes`, `score` e `mixer`, com testes.
-2. Motor: `backend` real e falso, `synth`, `sequencer` e `index.ts`, com testes.
-3. `AudioControl` e CSS, com testes de componente.
-4. Ligação: `useGameAudio`, `App.tsx` e `ReplayViewer.tsx`.
-5. Partituras e jingles, em commit à parte, para audição e ajuste.
+1. Núcleo puro: `score`, `cues` (com os ajustes em `timeline.ts`) e `mixer`, com testes.
+2. Motor: `backend` (interface, Web Audio e falso), receitas e `synth`, `sequencer` e `engine`, com testes.
+3. Partituras, jingles e o singleton `audio`, em commit à parte, para audição e ajuste.
+4. `AudioControl` e CSS, com testes de componente.
+5. Ligação: `useGameAudio`, `App.tsx` e `ReplayViewer.tsx`.
 6. `docs/AUDIO.md` e a passada final de verificação.
 
-Os passos 1 a 3 e 5 não tocam arquivos do PR #8. O passo 4 só precisa de rebase se o #8 entrar antes, e mesmo assim `App.tsx` e `ReplayViewer.tsx` não estão no diff dele.
+Os passos 1 a 4 não tocam arquivos do PR #8. O passo 5 só precisa de rebase se o #8 entrar antes, e mesmo assim `App.tsx` e `ReplayViewer.tsx` não estão no diff dele.
 
 ## 12. Fora de escopo
 
@@ -203,6 +204,6 @@ Música dinâmica por intensidade, sons do Draft (a spec do Draft prevê um som 
 
 ## 13. Pontos a verificar na implementação
 
-- Como saber de forma confiável, no turno, de que lado o jogador está, para a perspectiva da leitura.
-- Se o quadro do replay carrega revelação e leitura.
+- Resolvido ao planejar: o lado do jogador no turno é `animation.stage.offenseTeam === room.you`, e o quadro do replay carrega os eventos `CARDS` (revelação sim; leitura não, por falta de lado).
+- Confirmar na implementação que `stage.offenseTeam` é mesmo o ataque do turno que acabou de ser resolvido.
 - A posição do controle contra a mão de cartas e o painel de escolha, em desktop e 390 px.
