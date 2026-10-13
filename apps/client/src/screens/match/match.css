@@ -162,7 +162,6 @@
 }
 
 /* ================= aviso, campo e banner ================= */
-.match-notice { grid-area: notice; }
 
 .match-field {
   grid-area: field;

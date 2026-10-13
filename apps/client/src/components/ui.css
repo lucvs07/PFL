@@ -293,3 +293,36 @@
   outline: 3px dashed var(--gbc-blue);
   outline-offset: 2px;
 }
+
+/* aviso de conexão (ConnectionBanner) */
+.conn-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-3);
+  padding: max(var(--space-2), env(safe-area-inset-top)) max(var(--space-3), env(safe-area-inset-right)) var(--space-2)
+    max(var(--space-3), env(safe-area-inset-left));
+  background: var(--gbc-yellow);
+  color: var(--gbc-ink);
+  border-bottom: 3px solid var(--gbc-ink);
+  border-left: 10px solid var(--conn-color, var(--gbc-ink));
+}
+
+.conn-waking { --conn-color: var(--gbc-orange); }
+.conn-reconnecting { --conn-color: var(--gbc-red); }
+.conn-paused { --conn-color: var(--gbc-blue); }
+
+.conn-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.conn-text { font-size: var(--fs-body-sm); }
+
+.conn-detail {
+  margin-left: auto;
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+}

@@ -24,6 +24,8 @@ import { LobbyScreen } from './screens/LobbyScreen';
 import { MatchScreen } from './screens/match/MatchScreen';
 import { EndScreen } from './screens/end/EndScreen';
 import { AudioControl } from './audio/AudioControl';
+import { ConnectionBanner } from './components/ConnectionBanner';
+import { useConnectionState } from './net/useConnectionState';
 import { useGameAudio } from './audio/useGameAudio';
 
 function teamFromCode(code: string | null): Team | null {
@@ -60,6 +62,7 @@ export function App() {
   // Geração do room:join de retomada: respostas de joins antigos não mexem no estado.
   const rejoinGen = useRef(0);
   const now = useNow(room ? 200 : null);
+  const connection = useConnectionState(socket, room);
 
   const updateSession = useCallback(
     (s: Session | null) => {
@@ -256,14 +259,17 @@ export function App() {
   return (
     <>
       <AudioControl />
-      {notice && (
-        <div className="notice notice-top" role="status">
-          <span>{notice}</span>
-          <button type="button" className="btn btn-small" onClick={() => setNotice(null)}>
-            OK
-          </button>
-        </div>
-      )}
+      <div className="top-stack">
+        <ConnectionBanner state={connection} />
+        {notice && (
+          <div className="notice notice-top" role="status">
+            <span>{notice}</span>
+            <button type="button" className="btn btn-small" onClick={() => setNotice(null)}>
+              OK
+            </button>
+          </div>
+        )}
+      </div>
       {screen === 'HOME' && (
         <HomeScreen
           busy={busy}
