@@ -25,7 +25,9 @@ export function clashFx(mult: Mult | null | undefined, effect: TypeEffect | null
   if (mult === 2) return { shake: 0.004, flash: true, weaken: 'none', text, color: '#f8d030', fontSize: 10 };
   if (mult === 0.5 || mult === 0.25) return { shake: 0, flash: false, weaken: 'gray', text, color: '#c8c8c8', fontSize: 10 };
   if (mult === 0) return { shake: 0, flash: false, weaken: 'ghost', text, color: '#c8c8c8', fontSize: 10 };
-  return { shake: 0.002, flash: false, weaken: 'none', text: null, color: '#f8f8f0', fontSize: 10 };
+  // 1x ou sem multiplicador. O texto segue o `effect` (a narração e o áudio também): com dois alvos a média
+  // pode cair em 1x mesmo sendo WEAK ou SUPER.
+  return { shake: 0.002, flash: false, weaken: 'none', text, color: effect === 'SUPER' ? '#f8d030' : text ? '#c8c8c8' : '#f8f8f0', fontSize: 10 };
 }
 
 export interface ThrowPlan {

@@ -17,6 +17,11 @@ describe('clashFx', () => {
     }
   });
 
+  it('média que cai em 1x mas com efeito WEAK/SUPER ainda mostra o texto (mesma informação da narração)', () => {
+    expect(clashFx(1, 'WEAK')).toMatchObject({ text: 'Não é muito efetivo...', shake: 0.002, flash: false });
+    expect(clashFx(1, 'SUPER')).toMatchObject({ text: 'É super efetivo!', color: '#f8d030' });
+  });
+
   it('½x e ¼x: atacante cinza, sem tremor', () => {
     for (const mult of [0.5, 0.25] as const) {
       expect(clashFx(mult, 'WEAK')).toMatchObject({ shake: 0, flash: false, weaken: 'gray', text: 'Não é muito efetivo...' });

@@ -380,6 +380,15 @@ describe('FieldScene: blitz', () => {
     const rushes = tweens.filter((c) => c.y === 14);
     expect(rushes).toHaveLength(3);
     expect(rushes.map((c) => c.delay)).toEqual([0, 40, 80]);
+    // o tremor do bloqueio não pode brigar com o avanço: os DL não recebem o yoyo
+    const dl = [t.of('container')[2].proxy, t.of('container')[3].proxy];
+    expect(tweens.filter((c) => c.yoyo && dl.includes(c.targets))).toHaveLength(0);
+  });
+
+  it('sem blitz os DL continuam tremendo no bloqueio', () => {
+    const { tweens } = playSteps(t, [block(false)]);
+    const dl = t.of('container')[2].proxy; // DL1 (QB, RB, DL1, S1)
+    expect(tweens.some((c) => c.yoyo && c.targets === dl)).toBe(true);
   });
 
   it('sem blitz ninguém avança', () => {

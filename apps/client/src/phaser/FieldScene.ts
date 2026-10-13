@@ -352,10 +352,12 @@ export class FieldScene extends Phaser.Scene {
         break;
       }
       case 'BLOCK': {
-        for (const p of [...this.bySlot('offense', 'OL'), ...this.bySlot('defense', 'DL')]) {
+        const plan = blockPlan(step.blitz);
+        // No blitz o tremor dos DL some: dois tweens em `y` brigariam e o avanço seria desfeito.
+        const shaking = plan.rush > 0 ? this.bySlot('offense', 'OL') : [...this.bySlot('offense', 'OL'), ...this.bySlot('defense', 'DL')];
+        for (const p of shaking) {
           this.tweens.add({ targets: p.container, y: p.container.y + (p.side === 'offense' ? -4 : 4), duration: d / 4, yoyo: true, repeat: 1 });
         }
-        const plan = blockPlan(step.blitz);
         if (plan.rush > 0) {
           const rushers = [...this.bySlot('defense', 'DL'), ...this.bySlot('defense', 'LB')];
           rushers.forEach((p, i) => {
