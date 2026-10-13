@@ -1,7 +1,7 @@
-/* Desktop: a altura manda (o campo cabe na tela ao lado do painel); a largura vem da proporção. */
+/* Celular: a largura manda, mas o campo nunca passa de ~36% da altura da tela, para as cartas caberem junto. */
 .phaser-field {
-  height: min(640px, calc(100dvh - 176px));
-  min-height: 360px;
+  width: min(100%, calc(36dvh * 480 / 560));
+  height: auto;
   max-width: 100%;
   aspect-ratio: 480 / 560;
   margin: 0 auto;
@@ -12,21 +12,30 @@
   background: var(--gbc-field);
 }
 
-/* Estreito: a largura manda, mas o campo nunca passa de pouco mais da metade da altura da tela. */
-@media (max-width: 1040px) {
-  .phaser-field {
-    width: min(100%, 480px, calc(54dvh * 480 / 560));
-    height: auto;
-    min-height: 0;
-  }
-}
-
-/* Celular: o campo encolhe para as cartas caberem na mesma tela. */
-@media (max-width: 520px) {
-  .phaser-field { width: min(100%, calc(36dvh * 480 / 560)); }
-}
-
 .phaser-field canvas {
   display: block;
   image-rendering: pixelated;
+}
+
+/* Tablet: cabe até ~54% da altura da tela. */
+@media (min-width: 600px) {
+  .phaser-field { width: min(100%, 480px, calc(54dvh * 480 / 560)); }
+}
+
+/* Desktop: a altura manda (o campo cabe na tela ao lado do painel); a largura vem da proporção. */
+@media (min-width: 1041px) {
+  .phaser-field {
+    width: auto;
+    height: min(640px, calc(100dvh - 176px));
+    min-height: 360px;
+  }
+}
+
+/* Celular deitado: pouca altura, então o campo ocupa a altura toda e o painel vai ao lado (ver match.css). */
+@media (orientation: landscape) and (max-height: 500px) {
+  .phaser-field {
+    width: auto;
+    height: calc(100dvh - 128px);
+    min-height: 0;
+  }
 }

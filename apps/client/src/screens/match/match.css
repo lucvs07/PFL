@@ -3,13 +3,15 @@
 
 .match {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
-    'hud hud'
-    'notice notice'
-    'field side';
-  gap: var(--space-3);
-  padding: var(--space-3);
+    'hud'
+    'field'
+    'side';
+  gap: var(--space-2);
+  /* celular: respeita o notch e reserva o rodapé para o botão de áudio fixo */
+  padding: max(var(--space-2), env(safe-area-inset-top)) max(var(--space-2), env(safe-area-inset-right))
+    calc(var(--space-2) + 72px + env(safe-area-inset-bottom, 0px)) max(var(--space-2), env(safe-area-inset-left));
   max-width: 1160px;
   margin: 0 auto;
   align-content: start;
@@ -46,8 +48,8 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
+  gap: var(--space-2);
+  padding: var(--space-2);
 }
 
 .hud-team {
@@ -56,7 +58,7 @@
   gap: var(--space-2);
   min-width: 0;
   font-family: var(--font-display);
-  font-size: var(--fs-md);
+  font-size: var(--fs-xs);
   line-height: 1.5;
 }
 
@@ -93,7 +95,7 @@
   min-width: 2ch;
   padding: var(--space-1) var(--space-2);
   font-family: var(--font-display);
-  font-size: 28px;
+  font-size: var(--fs-lg);
   font-weight: 400;
   line-height: 1;
   text-align: center;
@@ -117,7 +119,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-1) var(--space-3);
+  padding: 2px var(--space-2);
   font-family: var(--font-body);
   font-size: var(--fs-body-sm);
   line-height: 1.6;
@@ -143,7 +145,7 @@
 .hud-clock {
   min-width: 4ch;
   font-family: var(--font-display);
-  font-size: var(--fs-lg);
+  font-size: var(--fs-md);
   line-height: 1.2;
   text-align: right;
 }
@@ -170,7 +172,7 @@
 
 .reveal {
   position: absolute;
-  top: var(--space-3);
+  top: var(--space-2);
   left: 50%;
   transform: translateX(-50%);
   width: min(360px, calc(100% - 2 * var(--space-3)));
@@ -178,7 +180,7 @@
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
+  padding: var(--space-2);
   background: var(--gbc-paper);
   border: var(--border);
   box-shadow: var(--shadow);
@@ -227,7 +229,7 @@
 
 .reveal-name {
   font-family: var(--font-display);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-xs);
   line-height: 1.5;
   overflow-wrap: anywhere;
 }
@@ -272,10 +274,11 @@
 }
 
 .match-log {
-  flex: 1 1 96px;
+  flex: none;
+  height: 200px;
   min-height: 96px;
   /* o conteúdo do log não conta na altura da linha: ela é do campo */
-  contain: size;
+  contain: none;
   display: flex;
   flex-direction: column;
   padding: var(--space-3);
@@ -323,6 +326,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  padding: var(--space-3);
 }
 
 .match-panel-title {
@@ -351,7 +355,7 @@
 
 .picker {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-2) var(--space-3);
   padding: 0 var(--space-1) var(--space-1) 0; /* espaço da sombra deslocada */
 }
@@ -445,16 +449,19 @@
 /* mão: grade de 4 colunas; o tooltip abre para baixo e, nas duas colunas da direita, alinhado à direita */
 .hand {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--space-2) var(--space-3);
-  padding: 0 var(--space-1) var(--space-1) 0; /* espaço da sombra deslocada */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  /* o painel fica logo abaixo do campo: o tooltip abre para cima, e esta faixa dá lugar a ele */
+  padding: 80px var(--space-1) var(--space-1) 0; /* + espaço da sombra deslocada */
+  margin-top: -80px;
 }
 
 .hand .card-tile { display: flex; }
-.hand .card-face { width: 100%; min-height: 92px; padding: var(--space-1) var(--space-2); }
-.hand .card-tooltip { bottom: auto; top: calc(100% + 8px); }
-.hand .card-tile:nth-child(4n) .card-tooltip,
-.hand .card-tile:nth-child(4n + 3) .card-tooltip { left: auto; right: 0; }
+.hand .card-face { width: 100%; min-height: 64px; padding: var(--space-1) var(--space-2); }
+.hand .card-category { display: none; } /* o tooltip já traz a categoria */
+.hand .card-tooltip { top: auto; bottom: calc(100% + 8px); }
+.hand .card-tile .card-tooltip { left: 0; right: auto; }
+.hand .card-tile:nth-child(3n) .card-tooltip { left: auto; right: 0; }
 
 .match-tools {
   display: flex;
@@ -492,52 +499,59 @@
   color: var(--gbc-muted);
 }
 
-/* ================= tablet e celular: tudo em coluna, campo limitado pela altura da tela ================= */
-@media (max-width: 1040px) {
-  .match {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas:
-      'hud'
-      'notice'
-      'field'
-      'side';
-    padding: var(--space-2);
-    gap: var(--space-2);
-  }
-
-  .match-log {
-    contain: none;
-    flex: none;
-    height: 200px;
-  }
-
-  /* o painel fica logo abaixo do campo: o tooltip volta a abrir para cima */
-  .hand {
-    padding-top: 80px;
-    margin-top: -80px;
-  }
-
-  .hand .card-tooltip { top: auto; bottom: calc(100% + 8px); }
+/* ================= a partir de 600px: HUD, mão e escolhas mais largos ================= */
+@media (min-width: 600px) {
+  .hud-board { gap: var(--space-3); padding: var(--space-3) var(--space-4); }
+  .hud-team { font-size: var(--fs-md); }
+  .hud-digit { font-size: 28px; }
+  .hud-seg { padding: var(--space-1) var(--space-3); }
+  .hud-clock { font-size: var(--fs-lg); }
+  .reveal { top: var(--space-3); padding: var(--space-2) var(--space-3); }
+  .reveal-name { font-size: var(--fs-sm); }
+  .match-panel { padding: var(--space-4); }
+  .picker { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hand { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-2) var(--space-3); }
+  .hand .card-face { min-height: 92px; }
+  .hand .card-category { display: block; }
+  .hand .card-tile:nth-child(3n) .card-tooltip { left: 0; right: auto; }
+  .hand .card-tile:nth-child(4n) .card-tooltip,
+  .hand .card-tile:nth-child(4n + 3) .card-tooltip { left: auto; right: 0; }
 }
 
-@media (max-width: 520px) {
-  .hud-board {
-    gap: var(--space-2);
-    padding: var(--space-2);
+/* ================= desktop: campo e painel lado a lado ================= */
+@media (min-width: 1041px) {
+  .match {
+    grid-template-columns: auto minmax(0, 1fr);
+    /* a linha 'notice' fica vazia de propósito: ela soma o espaço entre placar e campo que o desktop tem hoje */
+    grid-template-areas:
+      'hud hud'
+      'notice notice'
+      'field side';
+    gap: var(--space-3);
+    padding: var(--space-3);
   }
+  .match-log { flex: 1 1 96px; contain: size; height: auto; }
+  /* o tooltip volta a abrir para baixo: o painel está ao lado do campo */
+  .hand { padding: 0 var(--space-1) var(--space-1) 0; margin-top: 0; }
+  .hand .card-tooltip { bottom: auto; top: calc(100% + 8px); }
+}
 
-  .hud-team { font-size: var(--fs-xs); }
-  .hud-digit { font-size: var(--fs-lg); }
-  .hud-seg { padding: 2px var(--space-2); }
-  .hud-clock { font-size: var(--fs-md); }
-
-  .match-panel { padding: var(--space-3); }
-  .hand { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-2); }
-  .hand .card-face { min-height: 64px; }
-  .hand .card-category { display: none; } /* o tooltip já traz a categoria */
-  .hand .card-tile .card-tooltip { left: 0; right: auto; }
-  .hand .card-tile:nth-child(3n) .card-tooltip { left: auto; right: 0; }
-  .picker { grid-template-columns: minmax(0, 1fr); }
-  .reveal { top: var(--space-2); padding: var(--space-2); }
-  .reveal-name { font-size: var(--fs-xs); }
+/* ================= celular deitado: campo à esquerda, painel rolável à direita ================= */
+@media (orientation: landscape) and (max-height: 500px) {
+  .match {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      'hud hud'
+      'field side';
+    gap: var(--space-2);
+    padding-bottom: max(var(--space-2), env(safe-area-inset-bottom));
+  }
+  .match-side {
+    max-height: calc(100dvh - 128px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .match-log { height: 120px; }
+  .hand { padding-top: 80px; margin-top: -80px; }
+  .hand .card-tooltip { top: auto; bottom: calc(100% + 8px); }
 }
