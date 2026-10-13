@@ -15,7 +15,7 @@ export type AnimStep = Timed &
     | { kind: 'BLOCK' }
     | { kind: 'CLASH'; off: number; def: number; effect: TypeEffect | null }
     | { kind: 'THROW'; from: number | null; to: number }
-    | { kind: 'RUN'; carrier: number; yards: number }
+    | { kind: 'RUN'; carrier: number; yards: number; big?: boolean }
     | { kind: 'TACKLE'; by: number; carrier: number }
     | { kind: 'INCOMPLETE' }
     | { kind: 'SACK'; qb: number; by: number; yards: number }
@@ -29,6 +29,9 @@ type StepBody = DistributiveOmit<AnimStep, 'at' | 'duration'>;
 
 /** A animação precisa terminar antes do próximo timer (RESULT_ANIMATION_MS), com folga. */
 export const TIMELINE_BUDGET_MS = RESULT_ANIMATION_MS - 500;
+
+/** Texto do banner de touchdown; o áudio usa este valor para escolher o cue `td`. */
+export const TOUCHDOWN_BANNER = 'TOUCHDOWN!';
 
 const D = {
   snap: 350, block: 350, clash: 550, throw: 450, run: 700, runBig: 900, tackle: 300,
@@ -94,7 +97,7 @@ export function buildTimeline(events: readonly GameEvent[]): AnimStep[] {
         break;
       case 'GAIN':
         if (carrier !== undefined) {
-          push({ kind: 'RUN', carrier, yards: o.yards }, o.bigPlay ? D.runBig : D.run);
+          push({ kind: 'RUN', carrier, yards: o.yards, big: o.bigPlay }, o.bigPlay ? D.runBig : D.run);
           if (!scored && defender !== undefined) push({ kind: 'TACKLE', by: defender, carrier }, D.tackle);
         }
         break;
@@ -122,7 +125,7 @@ export function buildTimeline(events: readonly GameEvent[]): AnimStep[] {
         push({ kind: 'BANNER', text: 'FIRST DOWN!', tone: 'info' }, D.banner);
         break;
       case 'TOUCHDOWN':
-        push({ kind: 'BANNER', text: 'TOUCHDOWN!', tone: 'good' }, D.banner);
+        push({ kind: 'BANNER', text: TOUCHDOWN_BANNER, tone: 'good' }, D.banner);
         break;
       case 'SAFETY':
         push({ kind: 'BANNER', text: 'SAFETY!', tone: 'bad' }, D.banner);
