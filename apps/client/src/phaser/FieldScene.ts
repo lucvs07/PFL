@@ -31,6 +31,10 @@ interface Wanted {
   side: Side;
 }
 
+const SIDELINE_W = 11;
+const GRASS_NOISE_KEY = 'grass-noise';
+const ENDZONE_KEY = 'endzone-stripes';
+
 const COLORS = {
   grassA: 0x48a058,
   grassB: 0x409850,
@@ -76,7 +80,8 @@ export class FieldScene extends Phaser.Scene {
   private generation = 0;
   private failedTextures = new Set<string>();
   private fieldGfx!: Phaser.GameObjects.Graphics;
-  private labels: Phaser.GameObjects.Text[] = [];
+  private lineGfx!: Phaser.GameObjects.Graphics;
+  private labels: Phaser.GameObjects.GameObject[] = [];
   private transient: Phaser.GameObjects.GameObject[] = [];
   private players = new Map<string, PlayerSprite>();
   private reduced = false;
@@ -93,7 +98,11 @@ export class FieldScene extends Phaser.Scene {
 
   create(): void {
     this.reduced = reducedMotion();
+    this.makeTextures();
     this.fieldGfx = this.add.graphics().setDepth(0);
+    // pontinhos de grama por cima das faixas, por baixo das linhas
+    this.add.tileSprite(0, 0, FIELD_WIDTH, FIELD_HEIGHT, GRASS_NOISE_KEY).setOrigin(0).setDepth(0.5).setAlpha(0.55);
+    this.lineGfx = this.add.graphics().setDepth(0.8);
     this.ball = this.add.image(FIELD_WIDTH / 2, LOS_Y, BALL_KEY).setDepth(20).setVisible(false);
     this.banner = this.add
       .text(FIELD_WIDTH / 2, FIELD_HEIGHT / 2, '', { ...TEXT_STYLE, fontSize: '18px', strokeThickness: 6, align: 'center' })
@@ -103,6 +112,26 @@ export class FieldScene extends Phaser.Scene {
     this.load.on(Phaser.Loader.Events.FILE_LOAD_ERROR, (file: Phaser.Loader.File) => this.failedTextures.add(file.key));
     this.ready = true;
     this.sync(this.pending.stage, this.pending.play);
+  }
+
+  /** Texturas pixel geradas no código (sem arquivos): pontos de grama e listras de zona de gol. */
+  private makeTextures(): void {
+    const noise = this.make.graphics({ x: 0, y: 0 }, false);
+    let seed = 7;
+    const rnd = (): number => {
+      seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+      return seed / 0x7fffffff;
+    };
+    for (let i = 0; i < 46; i++) {
+      noise.fillStyle(i % 3 === 0 ? 0x5cb86a : 0x2f7a40, 1).fillRect(Math.floor(rnd() * 15) * 2, Math.floor(rnd() * 15) * 2, 2, 2);
+    }
+    noise.generateTexture(GRASS_NOISE_KEY, 32, 32);
+    noise.destroy();
+    const stripes = this.make.graphics({ x: 0, y: 0 }, false);
+    stripes.fillStyle(0xf8f8f0, 1);
+    for (let i = -16; i < 32; i += 16) for (let k = 0; k < 16; k++) stripes.fillRect(i + k, 15 - k, 4, 1);
+    stripes.generateTexture(ENDZONE_KEY, 16, 16);
+    stripes.destroy();
   }
 
   sync(stage: Stage | null, play: PlaySpec | null): void {
@@ -189,7 +218,8 @@ export class FieldScene extends Phaser.Scene {
         fontFamily: '"Pixelify Sans", monospace', fontSize: '10px', color: '#f8f8f0', stroke: '#181010', strokeThickness: 3, resolution: 2,
       })
       .setOrigin(0.5, 0);
-    const container = this.add.container(x, y, [body, barBg, bar, chip, name]).setDepth(w.side === 'defense' ? 10 : 11);
+    const shadow = this.add.ellipse(0, SPRITE_SIZE / 2 - 5, 30, 8, 0x0f380f, 0.35);
+    const container = this.add.container(x, y, [shadow, body, barBg, bar, chip, name]).setDepth(w.side === 'defense' ? 10 : 11);
     this.players.set(`${w.side}:${w.id}`, { container, slot: w.slot, id: w.id, side: w.side });
   }
 
@@ -200,37 +230,67 @@ export class FieldScene extends Phaser.Scene {
 
   private drawField(stage: Stage | null): void {
     const g = this.fieldGfx;
+    const lg = this.lineGfx;
     g.clear();
+    lg.clear();
     for (const label of this.labels) label.destroy();
     this.labels = [];
     const ballOn = stage?.ballOn ?? 50;
+    const right = FIELD_WIDTH - SIDELINE_W;
 
     g.fillStyle(COLORS.grassA, 1).fillRect(0, 0, FIELD_WIDTH, FIELD_HEIGHT);
     for (let yard = -10; yard < 110; yard += 10) {
       const top = yardLineY(yard + 10, ballOn);
       const bottom = yardLineY(yard, ballOn);
       if (bottom < 0 || top > FIELD_HEIGHT) continue;
-      if (yard < 0) g.fillStyle(COLORS.endZoneOwn, 0.55);
-      else if (yard >= 100) g.fillStyle(COLORS.endZoneOpp, 0.55);
-      else g.fillStyle((yard / 10) % 2 === 0 ? COLORS.grassA : COLORS.grassB, 1);
-      g.fillRect(0, top, FIELD_WIDTH, bottom - top);
+      if (yard < 0 || yard >= 100) {
+        const own = yard < 0;
+        g.fillStyle(own ? COLORS.endZoneOwn : COLORS.endZoneOpp, 0.6).fillRect(0, top, FIELD_WIDTH, bottom - top);
+        this.labels.push(this.add.tileSprite(0, top, FIELD_WIDTH, bottom - top, ENDZONE_KEY).setOrigin(0).setDepth(0.6).setAlpha(0.22));
+        this.labels.push(
+          this.add
+            .text(FIELD_WIDTH / 2, (top + bottom) / 2, own ? 'SAFETY' : 'TOUCHDOWN', { ...TEXT_STYLE, fontSize: '14px', strokeThickness: 4 })
+            .setOrigin(0.5)
+            .setDepth(1)
+            .setAlpha(0.45),
+        );
+      } else g.fillStyle((yard / 10) % 2 === 0 ? COLORS.grassA : COLORS.grassB, 1).fillRect(0, top, FIELD_WIDTH, bottom - top);
     }
 
-    g.lineStyle(2, COLORS.line, 0.8);
+    // fora de campo (mais escuro) e linhas laterais brancas
+    lg.fillStyle(0x2f7a40, 1).fillRect(0, 0, SIDELINE_W - 3, FIELD_HEIGHT).fillRect(FIELD_WIDTH - SIDELINE_W + 3, 0, SIDELINE_W - 3, FIELD_HEIGHT);
+    lg.fillStyle(COLORS.line, 0.9).fillRect(SIDELINE_W - 3, 0, 3, FIELD_HEIGHT).fillRect(FIELD_WIDTH - SIDELINE_W, 0, 3, FIELD_HEIGHT);
+
+    // marcas de 1 jarda: nas laterais e nas hashes de dentro
+    lg.fillStyle(COLORS.line, 0.55);
+    for (let yard = 1; yard < 100; yard++) {
+      if (yard % 5 === 0) continue;
+      const y = Math.round(yardLineY(yard, ballOn));
+      if (y < 0 || y > FIELD_HEIGHT) continue;
+      lg.fillRect(SIDELINE_W, y, 6, 2).fillRect(right - 6, y, 6, 2);
+      lg.fillRect(FIELD_WIDTH / 2 - 78, y, 6, 2).fillRect(FIELD_WIDTH / 2 + 72, y, 6, 2);
+    }
+
+    // linhas de 5 em 5 jardas e números de 10 em 10, mais para dentro do campo
+    lg.lineStyle(2, COLORS.line, 0.85);
     for (const line of visibleYardLines(ballOn)) {
-      g.lineBetween(0, line.y, FIELD_WIDTH, line.y);
+      lg.lineBetween(SIDELINE_W, line.y, right, line.y);
       if (line.label) {
-        this.labels.push(this.add.text(4, line.y + 3, line.label, { ...TEXT_STYLE, fontSize: '8px' }).setDepth(1));
-        this.labels.push(this.add.text(FIELD_WIDTH - 4, line.y + 3, line.label, { ...TEXT_STYLE, fontSize: '8px' }).setOrigin(1, 0).setDepth(1));
+        const style = { ...TEXT_STYLE, fontSize: '12px', strokeThickness: 4 };
+        this.labels.push(this.add.text(SIDELINE_W + 6, line.y + 5, line.label, style).setDepth(1));
+        this.labels.push(this.add.text(right - 6, line.y + 5, line.label, style).setOrigin(1, 0).setDepth(1));
       }
     }
     if (!stage) return;
 
-    g.lineStyle(3, COLORS.los, 1).lineBetween(0, LOS_Y, FIELD_WIDTH, LOS_Y);
+    // linha de scrimmage e linha do 1º down, com os marcadores de corrente nas laterais
+    lg.lineStyle(3, COLORS.los, 1).lineBetween(SIDELINE_W, LOS_Y, right, LOS_Y);
+    lg.fillStyle(COLORS.los, 1).fillRect(0, LOS_Y - 8, SIDELINE_W - 3, 16).fillRect(FIELD_WIDTH - SIDELINE_W + 3, LOS_Y - 8, SIDELINE_W - 3, 16);
     const target = stage.ballOn + stage.yardsToGo;
     if (target < 100) {
       const y = yardLineY(target, stage.ballOn);
-      g.lineStyle(3, COLORS.firstDown, 1).lineBetween(0, y, FIELD_WIDTH, y);
+      lg.lineStyle(3, COLORS.firstDown, 1).lineBetween(SIDELINE_W, y, right, y);
+      lg.fillStyle(COLORS.firstDown, 1).fillRect(0, y - 8, SIDELINE_W - 3, 16).fillRect(FIELD_WIDTH - SIDELINE_W + 3, y - 8, SIDELINE_W - 3, 16);
     }
   }
 
