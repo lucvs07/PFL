@@ -3,15 +3,14 @@
 
 .match {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
+  grid-template-columns: auto minmax(0, 1fr);
   grid-template-areas:
     'hud hud'
     'notice notice'
-    'field log'
-    'panel panel';
+    'field side';
   gap: var(--space-3);
   padding: var(--space-3);
-  max-width: 880px;
+  max-width: 1160px;
   margin: 0 auto;
   align-content: start;
   /* corta só na horizontal: o tooltip das cartas sobe livre, mas a da direita não alarga a página */
@@ -252,10 +251,22 @@
 .reveal-neutral .reveal-read { color: var(--read-neutral); }
 .reveal-wrong .reveal-read { color: var(--read-wrong); }
 
-/* ================= log ================= */
+/* ================= coluna da direita: decisão em cima, log embaixo ================= */
+/* A coluna tem a altura do campo: o log ocupa o que sobra e rola por dentro. */
+.match-side {
+  grid-area: side;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  min-height: 0;
+}
+
 .match-log {
-  grid-area: log;
-  max-height: 576px;
+  flex: 1 1 96px;
+  min-height: 96px;
+  /* o conteúdo do log não conta na altura da linha: ela é do campo */
+  contain: size;
   display: flex;
   flex-direction: column;
   padding: var(--space-3);
@@ -299,10 +310,10 @@
 
 /* ================= painel de decisão ================= */
 .match-panel {
-  grid-area: panel;
+  flex: none;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
 }
 
 .match-panel-title {
@@ -331,8 +342,8 @@
 
 .picker {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
-  gap: var(--space-3);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2) var(--space-3);
   padding: 0 var(--space-1) var(--space-1) 0; /* espaço da sombra deslocada */
 }
 
@@ -341,9 +352,9 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: var(--space-2);
+  gap: var(--space-1);
   min-width: 0;
-  padding: var(--space-2) var(--space-3) var(--space-3);
+  padding: var(--space-2) var(--space-3);
   background: var(--gbc-paper);
   color: var(--gbc-ink);
   border: 3px solid var(--gbc-ink);
@@ -384,7 +395,7 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 0;
 }
 
 .picker-lineup li {
@@ -398,13 +409,13 @@
   font-family: var(--font-display);
   font-size: var(--fs-xs);
   font-weight: 400;
-  line-height: 1.8;
+  line-height: 1.6;
 }
 
 .picker-name {
   font-family: var(--font-body);
   font-size: var(--fs-body-sm);
-  line-height: 1.4;
+  line-height: 1.2;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -419,14 +430,19 @@
 .side-offense .picker-slot { color: var(--side-offense); }
 .side-defense .picker-slot { color: var(--side-defense); }
 
-/* mão: o padding de cima reserva a altura do tooltip das cartas, sem empurrar o layout */
+/* mão: grade de 4 colunas; o tooltip abre para baixo e, nas duas colunas da direita, alinhado à direita */
 .hand {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  padding-top: 80px;
-  margin-top: -80px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2) var(--space-3);
+  padding: 0 var(--space-1) var(--space-1) 0; /* espaço da sombra deslocada */
 }
+
+.hand .card-tile { display: flex; }
+.hand .card-face { width: 100%; min-height: 92px; padding: var(--space-1) var(--space-2); }
+.hand .card-tooltip { bottom: auto; top: calc(100% + 8px); }
+.hand .card-tile:nth-child(4n) .card-tooltip,
+.hand .card-tile:nth-child(4n + 3) .card-tooltip { left: auto; right: 0; }
 
 .match-tools {
   display: flex;
@@ -441,6 +457,9 @@
 
 .depth-panel {
   padding-top: var(--space-2);
+  /* editor longo: rola por dentro para não esticar a página */
+  max-height: 46dvh;
+  overflow-y: auto;
 }
 
 .depth-panel-head {
@@ -461,21 +480,32 @@
   color: var(--gbc-muted);
 }
 
-/* ================= tablet e celular ================= */
-@media (max-width: 900px) {
+/* ================= tablet e celular: tudo em coluna, campo limitado pela altura da tela ================= */
+@media (max-width: 1040px) {
   .match {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
       'hud'
       'notice'
       'field'
-      'panel'
-      'log';
+      'side';
     padding: var(--space-2);
     gap: var(--space-2);
   }
 
-  .match-log { max-height: 240px; }
+  .match-log {
+    contain: none;
+    flex: none;
+    height: 200px;
+  }
+
+  /* o painel fica logo abaixo do campo: o tooltip volta a abrir para cima */
+  .hand {
+    padding-top: 80px;
+    margin-top: -80px;
+  }
+
+  .hand .card-tooltip { top: auto; bottom: calc(100% + 8px); }
 }
 
 @media (max-width: 520px) {
@@ -490,6 +520,12 @@
   .hud-clock { font-size: var(--fs-md); }
 
   .match-panel { padding: var(--space-3); }
+  .hand { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-2); }
+  .hand .card-face { min-height: 64px; }
+  .hand .card-category { display: none; } /* o tooltip já traz a categoria */
+  .hand .card-tile .card-tooltip { left: 0; right: auto; }
+  .hand .card-tile:nth-child(3n) .card-tooltip { left: auto; right: 0; }
+  .picker { grid-template-columns: minmax(0, 1fr); }
   .reveal { top: var(--space-2); padding: var(--space-2); }
   .reveal-name { font-size: var(--fs-xs); }
 }

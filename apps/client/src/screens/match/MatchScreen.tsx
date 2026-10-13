@@ -159,27 +159,29 @@ export function MatchScreen({ state, room, myTeam, now, onFormation, onPackage, 
         <PhaserField stage={animating && state.animation ? state.animation.stage : state.stage} play={animating ? play : null} />
         {animating && <RevealBanner reveal={state.reveal} />}
       </section>
-      <aside className="match-log panel">
-        <NarrationLog lines={state.log} />
-      </aside>
-      <section className="match-panel panel" aria-label="Decisão">
-        {panel}
-        <div className="match-tools">
-          <button type="button" className="btn btn-small" disabled={!myTeam} onClick={() => setDepthOpen((o) => !o)}>
-            {depthOpen ? 'Fechar depth chart' : 'Depth chart'}
-          </button>
-          {view.canEditDepth && <span className="ok-text">Janela de ajuste do depth chart aberta.</span>}
-        </div>
-        {depthOpen && myTeam && draft && (
-          <DepthPanel
-            team={myTeam}
-            draft={draft}
-            canEditNow={view.canEditDepth && view.phase === 'FORMATION'}
-            onAction={applyDepth}
-            onReset={() => setDraft(draftFromTeamDepth(myTeam))}
-          />
-        )}
-      </section>
+      <div className="match-side">
+        <section className="match-panel panel" aria-label="Decisão">
+          {panel}
+          <div className="match-tools">
+            <button type="button" className="btn btn-small" disabled={!myTeam} onClick={() => setDepthOpen((o) => !o)}>
+              {depthOpen ? 'Fechar depth chart' : 'Depth chart'}
+            </button>
+            {view.canEditDepth && <span className="ok-text">Janela de ajuste do depth chart aberta.</span>}
+          </div>
+          {depthOpen && myTeam && draft && (
+            <DepthPanel
+              team={myTeam}
+              draft={draft}
+              canEditNow={view.canEditDepth && view.phase === 'FORMATION'}
+              onAction={applyDepth}
+              onReset={() => setDraft(draftFromTeamDepth(myTeam))}
+            />
+          )}
+        </section>
+        <aside className="match-log panel">
+          <NarrationLog lines={state.log} />
+        </aside>
+      </div>
     </main>
   );
 }
