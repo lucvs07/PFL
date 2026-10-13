@@ -2,7 +2,7 @@
 // Com --allow-missing, falhas viram aviso (útil no dev offline; o <Sprite> tem fallback).
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { downloadAll, GEN1_COUNT, SPRITE_ROOT_DIR } from './sprites-lib';
+import { downloadAll, downloadAnimated, GEN1_COUNT, SPRITE_ROOT_DIR } from './sprites-lib';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..', SPRITE_ROOT_DIR);
 const allowMissing = process.argv.includes('--allow-missing');
@@ -15,3 +15,8 @@ if (report.failed.length > 0) {
   if (!allowMissing) process.exit(1);
   console.warn('Continuando sem esses sprites (--allow-missing).');
 }
+
+// Os GIFs animados são um extra da Pokédex: falhar aqui só avisa (o <Sprite> cai no PNG estático).
+const animated = await downloadAnimated((url) => fetch(url), root, ids);
+console.log(`animados: ${animated.downloaded} baixados, ${animated.skipped} já existiam, ${animated.failed.length} falharam`);
+for (const line of animated.failed.slice(0, 10)) console.warn(`  ${line}`);

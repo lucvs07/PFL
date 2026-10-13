@@ -3,11 +3,12 @@ import { mkdtemp, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import {
-  downloadAll, ensureSprite, SPRITE_ROOT_DIR, fetchPng, isPng, spriteFile, spriteUrl,
+  animatedFile, animatedUrl, downloadAll, downloadAnimated, ensureAnimated, ensureSprite, isGif, SPRITE_ROOT_DIR, fetchPng, isPng, spriteFile, spriteUrl,
   type FetchLike, type FetchResponseLike, type RetryOptions,
 } from '../scripts/sprites-lib';
 
 const PNG = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 1, 2, 3]);
+const GIF = new Uint8Array([0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 1, 2, 3]);
 const HTML = new TextEncoder().encode('<html>404</html>');
 const noSleep: RetryOptions = { attempts: 3, delayMs: 1, sleep: async () => {} };
 const ok = (bytes: Uint8Array): FetchResponseLike => ({ ok: true, status: 200, arrayBuffer: async () => bytes.slice().buffer as ArrayBuffer });
@@ -96,5 +97,38 @@ describe('ensureSprite e downloadAll', () => {
     expect(report.failed[0]).toMatch(/^back\/2:/);
     const again = await downloadAll(f, root, [1, 3], noSleep, 2);
     expect(again).toEqual({ downloaded: 0, skipped: 4, failed: [] });
+  });
+});
+
+describe('sprites animados (GIF)', () => {
+  it('usa a pasta animated do Black/White e grava em {root}/animated/{id}.gif', () => {
+    expect(animatedUrl(25)).toBe(
+      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/25.gif',
+    );
+    expect(animatedFile('/x/sprites', 7)).toBe(join('/x/sprites', 'animated', '7.gif'));
+  });
+
+  it('reconhece GIF pela assinatura', () => {
+    expect(isGif(GIF)).toBe(true);
+    expect(isGif(PNG)).toBe(false);
+    expect(isGif(HTML)).toBe(false);
+  });
+
+  it('é idempotente e rejeita resposta que não é GIF', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'pfl-sprites-'));
+    const f = scripted(ok(GIF));
+    expect(await ensureAnimated(f, root, 1, noSleep)).toBe('downloaded');
+    expect(await ensureAnimated(f, root, 1, noSleep)).toBe('skipped');
+    expect(f.calls).toHaveLength(1);
+    await expect(ensureAnimated(scripted(ok(HTML)), root, 2, noSleep)).rejects.toThrow(/não é GIF/);
+  });
+
+  it('relata falhas sem abortar os demais', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'pfl-sprites-'));
+    const f: FetchLike = async (url) => (url.endsWith('/2.gif') ? fail(404) : ok(GIF));
+    const report = await downloadAnimated(f, root, [1, 2, 3], noSleep, 2);
+    expect(report.downloaded).toBe(2);
+    expect(report.failed).toHaveLength(1);
+    expect(report.failed[0]).toMatch(/^animated\/2:/);
   });
 });

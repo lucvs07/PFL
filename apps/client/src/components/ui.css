@@ -5,6 +5,11 @@
   flex: none;
 }
 
+.sprite-animated {
+  max-width: 100%;
+  object-fit: contain;
+}
+
 .sprite-missing {
   display: inline-flex;
   align-items: center;
