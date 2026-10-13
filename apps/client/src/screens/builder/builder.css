@@ -196,7 +196,9 @@
   cursor: pointer;
 }
 
-.roster-slot-remove:hover { background: var(--gbc-muted); }
+@media (hover: hover) and (pointer: fine) {
+  .roster-slot-remove:hover { background: var(--gbc-muted); }
+}
 
 .roster-kicker {
   border-width: 4px;
@@ -260,8 +262,10 @@
   color: var(--gbc-paper);
 }
 
-.tab.is-active:hover:not(:disabled) {
-  background: var(--gbc-ink);
+@media (hover: hover) and (pointer: fine) {
+  .tab.is-active:hover:not(:disabled) {
+    background: var(--gbc-ink);
+  }
 }
 
 /* ---------- aba Elenco ---------- */
@@ -306,7 +310,9 @@
   cursor: pointer;
 }
 
-.rail-pill:hover { background: var(--gbc-panel); }
+@media (hover: hover) and (pointer: fine) {
+  .rail-pill:hover { background: var(--gbc-panel); }
+}
 
 .rail-pill[aria-pressed='true'] {
   background: var(--pill-color);
@@ -371,7 +377,9 @@
   cursor: pointer;
 }
 
-.dex-tile:hover { background: var(--gbc-panel); }
+@media (hover: hover) and (pointer: fine) {
+  .dex-tile:hover { background: var(--gbc-panel); }
+}
 
 .dex-tile.is-selected {
   border-width: 4px;
@@ -400,8 +408,11 @@
   user-select: none;
 }
 
-.dex-tile.is-selected .dex-ghost,
-.dex-tile:hover .dex-ghost { color: var(--gbc-paper); }
+.dex-tile.is-selected .dex-ghost { color: var(--gbc-paper); }
+
+@media (hover: hover) and (pointer: fine) {
+  .dex-tile:hover .dex-ghost { color: var(--gbc-paper); }
+}
 
 /* poço do sprite: célula própria no topo do card, ×1 (96 px), tudo dentro da borda */
 .dex-tile-sprite {

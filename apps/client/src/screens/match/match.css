@@ -373,7 +373,9 @@
   cursor: pointer;
 }
 
-.picker-option:hover { background: var(--gbc-panel); }
+@media (hover: hover) and (pointer: fine) {
+  .picker-option:hover { background: var(--gbc-panel); }
+}
 
 .picker-option:active {
   transform: translate(2px, 2px);

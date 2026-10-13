@@ -62,7 +62,14 @@
   cursor: pointer;
 }
 
-.card-face:hover:not(:disabled) { background: var(--gbc-yellow); }
+@media (hover: hover) and (pointer: fine) {
+  .card-face:hover:not(:disabled):not([aria-disabled='true']) { background: var(--gbc-yellow); }
+}
+
+.card-face:active:not(:disabled):not([aria-disabled='true']) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--gbc-ink);
+}
 
 .card-face:focus-visible {
   outline: 3px dashed var(--gbc-blue);
@@ -147,9 +154,13 @@
 .card-tooltip p { margin: 0 0 var(--space-1); }
 .card-tooltip ul { margin: 0 0 var(--space-1); padding-left: var(--space-4); }
 
-.card-tile:hover .card-tooltip,
-.card-tile:focus-within .card-tooltip {
+.card-tile:has(.card-face:focus-visible) .card-tooltip,
+.card-tile.is-tip-open .card-tooltip {
   display: block;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card-tile:hover .card-tooltip { display: block; }
 }
 
 /* barras de stat */

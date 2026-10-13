@@ -12,6 +12,12 @@ body,
   margin: 0;
 }
 
+html {
+  -webkit-tap-highlight-color: transparent; /* o :active de cada botão é o feedback */
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior: none; /* o jogo não é um documento rolável: sem pull-to-refresh */
+}
+
 body {
   background: var(--gbc-green-3);
   color: var(--gbc-ink);
@@ -47,8 +53,32 @@ textarea {
   border-radius: 0;
 }
 
+/* 16px: abaixo disso o iOS dá zoom na página ao focar o campo e não desfaz */
+input,
+textarea,
+select {
+  font-size: 16px;
+}
+
+button,
+a,
+[role='button'],
+input,
+select,
+textarea {
+  touch-action: manipulation; /* sem espera de duplo toque */
+}
+
+/* controles não selecionam o rótulo no toque longo; texto de conteúdo continua selecionável */
+button,
+[role='button'] {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
 .screen {
-  min-height: 100vh;
+  min-height: 100dvh;
   padding: var(--space-4);
   display: flex;
   flex-direction: column;
@@ -105,7 +135,9 @@ textarea {
   line-height: 1.4;
 }
 
-.btn:hover:not(:disabled) { background: var(--gbc-yellow); }
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover:not(:disabled) { background: var(--gbc-yellow); }
+}
 
 .btn:active:not(:disabled) {
   transform: translate(2px, 2px);
@@ -127,7 +159,9 @@ textarea {
   color: var(--gbc-paper);
 }
 
-.btn-primary:hover:not(:disabled) { background: var(--gbc-orange); }
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover:not(:disabled) { background: var(--gbc-orange); }
+}
 
 .btn-small {
   padding: 2px 6px;
@@ -146,7 +180,6 @@ textarea {
 textarea.input {
   width: 100%;
   resize: vertical;
-  font-size: var(--fs-body-sm);
   word-break: break-all;
 }
 
@@ -194,6 +227,10 @@ textarea.input {
   body { font-size: var(--fs-body-sm); }
   .title { font-size: 22px; }
   .screen { padding: var(--space-2); }
+}
+
+@media (min-width: 721px) {
+  textarea.input { font-size: var(--fs-body-sm); }
 }
 
 @media (prefers-reduced-motion: reduce) {

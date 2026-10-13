@@ -334,7 +334,9 @@
   cursor: pointer;
 }
 
-.team-option:hover { background: var(--gbc-panel); }
+@media (hover: hover) and (pointer: fine) {
+  .team-option:hover { background: var(--gbc-panel); }
+}
 
 .team-option.is-selected {
   border-width: 3px;
