@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { actingTeams } from '@pfl/engine';
+import { actingTeams, teamCost } from '@pfl/engine';
 import { encodeTeam } from '@pfl/protocol';
 import { Room } from '../src/room';
 import { realScheduler, resolveTimings, type TimingsInput } from '../src/timings';
@@ -85,7 +85,7 @@ describe('lobby', () => {
       code: 'ABCDEF',
       you: 'A',
       status: 'WAITING',
-      players: [{ key: 'A', connected: true, ready: false, teamName: null, teamErrors: [] }],
+      players: [{ key: 'A', connected: true, ready: false, teamName: null, teamErrors: [], roster: [], lead: null, cost: null }],
     });
     room.claimSeat();
     room.connect('B', 'conn-b');
@@ -114,6 +114,25 @@ describe('lobby', () => {
     expect(player.teamName).toBe('Fraco');
     expect(player.teamErrors.map((e) => e.code)).toContain('ROSTER_SIZE');
     expect(rec.all('A', 'error')).toEqual([]);
+  });
+
+  it('os dois jogadores recebem elenco, destaque e custo do time enviado; time inválido não expõe nada', () => {
+    const { room, rec } = makeRoom();
+    room.claimSeat();
+    room.connect('A', 'conn-a');
+    room.claimSeat();
+    room.connect('B', 'conn-b');
+    const team = electricTeam('Raio');
+    room.submitTeam('A', encodeTeam(team));
+    for (const viewer of ['A', 'B'] as const) {
+      const a = rec.last(viewer, 'room:state')!.players.find((p) => p.key === 'A')!;
+      expect(a.roster).toEqual(team.roster);
+      expect(a.lead).toBe(team.depth.QB?.[0] ?? team.roster[0]);
+      expect(a.cost).toBe(teamCost(team));
+    }
+    room.submitTeam('A', encodeTeam({ ...team, roster: team.roster.slice(1) }));
+    const invalid = rec.last('B', 'room:state')!.players.find((p) => p.key === 'A')!;
+    expect(invalid).toMatchObject({ roster: [], lead: null, cost: null });
   });
 
   it('time válido: sem erros; pronto sem time válido dá TEAM_INVALID', () => {

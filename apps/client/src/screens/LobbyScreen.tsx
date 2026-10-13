@@ -7,7 +7,6 @@ import { draftToTeam } from '../builder/draft';
 import { draftErrors } from '../builder/derived';
 import { getLocalStorage } from '../lib/storage';
 import { gymTheme } from '../lib/design';
-import { leadSpecies } from '../lib/lobby';
 import { ErrorList } from '../components/ErrorList';
 import { Sprite } from '../components/Sprite';
 import './lobby.css';
@@ -66,7 +65,8 @@ export function LobbyScreen({ room, myTeam, onSubmitTeam, onReady, onLeave }: Pr
         {KEYS.map((key) => {
           const p = room.players.find((player) => player.key === key);
           const isYou = key === room.you;
-          const lead = isYou && p ? leadSpecies(myTeam) : null;
+          const lead = p?.lead ?? null;
+          const roster = p?.roster ?? [];
           const classes = ['lobby-card', isYou ? 'is-you' : '', p?.ready ? 'is-ready' : '', lead !== null ? 'has-lead' : '']
             .filter(Boolean)
             .join(' ');
@@ -87,7 +87,7 @@ export function LobbyScreen({ room, myTeam, onSubmitTeam, onReady, onLeave }: Pr
                     <p className="lobby-team">
                       {p.teamName ?? <span className="muted lobby-team-none">sem time</span>}
                     </p>
-                    {isYou && myTeam && <p className="lobby-cost">{teamCost(myTeam)}pt</p>}
+                    {p.cost !== null && <p className="lobby-cost">{p.cost}pt</p>}
                     <p className={p.ready ? 'lobby-ready' : 'lobby-ready is-waiting'}>{p.ready ? 'PRONTO!' : 'não está pronto'}</p>
                     {p.teamName !== null && p.teamErrors.length > 0 && <ErrorList errors={p.teamErrors} />}
                   </>
@@ -97,6 +97,15 @@ export function LobbyScreen({ room, myTeam, onSubmitTeam, onReady, onLeave }: Pr
                 <div className="lobby-lead">
                   <Sprite id={lead} size={192} />
                 </div>
+              )}
+              {roster.length > 0 && (
+                <ul className="lobby-roster" aria-label={`Elenco do Jogador ${key}`}>
+                  {roster.map((id) => (
+                    <li key={id}>
+                      <Sprite id={id} size={48} />
+                    </li>
+                  ))}
+                </ul>
               )}
             </article>
           );
