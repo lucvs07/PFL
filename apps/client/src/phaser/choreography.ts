@@ -68,12 +68,12 @@ export function runPlan(category: OffenseCategory | undefined): RunPlan {
 export interface BlockPlan {
   /** quanto os defensores avançam além da linha, em px */
   rush: number;
-  /** atraso entre um defensor e o seguinte, em ms */
+  /** atraso entre um defensor e o seguinte, como fração da duração do passo (assim o último termina dentro dele) */
   stagger: number;
 }
 
 export function blockPlan(blitz: boolean | undefined): BlockPlan {
-  return blitz ? { rush: 14, stagger: 40 } : { rush: 0, stagger: 0 };
+  return blitz ? { rush: 14, stagger: 0.1 } : { rush: 0, stagger: 0 };
 }
 
 export interface Point {
@@ -95,6 +95,22 @@ export function arcPoint(from: Point, to: Point, lift: number, t: number): Point
 const X_EDGE = 40;
 export function clampX(x: number): number {
   return Math.min(FIELD_WIDTH - X_EDGE, Math.max(X_EDGE, x));
+}
+
+/** Centro de um texto de `fontSize` px (Press Start 2P: 1 em por caractere) que não sai do campo. */
+export function clampTextX(x: number, text: string, fontSize: number): number {
+  const half = (text.length * fontSize) / 2 + 4;
+  if (half * 2 >= FIELD_WIDTH) return FIELD_WIDTH / 2;
+  return Math.min(FIELD_WIDTH - half, Math.max(half, x));
+}
+
+/**
+ * Lado da deriva da corrida por fora: para a lateral mais próxima; no centro, alterna pelo id do jogador
+ * (estável no replay, sem sorteio).
+ */
+export function driftSign(x: number, playerId: number): -1 | 1 {
+  if (Math.abs(x - FIELD_WIDTH / 2) < 30) return playerId % 2 === 0 ? 1 : -1;
+  return x < FIELD_WIDTH / 2 ? -1 : 1;
 }
 
 /** Tint no corpo do jogador. O `Container` não tem tint, e o círculo de reserva (sem sprite) também não: ignora. */

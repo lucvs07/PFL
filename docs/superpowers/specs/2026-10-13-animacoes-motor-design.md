@@ -88,6 +88,12 @@ O texto continua em todos os casos de efeito, para a leitura não depender só d
 
 **Reduced motion** (`reduced` já existe na cena): sai o movimento e entram trocas de cor/alpha. Concretamente: posições mudam sem tween, mas o tint do CLASH, o texto de efetividade e o carimbo da leitura continuam. Nada de `shake` nem `flash`. A diferença para hoje é que o `d = 0` deixava os efeitos de cor pulados; agora a informação sobrevive.
 
+**Ajustes pós-revisão**
+- O blitz também anima contra corrida e screen (que não têm `BLOCK`): o `CLASH` ganha `blitz?: boolean` (só quando o passe não é protegido) e os demais DL/LB avançam durante o duelo; o defensor do duelo fica de fora para não brigar com o tween do confronto.
+- O intervalo entre defensores do blitz é uma fração da duração do passo (10%), não 40 ms fixos: o último avanço termina dentro do passo, também sob `fitToBudget`.
+- O texto de efetividade segue o `effect` quando o `mult` cai em 1x; `typeMultiplier` só devolve 0x se todos os alvos forem imunes; o texto é empurrado para dentro do campo (`clampTextX`).
+- A finta do play-action anima a ida ao RB e a volta ao QB; a corrida por fora escolhe o lado pela lateral mais próxima e, no centro, pelo id do jogador (`driftSign`).
+
 **Não bloqueia**: coreografias só agendam via `time.delayedCall`/`tweens` já cancelados por `layout()` (que faz `removeAllEvents` e `killAll`). Nenhuma delas espera um callback para liberar a fase.
 
 ## 7. Revelação e leitura (DOM)

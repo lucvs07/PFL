@@ -323,7 +323,7 @@ describe('FieldScene: passes por categoria', () => {
   it('play-action: a bola passa pelo RB antes do passe (dois movimentos, o segundo atrasado)', () => {
     const { tweens, counters } = playSteps(t, [throwStep('PLAY_ACTION')]);
     const ball = t.of('image')[0].proxy;
-    expect(tweens.filter((c) => c.targets === ball)).toHaveLength(1); // handoff
+    expect(tweens.filter((c) => c.targets === ball)).toHaveLength(2); // ida ao RB e volta ao QB
     expect(counters[0].delay).toBeGreaterThan(0); // passe em arco, depois do handoff
   });
 
@@ -366,6 +366,31 @@ describe('FieldScene: corridas por categoria', () => {
   });
 });
 
+describe('FieldScene: texto de efetividade', () => {
+  it('o texto largo do 4x não sai do campo quando o duelo é na borda', () => {
+    playSteps(t, [clash({ effect: 'SUPER', mult: 4 })]); // containers falsos em x = 0
+    const label = t.of('text').find((c) => c.args[2] === 'É super efetivo! (×4)')!;
+    expect(label.args[0]).toBeGreaterThanOrEqual(294 / 2 + 4);
+  });
+});
+
+describe('FieldScene: blitz contra corrida', () => {
+  it('o confronto com blitz manda os outros defensores cruzarem a linha, sem mexer no defensor do duelo', () => {
+    const lineup = stage({ lineups: { offense: { QB: 63, RB: 25 }, defense: { DL1: 95, DL2: 96, LB1: 97 } } });
+    const tweens: any[] = [];
+    t.scene.create();
+    t.scene.reduced = false;
+    t.scene.tweens = { killAll: () => {}, add: (c: any) => tweens.push(c), addCounter: () => {} };
+    t.scene.cameras = { main: { shake: () => {}, flash: () => {} } };
+    t.scene.time = { removeAllEvents: () => {}, delayedCall: (_ms: number, cb: () => void) => cb() };
+    t.scene.sync(lineup, { seq: 1, stage: lineup, steps: [clash({ blitz: true })] });
+    const rushes = tweens.filter((c) => c.y === 14);
+    expect(rushes).toHaveLength(2); // DL2 e LB1; o DL1 (95) é o defensor do duelo
+    const duelist = t.of('container')[2].proxy; // QB, RB, DL1, DL2, LB1
+    expect(rushes.some((c) => c.targets === duelist)).toBe(false);
+  });
+});
+
 describe('FieldScene: blitz', () => {
   const block = (blitz: boolean) => ({ kind: 'BLOCK', category: 'SHORT_PASS', blitz, at: 0, duration: 350 });
 
@@ -379,7 +404,7 @@ describe('FieldScene: blitz', () => {
     t.scene.sync(lineup, { seq: 1, stage: lineup, steps: [block(true)] });
     const rushes = tweens.filter((c) => c.y === 14);
     expect(rushes).toHaveLength(3);
-    expect(rushes.map((c) => c.delay)).toEqual([0, 40, 80]);
+    expect(rushes.map((c) => c.delay)).toEqual([0, 35, 70]); // 10% da duração (350 ms) por defensor
     // o tremor do bloqueio não pode brigar com o avanço: os DL não recebem o yoyo
     const dl = [t.of('container')[2].proxy, t.of('container')[3].proxy];
     expect(tweens.filter((c) => c.yoyo && dl.includes(c.targets))).toHaveLength(0);

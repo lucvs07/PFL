@@ -3,7 +3,7 @@ import type { Lineup, SlotId, TeamKey } from '@pfl/engine';
 import type { Stage } from '../match/matchState';
 import type { AnimStep } from '../match/timeline';
 import { spriteSrc } from '../lib/sprites';
-import { applyTint, arcPoint, blockPlan, clampX, clashFx, runPlan, throwPlan, type Point } from './choreography';
+import { applyTint, arcPoint, blockPlan, clampTextX, clampX, clashFx, driftSign, runPlan, throwPlan, type Point } from './choreography';
 import { speciesName } from '../lib/names';
 import {
   BAR_HEIGHT, BAR_WIDTH, FIELD_HEIGHT, FIELD_WIDTH, LOS_Y, PLATE_HEIGHT, PX_PER_YARD, SPRITE_SIZE, clampY, fatigueColor, fatigueRatio, plateText, slotPoint,
@@ -309,7 +309,7 @@ export class FieldScene extends Phaser.Scene {
   }
 
   private floatText(x: number, y: number, text: string, color: string, fontSize = 10): void {
-    const t = this.add.text(x, y, text, { ...TEXT_STYLE, color, fontSize: `${fontSize}px` }).setOrigin(0.5).setDepth(30);
+    const t = this.add.text(clampTextX(x, text, fontSize), y, text, { ...TEXT_STYLE, color, fontSize: `${fontSize}px` }).setOrigin(0.5).setDepth(30);
     this.transient.push(t);
     if (this.reduced) {
       // Texto informativo: fica parado e some depois, sem tween.
@@ -317,6 +317,15 @@ export class FieldScene extends Phaser.Scene {
       return;
     }
     this.tweens.add({ targets: t, y: y - 20, alpha: 0, duration: 900, onComplete: () => t.destroy() });
+  }
+
+  /** Defensores de DL e LB cruzam a linha em sequência (menos `except`, que já está no duelo). */
+  private blitzRush(plan: { rush: number; stagger: number }, d: number, except?: PlayerSprite): void {
+    if (plan.rush <= 0) return;
+    const rushers = [...this.bySlot('defense', 'DL'), ...this.bySlot('defense', 'LB')].filter((p) => p !== except);
+    rushers.forEach((p, i) => {
+      this.tweens.add({ targets: p.container, y: p.container.y + plan.rush, duration: d * 0.6, delay: this.reduced ? 0 : i * plan.stagger * d, ease: 'Cubic.easeOut' });
+    });
   }
 
   /** Bola de `start` a `end`. Reta quando `lift` é 0; senão em arco, dirigida por um contador de 0 a 1. */
@@ -358,12 +367,7 @@ export class FieldScene extends Phaser.Scene {
         for (const p of shaking) {
           this.tweens.add({ targets: p.container, y: p.container.y + (p.side === 'offense' ? -4 : 4), duration: d / 4, yoyo: true, repeat: 1 });
         }
-        if (plan.rush > 0) {
-          const rushers = [...this.bySlot('defense', 'DL'), ...this.bySlot('defense', 'LB')];
-          rushers.forEach((p, i) => {
-            this.tweens.add({ targets: p.container, y: p.container.y + plan.rush, duration: d * 0.6, delay: this.reduced ? 0 : i * plan.stagger, ease: 'Cubic.easeOut' });
-          });
-        }
+        this.blitzRush(plan, d);
         break;
       }
       case 'CLASH': {
@@ -381,6 +385,8 @@ export class FieldScene extends Phaser.Scene {
             yoyo: true,
           });
         }
+        // Blitz contra corrida ou screen não tem bloqueio: os outros defensores avançam junto do duelo.
+        this.blitzRush(blockPlan(step.blitz), d, def);
         const fx = clashFx(step.mult, step.effect);
         if (fx.text) this.floatText(mx, my - 24, fx.text, fx.color, fx.fontSize);
         // Com movimento reduzido o "atravessa" vira cinza: a informação fica, o piscar sai.
@@ -413,8 +419,8 @@ export class FieldScene extends Phaser.Scene {
         const rb = plan.fake && !this.reduced ? this.bySlot('offense', 'RB')[0] : undefined;
         if (rb) {
           // finta: a bola vai ao RB, volta ao QB e só então sai o passe
-          this.ball.setPosition(rb.container.x, rb.container.y - 4);
-          this.tweens.add({ targets: this.ball, x: start.x, y: start.y, duration: d * 0.4, ease: 'Cubic.easeOut' });
+          this.tweens.add({ targets: this.ball, x: rb.container.x, y: rb.container.y - 4, duration: d * 0.2, ease: 'Cubic.easeOut' });
+          this.tweens.add({ targets: this.ball, x: start.x, y: start.y, duration: d * 0.2, delay: d * 0.2, ease: 'Cubic.easeOut' });
           this.flyBall(start, end, lift, plan.shadow, d * 0.6, d * 0.4);
         } else {
           this.flyBall(start, end, lift, plan.shadow, d);
@@ -430,7 +436,7 @@ export class FieldScene extends Phaser.Scene {
         const y = clampY(y0 - step.yards * PX_PER_YARD);
         if (plan.drift > 0 && d > 0) {
           // por fora: deriva para a lateral mais próxima ao longo da corrida
-          const sign = x0 < FIELD_WIDTH / 2 ? -1 : 1;
+          const sign = driftSign(x0, step.carrier);
           this.tweens.addCounter({
             from: 0,
             to: 1,

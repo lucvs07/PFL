@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { applyTint, arcPoint, blockPlan, clampX, clashFx, runPlan, throwPlan } from '../src/phaser/choreography';
+import { applyTint, arcPoint, blockPlan, clampTextX, clampX, clashFx, driftSign, runPlan, throwPlan } from '../src/phaser/choreography';
 import { FIELD_WIDTH } from '../src/phaser/layout';
 
 describe('clashFx', () => {
@@ -60,7 +60,7 @@ describe('runPlan', () => {
 
 describe('blockPlan', () => {
   it('blitz manda a defesa cruzar a linha, escalonada', () => {
-    expect(blockPlan(true)).toEqual({ rush: 14, stagger: 40 });
+    expect(blockPlan(true)).toEqual({ rush: 14, stagger: 0.1 });
     expect(blockPlan(false)).toEqual({ rush: 0, stagger: 0 });
     expect(blockPlan(undefined)).toEqual({ rush: 0, stagger: 0 });
   });
@@ -91,6 +91,36 @@ describe('clampX', () => {
     expect(clampX(-50)).toBe(40);
     expect(clampX(FIELD_WIDTH + 50)).toBe(FIELD_WIDTH - 40);
     expect(clampX(200)).toBe(200);
+  });
+});
+
+describe('clampTextX', () => {
+  const text = 'É super efetivo! (×4)'; // 21 caracteres × 14 px = 294 px
+
+  it('empurra o texto para dentro do campo nas pontas', () => {
+    expect(clampTextX(36, text, 14)).toBe(294 / 2 + 4);
+    expect(clampTextX(FIELD_WIDTH - 36, text, 14)).toBe(FIELD_WIDTH - 294 / 2 - 4);
+  });
+
+  it('no meio do campo não mexe', () => {
+    expect(clampTextX(FIELD_WIDTH / 2, text, 14)).toBe(FIELD_WIDTH / 2);
+  });
+
+  it('texto mais largo que o campo fica centralizado', () => {
+    expect(clampTextX(10, 'x'.repeat(60), 14)).toBe(FIELD_WIDTH / 2);
+  });
+});
+
+describe('driftSign', () => {
+  it('quem está do lado esquerdo vai para a esquerda; do direito, para a direita', () => {
+    expect(driftSign(100, 25)).toBe(-1);
+    expect(driftSign(380, 25)).toBe(1);
+  });
+
+  it('no centro alterna pelo id do jogador, sempre igual para o mesmo jogador', () => {
+    expect(driftSign(FIELD_WIDTH / 2, 24)).toBe(1);
+    expect(driftSign(FIELD_WIDTH / 2, 25)).toBe(-1);
+    expect(driftSign(FIELD_WIDTH / 2, 25)).toBe(-1);
   });
 });
 

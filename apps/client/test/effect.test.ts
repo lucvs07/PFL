@@ -14,6 +14,12 @@ describe('typeMultiplier', () => {
     expect(typeMultiplier('electric', [69, 50])).toBe(0.25); // (½x + 0x) → média = ¼x
   });
 
+  it('0x só quando todos os alvos são imunes (coerente com typeEffect: IMMUNE)', () => {
+    // cinco imunes e um ½x: a média cai mais perto de 0x, mas nem todos são imunes
+    expect(typeMultiplier('electric', [50, 50, 50, 50, 50, 69])).toBe(0.25);
+    expect(typeMultiplier('electric', [50, 50])).toBe(0);
+  });
+
   it('sem elemento ou sem alvos: null', () => {
     expect(typeMultiplier(null, [130])).toBeNull();
     expect(typeMultiplier('electric', [])).toBeNull();

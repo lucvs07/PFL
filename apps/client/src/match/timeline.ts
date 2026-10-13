@@ -13,7 +13,7 @@ export type AnimStep = Timed &
   (
     | { kind: 'SNAP' }
     | { kind: 'BLOCK'; category?: OffenseCategory; blitz?: boolean }
-    | { kind: 'CLASH'; off: number; def: number; effect: TypeEffect | null; category?: OffenseCategory; mult?: Mult | null }
+    | { kind: 'CLASH'; off: number; def: number; effect: TypeEffect | null; category?: OffenseCategory; mult?: Mult | null; blitz?: boolean }
     | { kind: 'THROW'; from: number | null; to: number; category?: OffenseCategory }
     | { kind: 'RUN'; carrier: number; yards: number; big?: boolean; category?: OffenseCategory }
     | { kind: 'TACKLE'; by: number; carrier: number }
@@ -86,7 +86,7 @@ export function buildTimeline(events: readonly GameEvent[]): AnimStep[] {
     }
     if (carrier !== undefined && defender !== undefined) {
       push(
-        { kind: 'CLASH', off: carrier, def: defender, effect: typeEffect(card?.element ?? null, o.defActors), category, mult: typeMultiplier(card?.element ?? null, o.defActors) },
+        { kind: 'CLASH', off: carrier, def: defender, effect: typeEffect(card?.element ?? null, o.defActors), category, mult: typeMultiplier(card?.element ?? null, o.defActors), blitz: blitz && !isProtected },
         D.clash,
       );
     }

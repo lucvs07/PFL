@@ -28,7 +28,10 @@ export function typeMultiplier(element: PokemonType | null, targets: readonly nu
   if (!element || targets.length === 0) return null;
   const mods = targets.map((id) => typeModifier(effectiveness(element, getSpecies(id).types)));
   const mean = mods.reduce((sum, m) => sum + m, 0) / mods.length;
-  return MULTS.reduce((best, m) => (Math.abs(typeModifier(m) - mean) < Math.abs(typeModifier(best) - mean) ? m : best));
+  const nearest = MULTS.reduce((best, m) => (Math.abs(typeModifier(m) - mean) < Math.abs(typeModifier(best) - mean) ? m : best));
+  // 0x é imunidade: só quando todos os alvos são imunes, como em `typeEffect` (IMMUNE).
+  if (nearest === 0 && targets.some((id) => effectiveness(element, getSpecies(id).types) !== 0)) return 0.25;
+  return nearest;
 }
 
 export const EFFECT_TEXT: Record<TypeEffect, string | null> = {
