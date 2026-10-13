@@ -322,6 +322,7 @@
 }
 
 .team-option {
+  min-height: var(--hit-min);
   --gym-color: var(--gbc-ink);
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;

@@ -315,7 +315,7 @@
 
 .log-call { color: var(--gbc-muted); }
 .log-effect { color: var(--gbc-orange); }
-.log-score { color: var(--gbc-red); font-weight: 700; }
+.log-score { color: var(--gbc-red-text); font-weight: 700; }
 .log-system { color: var(--gbc-green-1); }
 
 /* ================= painel de decisão ================= */
@@ -359,6 +359,7 @@
 
 /* cada opção é uma caixa de menu do GBC */
 .picker-option {
+  min-height: var(--hit-min);
   display: flex;
   flex-direction: column;
   align-items: stretch;

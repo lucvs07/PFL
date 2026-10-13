@@ -170,6 +170,17 @@ button,
   box-shadow: 2px 2px 0 var(--gbc-border);
 }
 
+/* alvo de toque: --hit-min vale 44px no celular e 0px (sem piso) no desktop com mouse */
+.btn,
+.btn-small,
+.input {
+  min-height: var(--hit-min);
+}
+
+.btn-small {
+  min-width: var(--hit-min);
+}
+
 .input {
   background: var(--gbc-paper);
   border: 3px solid var(--gbc-border);
@@ -198,7 +209,7 @@ textarea.input {
 
 .muted { color: var(--gbc-muted); }
 .ok-text { color: var(--gbc-green-1); margin: 0; }
-.error-text { color: var(--gbc-red); margin: 0; }
+.error-text { color: var(--gbc-red-text); margin: 0; }
 
 .notice {
   background: var(--gbc-yellow);
@@ -219,7 +230,7 @@ textarea.input {
 .error-list {
   margin: 0;
   padding-left: var(--space-4);
-  color: var(--gbc-red);
+  color: var(--gbc-red-text);
   font-size: var(--fs-body-sm);
 }
 

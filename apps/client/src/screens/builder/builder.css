@@ -94,7 +94,7 @@
 }
 
 .cap-bar.is-over .cap-bar-fill { background: var(--gbc-red); }
-.cap-bar.is-over .cap-bar-label { color: var(--gbc-red); }
+.cap-bar.is-over .cap-bar-label { color: var(--gbc-red-text); }
 
 .roster-strip {
   display: flex;
@@ -293,6 +293,7 @@
 }
 
 .rail-pill {
+  min-height: var(--hit-min);
   --pill-color: var(--gbc-ink);
   display: flex;
   align-items: center;
@@ -718,6 +719,13 @@
 .code-panel > p { grid-column: 1 / -1; }
 
 /* ---------- foco ---------- */
+/* área de toque do ✕ (22 px visuais) sem crescer o botão */
+.roster-slot-remove::after {
+  content: '';
+  position: absolute;
+  inset: calc((22px - var(--hit-min)) / 2);
+}
+
 .rail-pill:focus-visible,
 .roster-slot-remove:focus-visible,
 .builder-errors summary:focus-visible {

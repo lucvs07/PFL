@@ -253,7 +253,7 @@
   font-size: var(--fs-body-sm);
 }
 
-.depth-list li:first-child .depth-name { color: var(--gbc-red); }
+.depth-list li:first-child .depth-name { color: var(--gbc-red-text); }
 
 .depth-name {
   flex: 1;
