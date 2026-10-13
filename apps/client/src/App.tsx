@@ -23,6 +23,8 @@ import { BuilderScreen } from './screens/builder/BuilderScreen';
 import { LobbyScreen } from './screens/LobbyScreen';
 import { MatchScreen } from './screens/match/MatchScreen';
 import { EndScreen } from './screens/end/EndScreen';
+import { AudioControl } from './audio/AudioControl';
+import { useGameAudio } from './audio/useGameAudio';
 
 function teamFromCode(code: string | null): Team | null {
   if (!code) return null;
@@ -249,9 +251,11 @@ export function App() {
   );
 
   const screen = screenFor({ local, room, match, now: room ? now : Date.now() });
+  useGameAudio({ screen, match, room, notice, now: room ? now : Date.now() });
 
   return (
     <>
+      <AudioControl />
       {notice && (
         <div className="notice notice-top" role="status">
           <span>{notice}</span>

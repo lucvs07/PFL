@@ -117,7 +117,7 @@ function withLineups(stage: Stage, events: readonly GameEvent[]): Stage {
   return lineups === stage.lineups ? stage : { ...stage, lineups };
 }
 
-function revealFrom(events: readonly GameEvent[]): CardReveal | null {
+export function revealFrom(events: readonly GameEvent[]): CardReveal | null {
   for (const e of events) {
     if (e.t !== 'CARDS') continue;
     const category = findCard(e.offense)?.category;
