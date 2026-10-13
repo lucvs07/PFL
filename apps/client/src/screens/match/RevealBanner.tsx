@@ -23,7 +23,7 @@ export function RevealBanner({ reveal }: { reveal: CardReveal | null }) {
         <span className="reveal-name">{def}</span>
       </span>
       {reveal.read && (
-        <span className="reveal-read">
+        <span className="reveal-read reveal-stamp">
           <span className="reveal-symbol" aria-hidden="true">
             {READ_SYMBOL[reveal.read]}
           </span>{' '}

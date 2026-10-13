@@ -197,6 +197,16 @@
   to { transform: translateX(-50%); opacity: 1; }
 }
 
+/* A leitura entra depois das cartas (240 ms do reveal-drop): carimbo curto, sem bounce. */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-stamp { animation: reveal-stamp 150ms steps(2, end) 240ms both; }
+}
+
+@keyframes reveal-stamp {
+  from { transform: scale(1.25); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
 .reveal-card {
   display: flex;
   flex-direction: column;
