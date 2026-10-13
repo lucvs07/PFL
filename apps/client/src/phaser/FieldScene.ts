@@ -2,8 +2,8 @@ import Phaser from 'phaser';
 import type { Lineup, SlotId, TeamKey } from '@pfl/engine';
 import type { Stage } from '../match/matchState';
 import type { AnimStep } from '../match/timeline';
-import { EFFECT_TEXT } from '../match/effect';
 import { spriteSrc } from '../lib/sprites';
+import { applyTint, clashFx } from './choreography';
 import { speciesName } from '../lib/names';
 import {
   BAR_HEIGHT, BAR_WIDTH, FIELD_HEIGHT, FIELD_WIDTH, LOS_Y, PLATE_HEIGHT, PX_PER_YARD, SPRITE_SIZE, clampY, fatigueColor, fatigueRatio, plateText, slotPoint,
@@ -20,6 +20,7 @@ type Side = 'offense' | 'defense';
 
 interface PlayerSprite {
   container: Phaser.GameObjects.Container;
+  body: Phaser.GameObjects.GameObject;
   slot: SlotId;
   id: number;
   side: Side;
@@ -221,7 +222,7 @@ export class FieldScene extends Phaser.Scene {
       .setOrigin(0.5, 0);
     const shadow = this.add.ellipse(0, SPRITE_SIZE / 2 - 5, 30, 8, 0x0f380f, 0.35);
     const container = this.add.container(x, y, [shadow, body, barBg, bar, chip, name]).setDepth(w.side === 'defense' ? 10 : 11);
-    this.players.set(`${w.side}:${w.id}`, { container, slot: w.slot, id: w.id, side: w.side });
+    this.players.set(`${w.side}:${w.id}`, { container, body, slot: w.slot, id: w.id, side: w.side });
   }
 
   private clearPlayers(): void {
@@ -307,8 +308,8 @@ export class FieldScene extends Phaser.Scene {
     return [...this.players.values()].filter((p) => p.side === side && p.slot.startsWith(prefix));
   }
 
-  private floatText(x: number, y: number, text: string, color: string): void {
-    const t = this.add.text(x, y, text, { ...TEXT_STYLE, color }).setOrigin(0.5).setDepth(30);
+  private floatText(x: number, y: number, text: string, color: string, fontSize = 10): void {
+    const t = this.add.text(x, y, text, { ...TEXT_STYLE, color, fontSize: `${fontSize}px` }).setOrigin(0.5).setDepth(30);
     this.transient.push(t);
     if (this.reduced) {
       // Texto informativo: fica parado e some depois, sem tween.
@@ -346,9 +347,20 @@ export class FieldScene extends Phaser.Scene {
             yoyo: true,
           });
         }
-        const text = step.effect ? EFFECT_TEXT[step.effect] : null;
-        if (text) this.floatText(mx, my - 24, text, step.effect === 'SUPER' ? '#f8d030' : '#c8c8c8');
-        if (!this.reduced) this.cameras.main.shake(120, 0.004);
+        const fx = clashFx(step.mult, step.effect);
+        if (fx.text) this.floatText(mx, my - 24, fx.text, fx.color, fx.fontSize);
+        // Com movimento reduzido o "atravessa" vira cinza: a informação fica, o piscar sai.
+        const weaken = this.reduced && fx.weaken === 'ghost' ? 'gray' : fx.weaken;
+        if (weaken === 'gray') {
+          applyTint(off.body, 0x888888);
+          this.time.delayedCall(step.duration, () => applyTint(off.body, null));
+        } else if (weaken === 'ghost') {
+          this.tweens.add({ targets: off.body, alpha: 0.25, duration: d * 0.25, yoyo: true });
+        }
+        if (!this.reduced) {
+          if (fx.shake > 0) this.cameras.main.shake(120, fx.shake);
+          if (fx.flash) this.cameras.main.flash(150, 248, 208, 48);
+        }
         break;
       }
       case 'THROW': {

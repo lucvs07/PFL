@@ -65,7 +65,8 @@ function fakeScene() {
     },
   };
   scene.time = { removeAllEvents: () => {}, delayedCall: () => {} };
-  scene.tweens = { killAll: () => {}, add: () => {} };
+  scene.tweens = { killAll: () => {}, add: () => {}, addCounter: () => {} };
+  scene.cameras = { main: { shake: () => {}, flash: () => {} } };
   const of = (kind: string) => created.filter((c) => c.kind === kind);
   const texts = () => of('text').map((c) => String(c.args[2]));
   return { scene, created, of, texts, loadImages, loaded };
@@ -209,5 +210,77 @@ describe('FieldScene: campo', () => {
     const ticks = lineCalls(t, 'fillRect').filter((c) => c.args[2] === 6 && c.args[3] === 2);
     expect(ticks.length).toBeGreaterThan(0);
     expect(ticks.length % 4).toBe(0);
+  });
+});
+
+/** Roda os passos na hora (delayedCall síncrono) e grava tweens, contadores e efeitos de câmera. */
+function playSteps(t2: typeof t, steps: any[], opts: { reduced?: boolean } = {}) {
+  const tweens: any[] = [];
+  const counters: any[] = [];
+  const camera = { shake: vi.fn(), flash: vi.fn() };
+  t2.scene.create();
+  t2.scene.reduced = !!opts.reduced;
+  t2.scene.tweens = { killAll: () => {}, add: (c: any) => tweens.push(c), addCounter: (c: any) => counters.push(c) };
+  t2.scene.cameras = { main: camera };
+  t2.scene.time = { removeAllEvents: () => {}, delayedCall: (_ms: number, cb: () => void) => cb() };
+  const s = stage();
+  t2.scene.sync(s, { seq: 1, stage: s, steps });
+  return { tweens, counters, camera };
+}
+const at = { at: 0, duration: 550 };
+const clash = (extra: object) => ({ kind: 'CLASH', off: 25, def: 95, effect: null, ...at, ...extra });
+
+describe('FieldScene: efetividade no CLASH', () => {
+  it('4x: flash, tremor forte e texto com o multiplicador', () => {
+    const { camera } = playSteps(t, [clash({ effect: 'SUPER', mult: 4 })]);
+    expect(camera.shake).toHaveBeenCalledWith(120, 0.008);
+    expect(camera.flash).toHaveBeenCalledWith(150, 248, 208, 48);
+    expect(t.texts()).toContain('É super efetivo! (×4)');
+  });
+
+  it('2x: flash e tremor médio', () => {
+    const { camera } = playSteps(t, [clash({ effect: 'SUPER', mult: 2 })]);
+    expect(camera.shake).toHaveBeenCalledWith(120, 0.004);
+    expect(camera.flash).toHaveBeenCalled();
+  });
+
+  it('½x: o atacante fica cinza e depois volta; sem tremor', () => {
+    const { camera } = playSteps(t, [clash({ effect: 'WEAK', mult: 0.5 })]);
+    const body = t.of('image').find((c) => c.args[2] === 'back-25')!;
+    expect(body.calls).toContainEqual({ method: 'setTint', args: [0x888888] });
+    expect(body.calls).toContainEqual({ method: 'clearTint', args: [] });
+    expect(camera.shake).not.toHaveBeenCalled();
+    expect(t.texts()).toContain('Não é muito efetivo...');
+  });
+
+  it('0x: o atacante pisca (alpha) e o texto aparece', () => {
+    const { tweens } = playSteps(t, [clash({ effect: 'IMMUNE', mult: 0 })]);
+    const body = t.of('image').find((c) => c.args[2] === 'back-25')!;
+    expect(tweens.some((c) => c.targets === body.proxy && c.alpha === 0.25 && c.yoyo)).toBe(true);
+    expect(t.texts()).toContain('Não teve efeito...');
+  });
+
+  it('sem elemento (carta básica): tremor pequeno e nenhum texto', () => {
+    const { camera } = playSteps(t, [clash({ effect: null, mult: null })]);
+    expect(camera.shake).toHaveBeenCalledWith(120, 0.002);
+    expect(camera.flash).not.toHaveBeenCalled();
+  });
+
+  it('passo antigo, sem mult nem category, não quebra', () => {
+    expect(() => playSteps(t, [clash({})])).not.toThrow();
+  });
+
+  it('reduced motion: sem tremor nem flash, mas o texto e o tint continuam', () => {
+    const { camera } = playSteps(t, [clash({ effect: 'SUPER', mult: 4 })], { reduced: true });
+    expect(camera.shake).not.toHaveBeenCalled();
+    expect(camera.flash).not.toHaveBeenCalled();
+    expect(t.texts()).toContain('É super efetivo! (×4)');
+  });
+
+  it('reduced motion: 0x vira cinza em vez de piscar', () => {
+    const { tweens } = playSteps(t, [clash({ effect: 'IMMUNE', mult: 0 })], { reduced: true });
+    const body = t.of('image').find((c) => c.args[2] === 'back-25')!;
+    expect(body.calls).toContainEqual({ method: 'setTint', args: [0x888888] });
+    expect(tweens.some((c) => c.targets === body.proxy && c.alpha === 0.25)).toBe(false);
   });
 });
