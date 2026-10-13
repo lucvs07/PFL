@@ -18,11 +18,12 @@ export function Sprite({ id, view = 'front', size = 48, animated = false }: Prop
   const [failed, setFailed] = useState(false);
   const [animFailed, setAnimFailed] = useState(false);
   // O GIF vem recortado e com tamanho próprio (até 128 px). Mesma escala inteira para todos, a dos PNGs de 96 px, para manter o tamanho relativo entre espécies.
-  const [natural, setNatural] = useState<{ w: number; h: number } | null>(null);
+  const [measured, setMeasured] = useState<{ id: number; w: number; h: number } | null>(null);
+  // medida de outra espécie não vale: evita um quadro com o tamanho do GIF anterior ao trocar de id
+  const natural = measured && measured.id === id ? measured : null;
   useEffect(() => {
     setFailed(false);
     setAnimFailed(false);
-    setNatural(null);
   }, [id, view]);
   const useAnimated = animated && view === 'front' && !animFailed && !prefersReducedMotion();
   const name = speciesName(id);
@@ -42,7 +43,7 @@ export function Sprite({ id, view = 'front', size = 48, animated = false }: Prop
         alt={name}
         title={name}
         style={natural ? { width: natural.w * scale, height: natural.h * scale } : { visibility: 'hidden' }}
-        onLoad={(e) => setNatural({ w: e.currentTarget.naturalWidth, h: e.currentTarget.naturalHeight })}
+        onLoad={(e) => setMeasured({ id, w: e.currentTarget.naturalWidth, h: e.currentTarget.naturalHeight })}
         onError={() => setAnimFailed(true)}
       />
     );

@@ -18,6 +18,11 @@ Servidor no Render (plano grátis) e cliente no GitHub Pages. Passos manuais, um
 - CI vermelho na `main` (testes, typecheck, build, imagens ou gate): nem o Render nem o Pages publicam.
 - `VITE_SERVER_URL` ausente ou algum sprite que não baixou: o workflow Pages falha com mensagem clara, sem publicar um site quebrado. Rode de novo.
 
+- Os GIFs animados da Pokédex são opcionais: se não baixarem, o build só avisa e a Pokédex usa o PNG estático.
+
+## Ordem de deploy
+Quando o protocolo ganha campos (ex.: `roster`, `lead` e `cost` em `RoomPlayer`), publique o servidor antes do cliente. Servidor novo com cliente antigo só envia campos a mais; o inverso deixa o lobby sem os dados novos até o servidor subir.
+
 ## Limites do plano grátis
 - O servidor dorme após ~15 min sem tráfego; o primeiro acesso depois disso leva ~1 min (cold start). Abra a página e aguarde antes de chamar os amigos.
 - Reiniciar ou dormir derruba as partidas em andamento (ficam só em memória).

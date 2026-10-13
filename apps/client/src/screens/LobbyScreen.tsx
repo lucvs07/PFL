@@ -87,7 +87,7 @@ export function LobbyScreen({ room, myTeam, onSubmitTeam, onReady, onLeave }: Pr
                     <p className="lobby-team">
                       {p.teamName ?? <span className="muted lobby-team-none">sem time</span>}
                     </p>
-                    {p.cost !== null && <p className="lobby-cost">{p.cost}pt</p>}
+                    {p.cost != null && <p className="lobby-cost">{p.cost}pt</p>}
                     <p className={p.ready ? 'lobby-ready' : 'lobby-ready is-waiting'}>{p.ready ? 'PRONTO!' : 'não está pronto'}</p>
                     {p.teamName !== null && p.teamErrors.length > 0 && <ErrorList errors={p.teamErrors} />}
                   </>

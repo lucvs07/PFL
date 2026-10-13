@@ -81,7 +81,7 @@ export class FieldScene extends Phaser.Scene {
   private failedTextures = new Set<string>();
   private fieldGfx!: Phaser.GameObjects.Graphics;
   private lineGfx!: Phaser.GameObjects.Graphics;
-  private labels: Phaser.GameObjects.GameObject[] = [];
+  private fieldObjects: Phaser.GameObjects.GameObject[] = [];
   private transient: Phaser.GameObjects.GameObject[] = [];
   private players = new Map<string, PlayerSprite>();
   private reduced = false;
@@ -129,6 +129,7 @@ export class FieldScene extends Phaser.Scene {
     noise.destroy();
     const stripes = this.make.graphics({ x: 0, y: 0 }, false);
     stripes.fillStyle(0xf8f8f0, 1);
+    // diagonais de 4x1 deslocadas 16 px: o que sai de [0,16) é cortado e a textura repete sem emenda
     for (let i = -16; i < 32; i += 16) for (let k = 0; k < 16; k++) stripes.fillRect(i + k, 15 - k, 4, 1);
     stripes.generateTexture(ENDZONE_KEY, 16, 16);
     stripes.destroy();
@@ -233,8 +234,8 @@ export class FieldScene extends Phaser.Scene {
     const lg = this.lineGfx;
     g.clear();
     lg.clear();
-    for (const label of this.labels) label.destroy();
-    this.labels = [];
+    for (const obj of this.fieldObjects) obj.destroy();
+    this.fieldObjects = [];
     const ballOn = stage?.ballOn ?? 50;
     const right = FIELD_WIDTH - SIDELINE_W;
 
@@ -246,8 +247,8 @@ export class FieldScene extends Phaser.Scene {
       if (yard < 0 || yard >= 100) {
         const own = yard < 0;
         g.fillStyle(own ? COLORS.endZoneOwn : COLORS.endZoneOpp, 0.6).fillRect(0, top, FIELD_WIDTH, bottom - top);
-        this.labels.push(this.add.tileSprite(0, top, FIELD_WIDTH, bottom - top, ENDZONE_KEY).setOrigin(0).setDepth(0.6).setAlpha(0.22));
-        this.labels.push(
+        this.fieldObjects.push(this.add.tileSprite(0, top, FIELD_WIDTH, bottom - top, ENDZONE_KEY).setOrigin(0).setDepth(0.6).setAlpha(0.22));
+        this.fieldObjects.push(
           this.add
             .text(FIELD_WIDTH / 2, (top + bottom) / 2, own ? 'SAFETY' : 'TOUCHDOWN', { ...TEXT_STYLE, fontSize: '14px', strokeThickness: 4 })
             .setOrigin(0.5)
@@ -277,8 +278,8 @@ export class FieldScene extends Phaser.Scene {
       lg.lineBetween(SIDELINE_W, line.y, right, line.y);
       if (line.label) {
         const style = { ...TEXT_STYLE, fontSize: '12px', strokeThickness: 4 };
-        this.labels.push(this.add.text(SIDELINE_W + 6, line.y + 5, line.label, style).setDepth(1));
-        this.labels.push(this.add.text(right - 6, line.y + 5, line.label, style).setOrigin(1, 0).setDepth(1));
+        this.fieldObjects.push(this.add.text(SIDELINE_W + 6, line.y + 5, line.label, style).setDepth(1));
+        this.fieldObjects.push(this.add.text(right - 6, line.y + 5, line.label, style).setOrigin(1, 0).setDepth(1));
       }
     }
     if (!stage) return;
