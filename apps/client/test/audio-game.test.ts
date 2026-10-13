@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { GameEvent } from '@pfl/engine';
 import { shouldClickSound } from '../src/audio/browser';
 import {
-  READ_DELAY_MS, STALE_GRACE_MS, animationCues, jingleFor, musicForScreen, replayCues, shouldSoundReplay, turnStartCue,
+  READ_DELAY_MS, STALE_GRACE_MS, animationCues, jingleFor, musicForScreen, planAnimationSound, replayCues, shouldSoundReplay, turnStartCue,
 } from '../src/audio/gameAudio';
 import type { AnimStep } from '../src/match/timeline';
 
@@ -66,6 +66,34 @@ describe('animationCues', () => {
 
   it('replayCues usa os eventos do quadro, sem lado e sem prazo', () => {
     expect(names(replayCues([cards('RIGHT')], steps))).toEqual(['reveal', 'snap', 'tackle']);
+  });
+});
+
+describe('planAnimationSound (uma vez por animação)', () => {
+  const anim = (seq: number, offenseTeam: 'A' | 'B' = 'A') => ({
+    seq,
+    stage: { offenseTeam },
+    events: [{ t: 'CARDS', offense: 'basic_run', defense: 'basic_defense', read: 'RIGHT' }] as GameEvent[],
+    steps: [{ kind: 'SNAP', at: 0, duration: 300 }] as AnimStep[],
+    endsAt: 10_000,
+  });
+
+  it('animação nova toca; a mesma de novo não repete (efeito re-executado, StrictMode)', () => {
+    const first = planAnimationSound(0, anim(1), 'A', 0);
+    expect(first.seq).toBe(1);
+    expect(first.cues.map((c) => c.cue)).toEqual(['reveal', 'read-bad', 'snap']);
+    const again = planAnimationSound(first.seq, anim(1), 'A', 0);
+    expect(again).toEqual({ seq: 1, cues: [] });
+    expect(planAnimationSound(1, anim(2), 'A', 0).cues.length).toBeGreaterThan(0);
+  });
+
+  it('o lado vem de quem ataca no turno: defendendo, a mesma leitura soa boa', () => {
+    expect(planAnimationSound(0, anim(1, 'A'), 'B', 0).cues[1].cue).toBe('read-good');
+  });
+
+  it('sem sala não há lado (sem som de leitura); sem animação zera o contador', () => {
+    expect(planAnimationSound(0, anim(1), null, 0).cues.map((c) => c.cue)).toEqual(['reveal', 'snap']);
+    expect(planAnimationSound(5, null, 'A', 0)).toEqual({ seq: 0, cues: [] });
   });
 });
 

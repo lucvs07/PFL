@@ -21,7 +21,8 @@ describe('parseSettings', () => {
   });
 
   it('valor corrompido volta ao padrão por campo', () => {
-    expect(parseSettings({ muted: 'sim', music: 7, sfx: 'alto' })).toEqual({ muted: false, music: 1, sfx: 0.7 });
+    expect(parseSettings({ muted: 'sim', music: 7, sfx: 'alto' })).toEqual(DEFAULT_SETTINGS);
+    expect(parseSettings({ music: -3, sfx: 1.5 })).toEqual(DEFAULT_SETTINGS); // fora de 0..1 é inválido, não 'volume máximo'
     expect(parseSettings({ music: Number.NaN, sfx: null })).toEqual(DEFAULT_SETTINGS);
     expect(parseSettings('texto')).toEqual(DEFAULT_SETTINGS);
     expect(parseSettings([1, 2])).toEqual(DEFAULT_SETTINGS);
@@ -29,6 +30,7 @@ describe('parseSettings', () => {
 
   it('aceita um valor válido', () => {
     expect(parseSettings({ muted: true, music: 0.2, sfx: 0 })).toEqual({ muted: true, music: 0.2, sfx: 0 });
+    expect(parseSettings({ music: 1, sfx: 0 })).toMatchObject({ music: 1, sfx: 0 }); // as pontas são válidas
   });
 });
 

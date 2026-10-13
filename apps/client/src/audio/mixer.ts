@@ -23,8 +23,9 @@ export function roundVolume(v: number): number {
 export function parseSettings(raw: unknown): AudioSettings {
   if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) return { ...DEFAULT_SETTINGS };
   const o = raw as Record<string, unknown>;
+  // Fora de 0..1 é valor inválido (storage corrompido ou de outra versão): volta ao padrão, não ao volume máximo.
   const volume = (value: unknown, fallback: number) =>
-    typeof value === 'number' && Number.isFinite(value) ? roundVolume(value) : fallback;
+    typeof value === 'number' && value >= 0 && value <= 1 ? roundVolume(value) : fallback;
   return {
     muted: typeof o.muted === 'boolean' ? o.muted : DEFAULT_SETTINGS.muted,
     music: volume(o.music, DEFAULT_SETTINGS.music),

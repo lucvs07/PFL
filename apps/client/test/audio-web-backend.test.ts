@@ -9,6 +9,8 @@ const param = () => ({
   exponentialRampToValueAtTime() {},
 });
 
+let compressor: { threshold: { value: number }; knee: { value: number }; ratio: { value: number } } | null = null;
+
 /** AudioContext mínimo: só o que `resume()` e a criação do grafo tocam. */
 function fakeContext(state: string, resume: () => Promise<void>) {
   return class {
@@ -20,7 +22,8 @@ function fakeContext(state: string, resume: () => Promise<void>) {
       return { gain: param(), connect() {}, disconnect() {} };
     }
     createDynamicsCompressor() {
-      return { connect() {} };
+      compressor = { threshold: { value: -24 }, knee: { value: 30 }, ratio: { value: 12 }, connect() {} } as typeof compressor & { connect(): void };
+      return compressor;
     }
     createBuffer() {
       return { getChannelData: () => new Float32Array(8) };
@@ -40,6 +43,13 @@ describe('createWebBackend.resume', () => {
       expect(resume, state).toHaveBeenCalledTimes(1);
       await new Promise((r) => setTimeout(r, 0)); // dá chance de a rejeição solta aparecer
     }
+  });
+
+  it('o compressor é leve: só segura os picos (a fanfarra do TD sobre a música), sem bombear o volume', () => {
+    vi.stubGlobal('window', { AudioContext: fakeContext('running', () => Promise.resolve()) });
+    createWebBackend().resume();
+    expect(compressor?.threshold.value).toBeGreaterThanOrEqual(-12);
+    expect(compressor?.ratio.value).toBeLessThanOrEqual(4);
   });
 
   it('não retoma um contexto que já está tocando', () => {

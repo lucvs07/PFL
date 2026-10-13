@@ -7,7 +7,7 @@ export const CUES = [
   'kick', 'kick-good', 'kick-miss',
   'banner-good', 'banner-bad', 'banner-info', 'td',
   'reveal', 'read-good', 'read-neutral', 'read-bad', 'turn-start',
-  'ui-click', 'ui-select', 'ui-back', 'ui-error',
+  'ui-click', 'ui-select', 'ui-error',
 ] as const;
 
 export type Cue = (typeof CUES)[number];

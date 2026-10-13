@@ -63,6 +63,10 @@ export function createWebBackend(): AudioBackend {
     const ctx = new Ctor();
     const master = ctx.createGain();
     const compressor = ctx.createDynamicsCompressor();
+    // Leve: só segura os picos (fanfarra do TD sobre a música) sem bombear o volume.
+    compressor.threshold.value = -10;
+    compressor.knee.value = 12;
+    compressor.ratio.value = 4;
     const music = ctx.createGain();
     const fade = ctx.createGain();
     const sfx = ctx.createGain();

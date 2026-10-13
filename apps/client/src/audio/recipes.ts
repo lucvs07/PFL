@@ -49,6 +49,5 @@ export const RECIPES: Record<Cue, Recipe> = {
   // interface
   'ui-click': [sq(1200, 0, 0.03, 0.3)],
   'ui-select': [sq(900, 0, 0.04, 0.3), sq(1350, 0.04, 0.05, 0.3)],
-  'ui-back': [sq(700, 0, 0.04, 0.3, 450)],
   'ui-error': [sq(180, 0, 0.1, 0.5), sq(150, 0.11, 0.15, 0.5)],
 };

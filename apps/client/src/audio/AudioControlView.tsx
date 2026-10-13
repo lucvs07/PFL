@@ -1,5 +1,6 @@
 import type { ReactElement, Ref } from 'react';
 import type { Channel } from './backend';
+import { isVolumeKey } from './controlLogic';
 import type { AudioState } from './engine';
 import { volumeLevel, type VolumeLevel } from './mixer';
 import { ICON_COLS, ICON_ROWS, speakerCells } from './speaker';
@@ -56,7 +57,9 @@ export function AudioControlView({ state, open, rootRef, onToggleMute, onToggleO
                   value={n}
                   onChange={(e) => onVolume(channel, Number(e.currentTarget.value))}
                   onPointerUp={() => onVolumeCommit(channel)}
-                  onKeyUp={() => onVolumeCommit(channel)}
+                  onKeyUp={(e) => {
+                    if (isVolumeKey(e.key)) onVolumeCommit(channel);
+                  }}
                 />
               </label>
             );

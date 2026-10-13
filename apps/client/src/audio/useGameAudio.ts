@@ -3,7 +3,7 @@ import type { RoomState } from '@pfl/protocol';
 import type { Screen } from '../app/screen';
 import { panelMode, type MatchClientState, type PanelMode } from '../match/matchState';
 import { installBrowserHooks } from './browser';
-import { animationCues, jingleFor, musicForScreen, turnStartCue } from './gameAudio';
+import { jingleFor, musicForScreen, planAnimationSound, turnStartCue } from './gameAudio';
 import { audio } from './index';
 
 interface Input {
@@ -33,15 +33,9 @@ export function useGameAudio({ screen, match, room, notice, now }: Input): void 
   // Sons da jogada: uma vez por animação nova.
   const lastSeq = useRef(0);
   useEffect(() => {
-    const a = match.animation;
-    if (!a) {
-      lastSeq.current = 0;
-      return;
-    }
-    if (a.seq === lastSeq.current) return;
-    lastSeq.current = a.seq;
-    const youAreOffense = room ? a.stage.offenseTeam === room.you : null;
-    audio.playCues(animationCues(a, youAreOffense, Date.now()));
+    const plan = planAnimationSound(lastSeq.current, match.animation, room?.you ?? null, Date.now());
+    lastSeq.current = plan.seq;
+    if (plan.cues.length > 0) audio.playCues(plan.cues);
   }, [match.animation, room]);
 
   // Aviso de vez.

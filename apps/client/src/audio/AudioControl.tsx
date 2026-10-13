@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactElement } from 'react';
 import type { Channel } from './backend';
 import { AudioControlView } from './AudioControlView';
+import { popoverCloseAction, type PopoverEvent } from './controlLogic';
 import { audio } from './index';
 import { useAudioState } from './useAudioState';
 
@@ -17,12 +18,13 @@ export function AudioControl(): ReactElement | null {
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close(true);
+    const apply = (e: PopoverEvent) => {
+      const action = popoverCloseAction(open, e);
+      if (action) close(action === 'close-refocus');
     };
-    const onPointerDown = (e: PointerEvent) => {
-      if (rootRef.current && !rootRef.current.contains(e.target as Node)) close(false);
-    };
+    const onKey = (e: KeyboardEvent) => apply({ type: 'key', key: e.key });
+    const onPointerDown = (e: PointerEvent) =>
+      apply({ type: 'pointer', inside: rootRef.current?.contains(e.target as Node) ?? false });
     document.addEventListener('keydown', onKey);
     document.addEventListener('pointerdown', onPointerDown);
     return () => {

@@ -123,7 +123,7 @@ describe('volume, mudo e persistência', () => {
   it('valor corrompido no storage volta ao padrão, e storage nulo funciona', () => {
     const storage = memoryStorage();
     storage.setItem(STORAGE_KEY, '{"music":7,"muted":"sim"}');
-    expect(setup({ storage }).audio.getState()).toMatchObject({ muted: false, music: 1, sfx: 0.7 });
+    expect(setup({ storage }).audio.getState()).toMatchObject({ muted: false, music: 0.4, sfx: 0.7 });
     expect(setup({ storage: null }).audio.getState()).toMatchObject({ muted: false, music: 0.4, sfx: 0.7 });
   });
 

@@ -46,6 +46,21 @@ export function replayCues(events: readonly GameEvent[], steps: readonly AnimSte
   return animationCues({ events, steps, endsAt: Number.POSITIVE_INFINITY }, null, 0);
 }
 
+/**
+ * Decide os sons de uma animação, uma única vez por `seq`: o efeito do React pode rodar de novo (StrictMode,
+ * mudança de `room`) com a mesma animação. Devolve o novo contador a guardar. Sem animação, zera o contador.
+ */
+export function planAnimationSound(
+  lastSeq: number,
+  a: (AnimationAudioInput & { seq: number; stage: { offenseTeam: TeamKey } }) | null,
+  you: TeamKey | null,
+  now: number,
+): { seq: number; cues: TimedCue[] } {
+  if (!a) return { seq: 0, cues: [] };
+  if (a.seq === lastSeq) return { seq: lastSeq, cues: [] };
+  return { seq: a.seq, cues: animationCues(a, you === null ? null : a.stage.offenseTeam === you, now) };
+}
+
 /** O replay mostra o 1º quadro ao montar a tela de fim (seq 1); esse quadro não soa por cima do jingle. */
 export function shouldSoundReplay(seq: number): boolean {
   return seq > 1;

@@ -48,6 +48,10 @@ describe('cuesFor', () => {
     expect(cuesFor([])).toEqual([]);
   });
 
+  it('CUES não guarda cue sem uso (ui-back foi removido)', () => {
+    expect(CUES).not.toContain('ui-back');
+  });
+
   it('todo cue produzido existe em CUES', () => {
     for (const [step] of cases) for (const c of cuesFor([step])) expect(CUES).toContain(c.cue);
   });
