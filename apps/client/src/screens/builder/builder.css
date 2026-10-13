@@ -112,7 +112,7 @@
 
 .roster-strip-body {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 88px;
+  grid-template-columns: minmax(0, 1fr) 80px;
   gap: var(--space-3);
   align-items: start;
   min-width: 0;
@@ -123,7 +123,7 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
   gap: var(--space-2);
   min-width: 0;
 }
@@ -135,7 +135,7 @@
   align-items: center;
   gap: 2px;
   min-width: 0;
-  min-height: 96px;
+  min-height: 84px;
   /* faixa de 22 px no topo reservada ao ✕: ele nunca cobre o sprite nem o rótulo */
   padding: 22px var(--space-1) var(--space-1);
   background: var(--gbc-paper);
@@ -167,7 +167,7 @@
 }
 
 .roster-slot-meta {
-  display: flex;
+  display: none;
   gap: var(--space-1);
   align-items: center;
 }
@@ -278,7 +278,7 @@
 
 .pokedex {
   display: grid;
-  grid-template-columns: 132px minmax(0, 1fr) 288px;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
   align-items: start;
   min-width: 0;
@@ -287,9 +287,13 @@
 /* trilho de tipos */
 .type-rail {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: var(--space-1);
   min-width: 0;
+  /* celular: o trilho vira uma linha de chips com rolagem própria */
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+  overscroll-behavior-x: contain;
 }
 
 .rail-pill {
@@ -308,6 +312,7 @@
   line-height: 1.6;
   text-align: left;
   white-space: nowrap;
+  flex: none;
   cursor: pointer;
 }
 
@@ -350,9 +355,9 @@
   margin: 0;
   padding: var(--space-3) var(--space-2) var(--space-3) 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(124px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
   gap: var(--space-3);
-  max-height: 70vh;
+  max-height: 60dvh;
   overflow-y: auto;
   border-top: 3px solid var(--gbc-ink);
 }
@@ -402,7 +407,7 @@
   top: 0;
   right: 0;
   font-family: var(--font-display);
-  font-size: 28px;
+  font-size: 20px;
   line-height: 1;
   color: var(--gbc-panel);
   pointer-events: none;
@@ -422,13 +427,18 @@
   align-self: stretch;
   display: grid;
   place-items: center;
-  height: 96px;
+  height: 48px;
   min-width: 0;
   overflow: hidden;
   margin-bottom: var(--space-1);
 }
 
-.dex-tile-sprite .sprite { position: relative; }
+.dex-tile-sprite .sprite {
+  position: relative;
+  /* celular: ×0,5 (48 px); max-* também vale para o fallback com tamanho inline */
+  max-width: 48px;
+  max-height: 48px;
+}
 
 .dex-tile-no {
   font-family: var(--font-display);
@@ -469,8 +479,7 @@
 
 /* painel de detalhe fixo à direita */
 .dex-detail {
-  position: sticky;
-  top: var(--space-4);
+  position: static;
   align-self: start;
   display: flex;
   flex-direction: column;
@@ -619,7 +628,7 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 2px var(--space-2);
 }
 
@@ -660,7 +669,7 @@
 /* ---------- aba Deck ---------- */
 .deck-editor {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
   align-items: start;
 }
@@ -712,7 +721,7 @@
 /* ---------- aba Código ---------- */
 .code-panel {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
 }
 
@@ -733,48 +742,26 @@
   outline-offset: 2px;
 }
 
-/* ---------- responsivo ---------- */
-@media (max-width: 900px) {
+/* ---------- a partir de 721px: pokédex em duas colunas, detalhe abaixo ---------- */
+@media (min-width: 721px) {
   .pokedex { grid-template-columns: 120px minmax(0, 1fr); }
-  .dex-detail {
-    grid-column: 1 / -1;
-    position: static;
-  }
-  .deck-editor,
-  .code-panel { grid-template-columns: minmax(0, 1fr); }
+  .dex-detail { grid-column: 1 / -1; }
+  .type-rail { flex-direction: column; overflow-x: visible; padding-bottom: 0; }
+  .dex-grid { grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); max-height: 70dvh; }
+  .dex-tile-sprite { height: 96px; }
+  .dex-tile-sprite .sprite { max-width: none; max-height: none; }
+  .dex-ghost { font-size: 28px; }
+  .roster-strip-body { grid-template-columns: minmax(0, 1fr) 88px; }
+  .roster-slots { grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); }
+  .roster-slot { min-height: 96px; }
+  .roster-slot-meta { display: flex; }
+  .gym-roster { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
-@media (max-width: 720px) {
-  .pokedex { grid-template-columns: minmax(0, 1fr); }
-
-  /* trilho vira linha de chips com rolagem própria */
-  .type-rail {
-    flex-direction: row;
-    overflow-x: auto;
-    padding-bottom: var(--space-2);
-    overscroll-behavior-x: contain;
-  }
-  .rail-pill { flex: none; }
-
-  .dex-grid {
-    grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
-    max-height: 60vh;
-  }
-
-  /* ×0,5 (48 px): o card de 104 px não comporta 96; max-* também vale para o fallback com tamanho inline */
-  .dex-tile-sprite { height: 48px; }
-  .dex-tile-sprite .sprite {
-    width: 48px;
-    height: 48px;
-    max-width: 48px;
-    max-height: 48px;
-  }
-  .dex-tile-sprite .dex-ghost { font-size: 20px; }
-
-  .roster-strip-body { grid-template-columns: minmax(0, 1fr) 80px; }
-  .roster-slots { grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); }
-  .roster-slot { min-height: 84px; }
-  .roster-slot-meta { display: none; }
-
-  .gym-roster { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+/* ---------- a partir de 901px: pokédex em três colunas, editor e código lado a lado ---------- */
+@media (min-width: 901px) {
+  .pokedex { grid-template-columns: 132px minmax(0, 1fr) 288px; }
+  .dex-detail { grid-column: auto; position: sticky; top: var(--space-4); }
+  .deck-editor,
+  .code-panel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
