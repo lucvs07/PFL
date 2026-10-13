@@ -1,0 +1,366 @@
+{
+ "div:0": {
+  "x": 0,
+  "y": 0,
+  "w": 1920,
+  "h": 1080,
+  "fs": "16px"
+ },
+ "div:0 > div.audio-control:0": {
+  "x": 1808,
+  "y": 1020,
+  "w": 96,
+  "h": 44,
+  "fs": "16px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0": {
+  "x": 1808,
+  "y": 1020,
+  "w": 44,
+  "h": 44,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0": {
+  "x": 1818,
+  "y": 1034,
+  "w": 24,
+  "h": 16,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:0": {
+  "x": 1826,
+  "y": 1034,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:1": {
+  "x": 1824,
+  "y": 1036,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:2": {
+  "x": 1826,
+  "y": 1036,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:3": {
+  "x": 1818,
+  "y": 1038,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:4": {
+  "x": 1820,
+  "y": 1038,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:5": {
+  "x": 1822,
+  "y": 1038,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:6": {
+  "x": 1824,
+  "y": 1038,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:7": {
+  "x": 1826,
+  "y": 1038,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:8": {
+  "x": 1818,
+  "y": 1040,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:9": {
+  "x": 1820,
+  "y": 1040,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:10": {
+  "x": 1822,
+  "y": 1040,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:11": {
+  "x": 1824,
+  "y": 1040,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:12": {
+  "x": 1826,
+  "y": 1040,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:13": {
+  "x": 1818,
+  "y": 1042,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:14": {
+  "x": 1820,
+  "y": 1042,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:15": {
+  "x": 1822,
+  "y": 1042,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:16": {
+  "x": 1824,
+  "y": 1042,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:17": {
+  "x": 1826,
+  "y": 1042,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:18": {
+  "x": 1818,
+  "y": 1044,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:19": {
+  "x": 1820,
+  "y": 1044,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:20": {
+  "x": 1822,
+  "y": 1044,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:21": {
+  "x": 1824,
+  "y": 1044,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:22": {
+  "x": 1826,
+  "y": 1044,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:23": {
+  "x": 1824,
+  "y": 1046,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:24": {
+  "x": 1826,
+  "y": 1046,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:25": {
+  "x": 1826,
+  "y": 1048,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:26": {
+  "x": 1830,
+  "y": 1040,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:27": {
+  "x": 1830,
+  "y": 1042,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:28": {
+  "x": 1834,
+  "y": 1038,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:29": {
+  "x": 1834,
+  "y": 1040,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:30": {
+  "x": 1834,
+  "y": 1042,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:31": {
+  "x": 1834,
+  "y": 1044,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:1": {
+  "x": 1860,
+  "y": 1020,
+  "w": 44,
+  "h": 44,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:1 > span.audio-arrow:0": {
+  "x": 1879,
+  "y": 1035,
+  "w": 6,
+  "h": 14,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.home:0": {
+  "x": 320,
+  "y": 0,
+  "w": 1280,
+  "h": 1080,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.home:0 > div.home-window:0": {
+  "x": 520,
+  "y": 261,
+  "w": 880,
+  "h": 497,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.home:0 > div.home-window:0 > div.home-stage:0": {
+  "x": 532,
+  "y": 273,
+  "w": 856,
+  "h": 400,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.home:0 > div.home-window:0 > div.home-stage:0 > div.home-title:0": {
+  "x": 631,
+  "y": 355,
+  "w": 657,
+  "h": 192,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.home:0 > div.home-window:0 > div.home-stage:0 > div.home-title:0 > h1.home-wordmark:0": {
+  "x": 631,
+  "y": 379,
+  "w": 449,
+  "h": 144,
+  "fs": "144px"
+ },
+ "div:0 > main.screen.home:0 > div.home-window:0 > div.home-stage:0 > div.home-title:0 > img.home-logo:0": {
+  "x": 1097,
+  "y": 323,
+  "w": 192,
+  "h": 192,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.home:0 > div.home-window:0 > div.home-stage:0 > p.home-subtitle:0": {
+  "x": 810,
+  "y": 563,
+  "w": 300,
+  "h": 27,
+  "fs": "12px"
+ },
+ "div:0 > main.screen.home:0 > div.home-window:0 > div.home-bar:1": {
+  "x": 526,
+  "y": 679,
+  "w": 868,
+  "h": 73,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.home:0 > div.home-window:0 > div.home-bar:1 > button.btn.btn-primary:0": {
+  "x": 542,
+  "y": 698,
+  "w": 130,
+  "h": 36,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.home:0 > div.home-window:0 > div.home-bar:1 > form.home-join:0": {
+  "x": 775,
+  "y": 695,
+  "w": 360,
+  "h": 41,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.home:0 > div.home-window:0 > div.home-bar:1 > form.home-join:0 > input.input.home-code:0": {
+  "x": 775,
+  "y": 695,
+  "w": 262,
+  "h": 41,
+  "fs": "12px"
+ },
+ "div:0 > main.screen.home:0 > div.home-window:0 > div.home-bar:1 > form.home-join:0 > button.btn:0": {
+  "x": 1045,
+  "y": 695,
+  "w": 90,
+  "h": 41,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.home:0 > div.home-window:0 > div.home-bar:1 > button.btn.home-builder:1": {
+  "x": 1238,
+  "y": 698,
+  "w": 140,
+  "h": 36,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.home:0 > p.muted.home-hint:0": {
+  "x": 740,
+  "y": 774,
+  "w": 440,
+  "h": 45,
+  "fs": "14px"
+ }
+}
