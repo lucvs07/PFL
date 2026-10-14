@@ -19,9 +19,13 @@ Branch `feat/a11y-e-celular`. Spec: `2026-10-13-a11y-e-celular-design.md`. Plano
 | Texto abaixo de AA (4,5:1; 3:1 grande) | 0 | 0 |
 | Setas movem o foco entre as opções de formação | sim (índice 0 → 1) | sim |
 | Tooltip de carta por toque: 1º toque abre sem jogar; cabe na viewport | sim (folha no pé, 8..382 de 390) | sim (8..836 de 844, topo em 148) |
+| **2º passo:** "Jogar esta carta" na folha envia a jogada (a folha cobre a carta tocada, então o botão fica nela) | sim | sim |
+| Campos de formulário com fonte < 16px (zoom do iOS no foco) | 0 | 0 |
 | "Servidor acordando" (WebSocket nunca abre) | sim, com contador | sim |
 | "Reconectando" (rede cortada no meio da partida) | sim | sim |
 | "Partida pausada" (adversário sai) | sim | sim |
+
+Revisão final (Opus) achou e a rodada de correção tratou: a folha cobria a carta tocada (agora tem "Jogar esta carta" e "Fechar"), cinco classes de campo ainda com fonte < 16px, a query de paisagem que também pegava janela de desktop baixa (agora exige `pointer: coarse`) e as setas ↑/↓ na mão (agora usa o retângulo em vez de `offsetTop`). O `:active` novo da carta passou a existir só sem hover. A verificação inicial só provava o 1º toque; a atual joga a carta de verdade.
 
 Nota sobre o método: `screenshot({ fullPage: true })` do Playwright redefine a emulação de toque do contexto (o `hover: none` vira `false`), o que mascarou o tooltip e inflou a contagem de alvos pequenos em paisagem nas primeiras rodadas. As capturas finais usam só a viewport; o produto não tem esse comportamento.
 
@@ -30,7 +34,7 @@ Nota sobre o método: `screenshot({ fullPage: true })` do Playwright redefine a 
 Baseline numérico (posição, tamanho e fonte de cada elemento) commitado antes de qualquer mudança em `specs/desktop-baseline/` (5 telas × 1041, 1280 e 1920 px = 15 arquivos) e comparado ao final com `apps/client/scripts/diff-snapshots.mjs` (tolerância de 2 px): **15 de 15 sem diferenças**. O diff ignora só dados da partida (largura das barras de jardas, nomes e estatísticas, vitória/derrota) e o wrapper `.top-stack` (altura 0). Mudanças visuais deliberadas no desktop, todas de cor e sem mexer em layout:
 
 - `--gbc-muted` escurece (`#6c6458` → `#5c5448`) e o texto de erro usa `--gbc-red-text` (`#a82018`): AA.
-- Estrelas e `.log-effect` usam `--gbc-orange-text` (`#a04010`); texto dos tipos Veneno, Lutador, Fantasma e Dragão passa a ser claro; o número do slot vazio do elenco usa `--gbc-muted`.
+- Estrelas e `.log-effect` usam `--gbc-orange-text` (`#a04010`); texto dos tipos Veneno, Lutador, Fantasma e Dragão passa a ser claro; o número do slot vazio do elenco usa `--gbc-muted`. **Estas quatro foram além da lista do spec e aguardam aval explícito;** se vetadas, basta reverter os quatro seletores (só cor, o layout não muda).
 - O tooltip de carta no desktop abre por hover ou por foco de teclado (`:focus-visible`), não mais por qualquer foco de clique.
 
 ## Precisa de aparelho real

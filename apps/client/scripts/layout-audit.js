@@ -65,6 +65,13 @@
         lowContrast.push({ text: text.slice(0, 30), cls: String(el.className).slice(0, 40), ratio: Math.round(r * 100) / 100, fg: s.color, bg: `rgb(${bg.r}, ${bg.g}, ${bg.b})` });
       }
     }
+    // campos de formulário com fonte < 16px: o iOS dá zoom na página ao focar
+    const smallInputs = [];
+    for (const el of document.querySelectorAll('input:not([type="range"]):not([type="radio"]):not([type="checkbox"]), select, textarea')) {
+      if (!visible(el)) continue;
+      const fs = parseFloat(getComputedStyle(el).fontSize);
+      if (fs < 16) smallInputs.push({ cls: String(el.className).slice(0, 40) || el.tagName, fs });
+    }
     // elementos que passam da borda direita da viewport (causa provável de rolagem horizontal)
     const wide = [];
     for (const el of document.body.querySelectorAll('*')) {
@@ -78,6 +85,7 @@
       clientWidth: doc.clientWidth,
       overflowers: wide.slice(0, 8),
       smallTargets,
+      smallInputs,
       lowContrast,
     };
   };

@@ -74,11 +74,6 @@
   .card-face:hover:not(:disabled):not([aria-disabled='true']) { background: var(--gbc-yellow); }
 }
 
-.card-face:active:not(:disabled):not([aria-disabled='true']) {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0 var(--gbc-ink);
-}
-
 .card-face:focus-visible {
   outline: 3px dashed var(--gbc-blue);
   outline-offset: 3px;
@@ -162,6 +157,8 @@
 .card-tooltip p { margin: 0 0 var(--space-1); }
 .card-tooltip ul { margin: 0 0 var(--space-1); padding-left: var(--space-4); }
 
+.card-sheet-actions { display: none; }
+
 .card-tile:has(.card-face:focus-visible) .card-tooltip,
 .card-tile.is-tip-open .card-tooltip {
   display: block;
@@ -174,7 +171,14 @@
 /* Sem hover (toque): o tooltip aberto vira uma folha fixa no pé da tela. Cabe em qualquer viewport,
    inclusive em paisagem, e fica ao alcance do polegar; o !important vence os ajustes por posição da mão. */
 @media (hover: none) {
+  /* feedback de pressão no toque (o desktop com mouse não ganha estado novo) */
+  .card-face:active:not([aria-disabled='true']) {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--gbc-ink);
+  }
+
   .card-tile.is-tip-open .card-tooltip {
+    pointer-events: auto;
     position: fixed !important;
     top: auto !important;
     right: max(var(--space-2), env(safe-area-inset-right)) !important;
@@ -185,6 +189,12 @@
     max-height: 60dvh;
     overflow-y: auto;
     z-index: 70;
+  }
+
+  .card-tile.is-tip-open .card-sheet-actions {
+    display: flex;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
   }
 }
 
@@ -295,7 +305,7 @@
 
 .depth-add {
   font-family: var(--font-body);
-  font-size: var(--fs-body-sm);
+  font-size: 16px; /* 16px: abaixo disso o iOS dá zoom no foco (o desktop volta ao tamanho de hoje em min-width: 721px) */
 }
 
 .keep-list {
@@ -350,4 +360,8 @@
   margin-left: auto;
   font-family: var(--font-display);
   font-size: var(--fs-xs);
+}
+
+@media (min-width: 721px) and (pointer: fine) {
+  .depth-add { font-size: var(--fs-body-sm); }
 }

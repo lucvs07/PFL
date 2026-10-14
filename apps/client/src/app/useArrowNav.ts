@@ -28,7 +28,8 @@ export function nextIndex(key: string, current: number, enabled: boolean[], colu
 /**
  * Setas, Home e End entre os botões de um grupo de escolhas. Tab continua passando por todos eles:
  * as setas são um atalho, não tabindex móvel (cada botão envia uma jogada, não é um radio).
- * `columns` omitido: conta os botões da primeira linha pela posição na tela.
+ * `columns` omitido: conta os botões da primeira linha pela posição na tela (retângulo, não offsetTop:
+ * dentro de tiles com position: relative o offsetTop é relativo ao tile e igual para todos).
  */
 export function useArrowNav<T extends HTMLElement>(columns?: number): { ref: RefObject<T | null>; onKeyDown: (e: KeyboardEvent<T>) => void } {
   const ref = useRef<T | null>(null);
@@ -36,10 +37,12 @@ export function useArrowNav<T extends HTMLElement>(columns?: number): { ref: Ref
     (e: KeyboardEvent<T>) => {
       const root = ref.current;
       if (!root) return;
-      const items = Array.from(root.querySelectorAll<HTMLElement>('button'));
+      // os botões da folha do tooltip (role=tooltip) não são escolhas do grupo
+      const items = Array.from(root.querySelectorAll<HTMLElement>('button')).filter((el) => !el.closest('[role="tooltip"]'));
       const current = items.indexOf((e.target as HTMLElement).closest('button') as HTMLElement);
       if (current === -1) return;
-      const cols = columns ?? Math.max(1, items.filter((el) => el.offsetTop === items[0].offsetTop).length);
+      const firstTop = Math.round(items[0].getBoundingClientRect().top);
+      const cols = columns ?? Math.max(1, items.filter((el) => Math.round(el.getBoundingClientRect().top) === firstTop).length);
       const target = nextIndex(
         e.key,
         current,

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { cssFiles, indexHtml, stripComments, ungatedHover } from './css-helpers';
+import { cssFiles, indexHtml, stripComments, topLevelCss, ungatedHover } from './css-helpers';
 
 describe('ungatedHover (o próprio detector)', () => {
   it('aceita :hover dentro de @media (hover: hover)', () => {
@@ -41,5 +41,11 @@ describe('camada de plataforma', () => {
     expect(app).toMatch(/input,\s*textarea,\s*select\s*\{[^}]*font-size:\s*16px/);
     // a base (antes de qualquer @media) não rebaixa o textarea; o desktop volta aos 14px em min-width: 721px
     expect(app.split('@media')[0]).not.toMatch(/textarea\.input\s*\{[^}]*font-size/);
+  });
+
+  it('o feedback de pressão novo da carta existe só em dispositivos sem hover (o desktop não ganha estado novo)', () => {
+    const ui = cssFiles().find((f) => f.file.endsWith('components/ui.css'))!.css;
+    expect(topLevelCss(ui)).not.toContain('.card-face:active');
+    expect(stripComments(ui)).toMatch(/@media \(hover: none\)[^{]*\{[^@]*\.card-face:active/);
   });
 });

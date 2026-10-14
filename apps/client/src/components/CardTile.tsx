@@ -33,6 +33,11 @@ export function CardTile({ card, disabled = false, selected = false, badge, onCl
     return () => document.removeEventListener('pointerdown', onPointerDown);
   }, [tipOpen]);
 
+  const act = () => {
+    setTipOpen(false);
+    onClick?.();
+  };
+
   const handleClick = () => {
     switch (tapAction(isTouch(), tipOpen, disabled)) {
       case 'open':
@@ -42,8 +47,7 @@ export function CardTile({ card, disabled = false, selected = false, badge, onCl
         setTipOpen(false);
         break;
       case 'act':
-        setTipOpen(false);
-        onClick?.();
+        act();
         break;
       case 'ignore':
         break;
@@ -87,6 +91,17 @@ export function CardTile({ card, disabled = false, selected = false, badge, onCl
             ))}
           </ul>
         )}
+        {/* só aparecem na folha de toque (ui.css): a folha cobre a carta, então ela mesma joga e fecha */}
+        <div className="card-sheet-actions">
+          {!disabled && (
+            <button type="button" className="btn btn-primary" onClick={act}>
+              Jogar esta carta
+            </button>
+          )}
+          <button type="button" className="btn" onClick={() => setTipOpen(false)}>
+            Fechar
+          </button>
+        </div>
       </div>
     </div>
   );

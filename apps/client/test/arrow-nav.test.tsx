@@ -73,8 +73,8 @@ describe('mão sem nenhuma carta jogável', () => {
   }
 
   it('cartas aria-disabled seguem alcançáveis pelas setas, sem erro', () => {
-    render(<Hand />);
-    const buttons = screen.getAllByRole('button');
+    const { container } = render(<Hand />);
+    const buttons = Array.from(container.querySelectorAll<HTMLElement>('.card-face'));
     buttons[0].focus();
     fireEvent.keyDown(buttons[0], { key: 'ArrowRight' });
     expect(document.activeElement).toBe(buttons[1]);
@@ -86,11 +86,62 @@ describe('mão sem nenhuma carta jogável', () => {
 describe('CardTile desabilitada', () => {
   it('usa aria-disabled, continua focável e não dispara o clique', () => {
     const onClick = vi.fn();
-    render(<CardTile card={CARDS[0]} disabled onClick={onClick} />);
-    const button = screen.getAllByRole('button')[0];
+    const { container } = render(<CardTile card={CARDS[0]} disabled onClick={onClick} />);
+    const button = container.querySelector('.card-face')!;
     expect(button.getAttribute('aria-disabled')).toBe('true');
     expect(button.hasAttribute('disabled')).toBe(false);
     fireEvent.click(button);
     expect(onClick).not.toHaveBeenCalled();
+  });
+});
+
+describe('useArrowNav sem columns informado (mão de cartas)', () => {
+  // jsdom não faz layout: simulamos 3 colunas pelo retângulo; o offsetTop é 0 em todos (tiles position: relative)
+  function Hand() {
+    const { ref, onKeyDown } = useArrowNav<HTMLDivElement>();
+    return (
+      <div ref={ref} role="group" aria-label="mão" onKeyDown={onKeyDown}>
+        {[0, 1, 2, 3, 4, 5].map((i) => (
+          <div key={i} style={{ position: 'relative' }}>
+            <button data-row={Math.floor(i / 3)}>{`c${i}`}</button>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  it('ArrowDown e ArrowUp andam uma linha usando a posição na tela', () => {
+    const spy = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (this: HTMLElement) {
+      const row = Number(this.getAttribute('data-row') ?? 0);
+      return { top: row * 100, bottom: row * 100 + 80, left: 0, right: 0, width: 0, height: 80, x: 0, y: row * 100, toJSON: () => ({}) } as DOMRect;
+    });
+    render(<Hand />);
+    screen.getByText('c1').focus();
+    fireEvent.keyDown(screen.getByText('c1'), { key: 'ArrowDown' });
+    expect(document.activeElement).toBe(screen.getByText('c4'));
+    fireEvent.keyDown(screen.getByText('c4'), { key: 'ArrowUp' });
+    expect(document.activeElement).toBe(screen.getByText('c1'));
+    spy.mockRestore();
+  });
+});
+
+describe('useArrowNav ignora os botões da folha do tooltip', () => {
+  function Hand() {
+    const { ref, onKeyDown } = useArrowNav<HTMLDivElement>(3);
+    return (
+      <div ref={ref} role="group" aria-label="mão" onKeyDown={onKeyDown}>
+        {CARDS.slice(0, 2).map((c) => (
+          <CardTile key={c.id} card={c} />
+        ))}
+      </div>
+    );
+  }
+
+  it('ArrowRight vai da primeira face para a segunda, não para "Jogar esta carta"', () => {
+    const { container } = render(<Hand />);
+    const faces = Array.from(container.querySelectorAll<HTMLElement>('.card-face'));
+    faces[0].focus();
+    fireEvent.keyDown(faces[0], { key: 'ArrowRight' });
+    expect(document.activeElement).toBe(faces[1]);
   });
 });

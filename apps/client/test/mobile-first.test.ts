@@ -14,4 +14,14 @@ describe('CSS mobile-first', () => {
     }
     expect([...found].filter((w) => !allowed.has(w))).toEqual([]);
   });
+
+  it('a query de celular deitado só vale com toque: janela de desktop baixa não pode mudar de layout', () => {
+    const found: string[] = [];
+    for (const { file, css } of cssFiles()) {
+      for (const m of stripComments(css).matchAll(/@media[^{]*orientation:\s*landscape[^{]*/g)) {
+        if (!/\(pointer:\s*coarse\)/.test(m[0])) found.push(`${file}: ${m[0].trim()}`);
+      }
+    }
+    expect(found).toEqual([]);
+  });
 });

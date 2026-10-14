@@ -49,3 +49,31 @@ export function contrastRatio(fg: string, bg: string): number {
   const [hi, lo] = [luminance(fg), luminance(bg)].sort((a, b) => b - a);
   return (hi + 0.05) / (lo + 0.05);
 }
+
+/** CSS sem o conteúdo dos blocos @media/@supports: só as regras da base. */
+export function topLevelCss(css: string): string {
+  let depth = 0;
+  let out = '';
+  let header = '';
+  let skipFrom = -1;
+  const text = stripComments(css);
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '{') {
+      if (depth === 0 && header.trim().startsWith('@')) skipFrom = i;
+      depth++;
+      if (skipFrom === -1) out += header + ch;
+      header = '';
+    } else if (ch === '}') {
+      depth--;
+      if (skipFrom !== -1 && depth === 0) skipFrom = -1;
+      else if (skipFrom === -1) out += ch;
+      header = '';
+    } else if (depth === 0) {
+      header += ch;
+    } else if (skipFrom === -1) {
+      out += ch;
+    }
+  }
+  return out;
+}

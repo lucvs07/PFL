@@ -5,6 +5,7 @@
   "clientWidth": 390,
   "overflowers": [],
   "smallTargets": [],
+  "smallInputs": [],
   "lowContrast": []
  },
  "builder-390x800": {
@@ -46,6 +47,7 @@
    }
   ],
   "smallTargets": [],
+  "smallInputs": [],
   "lowContrast": []
  },
  "builder-ELENCO-390x800": {
@@ -87,6 +89,7 @@
    }
   ],
   "smallTargets": [],
+  "smallInputs": [],
   "lowContrast": []
  },
  "builder-DEPTH_CHART-390x800": {
@@ -95,6 +98,7 @@
   "clientWidth": 390,
   "overflowers": [],
   "smallTargets": [],
+  "smallInputs": [],
   "lowContrast": []
  },
  "builder-DECK-390x800": {
@@ -103,6 +107,7 @@
   "clientWidth": 390,
   "overflowers": [],
   "smallTargets": [],
+  "smallInputs": [],
   "lowContrast": []
  },
  "builder-C_DIGO-390x800": {
@@ -111,6 +116,7 @@
   "clientWidth": 390,
   "overflowers": [],
   "smallTargets": [],
+  "smallInputs": [],
   "lowContrast": []
  },
  "conn-waking-390x800": "Servidor acordando O servidor gratuito dorme quando ninguém joga. Pode levar até 1 min. 4 s",
@@ -120,6 +126,7 @@
   "clientWidth": 390,
   "overflowers": [],
   "smallTargets": [],
+  "smallInputs": [],
   "lowContrast": []
  },
  "match-formation-390x800": {
@@ -128,6 +135,7 @@
   "clientWidth": 390,
   "overflowers": [],
   "smallTargets": [],
+  "smallInputs": [],
   "lowContrast": []
  },
  "keyboard-390x800": {
@@ -140,16 +148,21 @@
   "clientWidth": 390,
   "overflowers": [],
   "smallTargets": [],
+  "smallInputs": [],
   "lowContrast": []
  },
  "tooltip-390x800": {
   "left": 8,
   "right": 382,
-  "top": 567,
+  "top": 498,
   "bottom": 792,
   "vw": 390,
   "vh": 800,
   "fits": true
+ },
+ "play-by-sheet-390x800": {
+  "playable": true,
+  "sent": true
  },
  "conn-reconnecting-390x800": "Reconectando Sem conexão com o servidor. Suas jogadas voltam quando a conexão voltar.",
  "conn-paused-390x800": "Partida pausada Adversário desconectado. Aguardando a reconexão (até 60 s).",
@@ -159,6 +172,7 @@
   "clientWidth": 390,
   "overflowers": [],
   "smallTargets": [],
+  "smallInputs": [],
   "lowContrast": []
  },
  "home-844x390": {
@@ -167,6 +181,7 @@
   "clientWidth": 844,
   "overflowers": [],
   "smallTargets": [],
+  "smallInputs": [],
   "lowContrast": []
  },
  "builder-844x390": {
@@ -175,6 +190,7 @@
   "clientWidth": 844,
   "overflowers": [],
   "smallTargets": [],
+  "smallInputs": [],
   "lowContrast": []
  },
  "builder-ELENCO-844x390": {
@@ -183,6 +199,7 @@
   "clientWidth": 844,
   "overflowers": [],
   "smallTargets": [],
+  "smallInputs": [],
   "lowContrast": []
  },
  "builder-DEPTH_CHART-844x390": {
@@ -191,6 +208,7 @@
   "clientWidth": 844,
   "overflowers": [],
   "smallTargets": [],
+  "smallInputs": [],
   "lowContrast": []
  },
  "builder-DECK-844x390": {
@@ -199,6 +217,7 @@
   "clientWidth": 844,
   "overflowers": [],
   "smallTargets": [],
+  "smallInputs": [],
   "lowContrast": []
  },
  "builder-C_DIGO-844x390": {
@@ -207,6 +226,7 @@
   "clientWidth": 844,
   "overflowers": [],
   "smallTargets": [],
+  "smallInputs": [],
   "lowContrast": []
  },
  "conn-waking-844x390": "Servidor acordando O servidor gratuito dorme quando ninguém joga. Pode levar até 1 min. 4 s",
@@ -216,6 +236,7 @@
   "clientWidth": 844,
   "overflowers": [],
   "smallTargets": [],
+  "smallInputs": [],
   "lowContrast": []
  },
  "match-formation-844x390": {
@@ -224,6 +245,7 @@
   "clientWidth": 844,
   "overflowers": [],
   "smallTargets": [],
+  "smallInputs": [],
   "lowContrast": []
  },
  "keyboard-844x390": {
@@ -236,6 +258,7 @@
   "clientWidth": 844,
   "overflowers": [],
   "smallTargets": [],
+  "smallInputs": [],
   "lowContrast": []
  },
  "tooltip-844x390": {
@@ -247,6 +270,10 @@
   "vh": 390,
   "fits": true
  },
+ "play-by-sheet-844x390": {
+  "playable": true,
+  "sent": true
+ },
  "conn-reconnecting-844x390": "Reconectando Sem conexão com o servidor. Suas jogadas voltam quando a conexão voltar.",
  "conn-paused-844x390": "Partida pausada Adversário desconectado. Aguardando a reconexão (até 60 s).",
  "end-844x390": {
@@ -255,6 +282,7 @@
   "clientWidth": 844,
   "overflowers": [],
   "smallTargets": [],
+  "smallInputs": [],
   "lowContrast": []
  }
 }

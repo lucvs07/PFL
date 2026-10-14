@@ -18,7 +18,7 @@ async function audit(page, name, tag, full = false) {
   report[`${name}-${tag}`] = r;
   // fullPage redefine a emulação de toque do contexto (hover: none vira false); nas telas que ainda precisam de toque, só a viewport
   await page.screenshot({ path: `${outDir}/${name}-${tag}.png`, fullPage: full });
-  console.log(name, tag, 'overflowX:', r.overflowX, 'alvos<44:', r.smallTargets.length, 'contraste:', r.lowContrast.length);
+  console.log(name, tag, 'overflowX:', r.overflowX, 'alvos<44:', r.smallTargets.length, 'contraste:', r.lowContrast.length, 'inputs<16px:', r.smallInputs.length);
 }
 
 const ctxOpts = (w, h) => ({ viewport: { width: w, height: h }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
@@ -115,7 +115,7 @@ for (const size of sizes) {
         await a.waitForTimeout(500);
         await audit(a, 'match-hand', tag, false);
         // tooltip por toque: o 1º toque abre sem jogar
-        const card = a.locator('.hand .card-tile').first();
+        const card = a.locator('.hand .card-tile:not(.is-disabled)').first();
         await card.locator('.card-face').tap();
         await a.waitForTimeout(200);
         const tip = await a.evaluate(() => {
@@ -128,6 +128,18 @@ for (const size of sizes) {
         report[`tooltip-${tag}`] = tip;
         console.log('tooltip por toque:', JSON.stringify(tip));
         await a.screenshot({ path: `${outDir}/match-tooltip-${tag}.png` });
+        // 2º toque: a folha cobre a carta, então "Jogar esta carta" na própria folha precisa jogar de verdade
+        const play = a.locator('.card-tile.is-tip-open button:has-text("Jogar esta carta")');
+        const playable = await play.count();
+        if (playable) {
+          await play.tap();
+          const sent = await a.waitForFunction(() => document.body.innerText.includes('Carta escolhida'), null, { timeout: 5000 }).then(() => true).catch(() => false);
+          report[`play-by-sheet-${tag}`] = { playable: true, sent };
+          console.log('jogar pela folha:', sent ? 'jogada enviada' : 'FALHOU');
+        } else {
+          console.log('AVISO: primeira carta não jogável, folha só com Fechar');
+          report[`play-by-sheet-${tag}`] = { playable: false };
+        }
         handAudited = true;
       }
       await a.waitForTimeout(500);

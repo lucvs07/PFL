@@ -38,7 +38,7 @@ describe('CardTile no toque', () => {
   it('primeiro toque abre o tooltip sem agir; o segundo age', () => {
     const onClick = vi.fn();
     const { container } = render(<CardTile card={a} onClick={onClick} />);
-    const button = screen.getAllByRole('button')[0];
+    const button = container.querySelector('.card-face') as HTMLElement;
     fireEvent.click(button);
     expect(onClick).not.toHaveBeenCalled();
     expect(container.querySelector('.card-tile')!.classList.contains('is-tip-open')).toBe(true);
@@ -48,7 +48,7 @@ describe('CardTile no toque', () => {
 
   it('Esc fecha o tooltip', () => {
     const { container } = render(<CardTile card={a} />);
-    const button = screen.getAllByRole('button')[0];
+    const button = container.querySelector('.card-face') as HTMLElement;
     fireEvent.click(button);
     fireEvent.keyDown(button, { key: 'Escape' });
     expect(container.querySelector('.card-tile')!.classList.contains('is-tip-open')).toBe(false);
@@ -61,7 +61,7 @@ describe('CardTile no toque', () => {
         <CardTile card={b} />
       </>,
     );
-    const [first, second] = screen.getAllByRole('button');
+    const [first, second] = Array.from(container.querySelectorAll<HTMLElement>('.card-face'));
     fireEvent.pointerDown(first);
     fireEvent.click(first);
     fireEvent.pointerDown(second);
@@ -71,13 +71,42 @@ describe('CardTile no toque', () => {
   });
 });
 
+describe('folha do tooltip no toque (a folha cobre a carta tocada, então ela mesma joga e fecha)', () => {
+  beforeEach(() => mockTouch(true));
+
+  it('"Jogar esta carta" joga uma vez e fecha a folha', () => {
+    const onClick = vi.fn();
+    const { container } = render(<CardTile card={CARDS[0]} onClick={onClick} />);
+    fireEvent.click(container.querySelector('.card-face')!);
+    fireEvent.click(screen.getByRole('button', { name: 'Jogar esta carta' }));
+    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(container.querySelector('.is-tip-open')).toBeNull();
+  });
+
+  it('"Fechar" fecha sem jogar', () => {
+    const onClick = vi.fn();
+    const { container } = render(<CardTile card={CARDS[0]} onClick={onClick} />);
+    fireEvent.click(container.querySelector('.card-face')!);
+    fireEvent.click(screen.getByRole('button', { name: 'Fechar' }));
+    expect(onClick).not.toHaveBeenCalled();
+    expect(container.querySelector('.is-tip-open')).toBeNull();
+  });
+
+  it('carta não jogável: só "Fechar", e nunca joga', () => {
+    const onClick = vi.fn();
+    render(<CardTile card={CARDS[0]} disabled onClick={onClick} />);
+    expect(screen.queryByRole('button', { name: 'Jogar esta carta' })).toBeNull();
+    expect(screen.getByRole('button', { name: 'Fechar' })).toBeTruthy();
+  });
+});
+
 describe('CardTile com mouse', () => {
   beforeEach(() => mockTouch(false));
 
   it('o clique age direto, sem abrir tooltip', () => {
     const onClick = vi.fn();
     const { container } = render(<CardTile card={CARDS[0]} onClick={onClick} />);
-    fireEvent.click(screen.getAllByRole('button')[0]);
+    fireEvent.click(container.querySelector('.card-face')!);
     expect(onClick).toHaveBeenCalledTimes(1);
     expect(container.querySelector('.is-tip-open')).toBeNull();
   });

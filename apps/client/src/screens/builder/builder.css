@@ -29,14 +29,14 @@
 }
 
 .builder-controls .input {
-  font-size: var(--fs-body-sm);
+  font-size: 16px; /* iOS: sem zoom no foco */
   flex: 1 1 160px;
 }
 
 .builder-controls .builder-name {
   flex: 2 1 200px;
   font-family: var(--font-display);
-  font-size: var(--fs-sm);
+  font-size: 16px; /* iOS: sem zoom no foco */
 }
 
 .builder-message {
@@ -342,7 +342,7 @@
   margin-bottom: var(--space-2);
 }
 
-.pokedex-filters .input { font-size: var(--fs-body-sm); }
+.pokedex-filters .input { font-size: 16px; /* iOS: sem zoom no foco */ }
 
 .pokedex-count {
   margin: 0 0 var(--space-2);
@@ -759,6 +759,13 @@
   .roster-slot { min-height: 96px; }
   .roster-slot-meta { display: flex; }
   .gym-roster { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* campos: tamanho de hoje só com mouse (no toque ficam 16px: o iOS dá zoom abaixo disso) */
+@media (min-width: 721px) and (pointer: fine) {
+  .builder-controls .input { font-size: var(--fs-body-sm); }
+  .builder-controls .builder-name { font-size: var(--fs-sm); }
+  .pokedex-filters .input { font-size: var(--fs-body-sm); }
 }
 
 /* ---------- a partir de 901px: pokédex em três colunas, editor e código lado a lado ---------- */

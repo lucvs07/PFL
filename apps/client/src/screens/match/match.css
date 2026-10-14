@@ -537,7 +537,7 @@
 }
 
 /* ================= celular deitado: campo à esquerda, painel rolável à direita ================= */
-@media (orientation: landscape) and (max-height: 500px) {
+@media (orientation: landscape) and (max-height: 500px) and (pointer: coarse) {
   .match {
     grid-template-columns: auto minmax(0, 1fr);
     grid-template-areas:

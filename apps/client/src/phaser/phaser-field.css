@@ -32,7 +32,7 @@
 }
 
 /* Celular deitado: pouca altura, então o campo ocupa a altura toda e o painel vai ao lado (ver match.css). */
-@media (orientation: landscape) and (max-height: 500px) {
+@media (orientation: landscape) and (max-height: 500px) and (pointer: coarse) {
   .phaser-field {
     width: auto;
     height: calc(100dvh - 128px);

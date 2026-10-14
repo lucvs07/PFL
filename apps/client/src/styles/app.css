@@ -241,6 +241,10 @@ textarea.input {
   body { font-size: var(--fs-body); }
   .title { font-size: 32px; }
   .screen { padding: var(--space-4); }
+}
+
+/* textarea do código do time: 14px só com mouse (no toque fica 16px: o iOS dá zoom abaixo disso) */
+@media (min-width: 721px) and (pointer: fine) {
   textarea.input { font-size: var(--fs-body-sm); }
 }
 
