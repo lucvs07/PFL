@@ -32,8 +32,16 @@
   white-space: nowrap;
 }
 
+/* tipos escuros: texto claro (tinta sobre eles fica abaixo de 4,5:1) */
+.type-badge[data-type='poison'],
+.type-badge[data-type='fighting'],
+.type-badge[data-type='ghost'],
+.type-badge[data-type='dragon'] {
+  color: var(--gbc-paper);
+}
+
 .stars {
-  color: var(--gbc-orange);
+  color: var(--gbc-orange-text);
   font-family: var(--font-body);
   font-size: var(--fs-body);
   letter-spacing: 1px;
@@ -161,6 +169,23 @@
 
 @media (hover: hover) and (pointer: fine) {
   .card-tile:hover .card-tooltip { display: block; }
+}
+
+/* Sem hover (toque): o tooltip aberto vira uma folha fixa no pé da tela. Cabe em qualquer viewport,
+   inclusive em paisagem, e fica ao alcance do polegar; o !important vence os ajustes por posição da mão. */
+@media (hover: none) {
+  .card-tile.is-tip-open .card-tooltip {
+    position: fixed !important;
+    top: auto !important;
+    right: max(var(--space-2), env(safe-area-inset-right)) !important;
+    bottom: max(var(--space-2), env(safe-area-inset-bottom)) !important;
+    left: max(var(--space-2), env(safe-area-inset-left)) !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: 60dvh;
+    overflow-y: auto;
+    z-index: 70;
+  }
 }
 
 /* barras de stat */

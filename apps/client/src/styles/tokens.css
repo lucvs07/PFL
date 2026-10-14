@@ -17,6 +17,8 @@
   --gbc-blue: #3058c0;
   --gbc-yellow: #f8d030;
   --gbc-orange: #e88830;
+  /* laranja como texto/ícone (2,46:1 sobre papel): estrelas e efeito no log */
+  --gbc-orange-text: #a04010;
 
   /* Duotone DMG para fundos de destaque */
   --dmg-0: var(--gbc-green-0);

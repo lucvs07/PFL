@@ -47,6 +47,7 @@
 }
 
 .builder-errors summary {
+  min-height: var(--hit-min);
   cursor: pointer;
   font-family: var(--font-display);
   font-size: var(--fs-sm);
@@ -154,7 +155,7 @@
 .roster-slot-no {
   font-family: var(--font-display);
   font-size: var(--fs-sm);
-  color: var(--gbc-panel-dark);
+  color: var(--gbc-muted);
 }
 
 .roster-slot-name {
@@ -407,7 +408,7 @@
   top: 0;
   right: 0;
   font-family: var(--font-display);
-  font-size: 20px;
+  font-size: 28px;
   line-height: 1;
   color: var(--gbc-panel);
   pointer-events: none;
@@ -432,6 +433,8 @@
   overflow: hidden;
   margin-bottom: var(--space-1);
 }
+
+.dex-tile-sprite .dex-ghost { font-size: 20px; } /* celular */
 
 .dex-tile-sprite .sprite {
   position: relative;
@@ -750,7 +753,7 @@
   .dex-grid { grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); max-height: 70dvh; }
   .dex-tile-sprite { height: 96px; }
   .dex-tile-sprite .sprite { max-width: none; max-height: none; }
-  .dex-ghost { font-size: 28px; }
+  .dex-tile-sprite .dex-ghost { font-size: 28px; }
   .roster-strip-body { grid-template-columns: minmax(0, 1fr) 88px; }
   .roster-slots { grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); }
   .roster-slot { min-height: 96px; }

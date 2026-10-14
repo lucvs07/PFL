@@ -1,0 +1,260 @@
+{
+ "home-390x800": {
+  "overflowX": false,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "overflowers": [],
+  "smallTargets": [],
+  "lowContrast": []
+ },
+ "builder-390x800": {
+  "overflowX": false,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "overflowers": [
+   {
+    "cls": "rail-pill",
+    "right": 481
+   },
+   {
+    "cls": "rail-pill",
+    "right": 545
+   },
+   {
+    "cls": "rail-pill",
+    "right": 633
+   },
+   {
+    "cls": "rail-pill",
+    "right": 729
+   },
+   {
+    "cls": "rail-pill",
+    "right": 801
+   },
+   {
+    "cls": "rail-pill",
+    "right": 881
+   },
+   {
+    "cls": "rail-pill",
+    "right": 977
+   },
+   {
+    "cls": "rail-pill",
+    "right": 1057
+   }
+  ],
+  "smallTargets": [],
+  "lowContrast": []
+ },
+ "builder-ELENCO-390x800": {
+  "overflowX": false,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "overflowers": [
+   {
+    "cls": "rail-pill",
+    "right": 481
+   },
+   {
+    "cls": "rail-pill",
+    "right": 545
+   },
+   {
+    "cls": "rail-pill",
+    "right": 633
+   },
+   {
+    "cls": "rail-pill",
+    "right": 729
+   },
+   {
+    "cls": "rail-pill",
+    "right": 801
+   },
+   {
+    "cls": "rail-pill",
+    "right": 881
+   },
+   {
+    "cls": "rail-pill",
+    "right": 977
+   },
+   {
+    "cls": "rail-pill",
+    "right": 1057
+   }
+  ],
+  "smallTargets": [],
+  "lowContrast": []
+ },
+ "builder-DEPTH_CHART-390x800": {
+  "overflowX": false,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "overflowers": [],
+  "smallTargets": [],
+  "lowContrast": []
+ },
+ "builder-DECK-390x800": {
+  "overflowX": false,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "overflowers": [],
+  "smallTargets": [],
+  "lowContrast": []
+ },
+ "builder-C_DIGO-390x800": {
+  "overflowX": false,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "overflowers": [],
+  "smallTargets": [],
+  "lowContrast": []
+ },
+ "conn-waking-390x800": "Servidor acordando O servidor gratuito dorme quando ninguém joga. Pode levar até 1 min. 4 s",
+ "lobby-390x800": {
+  "overflowX": false,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "overflowers": [],
+  "smallTargets": [],
+  "lowContrast": []
+ },
+ "match-formation-390x800": {
+  "overflowX": false,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "overflowers": [],
+  "smallTargets": [],
+  "lowContrast": []
+ },
+ "keyboard-390x800": {
+  "active": "picker-option",
+  "index": 1
+ },
+ "match-hand-390x800": {
+  "overflowX": false,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "overflowers": [],
+  "smallTargets": [],
+  "lowContrast": []
+ },
+ "tooltip-390x800": {
+  "left": 8,
+  "right": 382,
+  "top": 567,
+  "bottom": 792,
+  "vw": 390,
+  "vh": 800,
+  "fits": true
+ },
+ "conn-reconnecting-390x800": "Reconectando Sem conexão com o servidor. Suas jogadas voltam quando a conexão voltar.",
+ "conn-paused-390x800": "Partida pausada Adversário desconectado. Aguardando a reconexão (até 60 s).",
+ "end-390x800": {
+  "overflowX": false,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "overflowers": [],
+  "smallTargets": [],
+  "lowContrast": []
+ },
+ "home-844x390": {
+  "overflowX": false,
+  "scrollWidth": 844,
+  "clientWidth": 844,
+  "overflowers": [],
+  "smallTargets": [],
+  "lowContrast": []
+ },
+ "builder-844x390": {
+  "overflowX": false,
+  "scrollWidth": 844,
+  "clientWidth": 844,
+  "overflowers": [],
+  "smallTargets": [],
+  "lowContrast": []
+ },
+ "builder-ELENCO-844x390": {
+  "overflowX": false,
+  "scrollWidth": 844,
+  "clientWidth": 844,
+  "overflowers": [],
+  "smallTargets": [],
+  "lowContrast": []
+ },
+ "builder-DEPTH_CHART-844x390": {
+  "overflowX": false,
+  "scrollWidth": 844,
+  "clientWidth": 844,
+  "overflowers": [],
+  "smallTargets": [],
+  "lowContrast": []
+ },
+ "builder-DECK-844x390": {
+  "overflowX": false,
+  "scrollWidth": 844,
+  "clientWidth": 844,
+  "overflowers": [],
+  "smallTargets": [],
+  "lowContrast": []
+ },
+ "builder-C_DIGO-844x390": {
+  "overflowX": false,
+  "scrollWidth": 844,
+  "clientWidth": 844,
+  "overflowers": [],
+  "smallTargets": [],
+  "lowContrast": []
+ },
+ "conn-waking-844x390": "Servidor acordando O servidor gratuito dorme quando ninguém joga. Pode levar até 1 min. 4 s",
+ "lobby-844x390": {
+  "overflowX": false,
+  "scrollWidth": 844,
+  "clientWidth": 844,
+  "overflowers": [],
+  "smallTargets": [],
+  "lowContrast": []
+ },
+ "match-formation-844x390": {
+  "overflowX": false,
+  "scrollWidth": 844,
+  "clientWidth": 844,
+  "overflowers": [],
+  "smallTargets": [],
+  "lowContrast": []
+ },
+ "keyboard-844x390": {
+  "active": "picker-option",
+  "index": 1
+ },
+ "match-hand-844x390": {
+  "overflowX": false,
+  "scrollWidth": 844,
+  "clientWidth": 844,
+  "overflowers": [],
+  "smallTargets": [],
+  "lowContrast": []
+ },
+ "tooltip-844x390": {
+  "left": 8,
+  "right": 836,
+  "top": 148,
+  "bottom": 382,
+  "vw": 844,
+  "vh": 390,
+  "fits": true
+ },
+ "conn-reconnecting-844x390": "Reconectando Sem conexão com o servidor. Suas jogadas voltam quando a conexão voltar.",
+ "conn-paused-844x390": "Partida pausada Adversário desconectado. Aguardando a reconexão (até 60 s).",
+ "end-844x390": {
+  "overflowX": false,
+  "scrollWidth": 844,
+  "clientWidth": 844,
+  "overflowers": [],
+  "smallTargets": [],
+  "lowContrast": []
+ }
+}

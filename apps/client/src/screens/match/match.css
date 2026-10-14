@@ -316,7 +316,7 @@
 }
 
 .log-call { color: var(--gbc-muted); }
-.log-effect { color: var(--gbc-orange); }
+.log-effect { color: var(--gbc-orange-text); }
 .log-score { color: var(--gbc-red-text); font-weight: 700; }
 .log-system { color: var(--gbc-green-1); }
 
@@ -550,6 +550,8 @@
     max-height: calc(100dvh - 128px);
     overflow-y: auto;
     overscroll-behavior: contain;
+    /* folga para os botões de áudio fixos não cobrirem a última carta */
+    padding-bottom: calc(44px + var(--space-4));
   }
   .match-log { height: 120px; }
   .hand { padding-top: 80px; margin-top: -80px; }
