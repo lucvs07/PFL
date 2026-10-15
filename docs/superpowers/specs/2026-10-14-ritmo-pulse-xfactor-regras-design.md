@@ -33,12 +33,13 @@ export type XFactorId =
   | 'INTIMIDATE_RUSH' | 'ENFORCER_STOMP' | 'ISLAND_LOCKDOWN' | 'PREDATOR_HAWK';
 
 export interface Captain { species: number; xFactor: XFactorId }
-export interface Team { /* campos atuais */ captains?: { offense: Captain; defense: Captain } }
+export interface Captains { offense?: Captain; defense?: Captain }
+export interface Team { /* campos atuais */ captains?: Captains }
 ```
 
 Posição de cada perk (tabela única em `rhythm.ts`): `TELEPATHIC_POCKET` QB, `OVERDRIVE_BREAKTHROUGH` RB, `SLIPSTREAM_SEPARATION` WR, `IMMOVABLE_WALL` OL; `INTIMIDATE_RUSH` DL, `ENFORCER_STOMP` LB, `ISLAND_LOCKDOWN` CB, `PREDATOR_HAWK` S. TE e FB não têm perk. O capitão ofensivo usa um perk ofensivo e o defensivo um defensivo.
 
-**Validação** (`validateTeam`): `captains` presente exige os dois. Códigos novos:
+Cada lado é opcional: o time pode ter só um capitão (e o simulador isola um perk por vez). **Validação** (`validateTeam`): `captains` malformado ou com `xFactor` desconhecido dá `MALFORMED_TEAM`. Códigos novos, com `detail` `offense:<espécie>` ou `defense:<espécie>`:
 
 - `CAPTAIN_NOT_IN_ROSTER`: a espécie não está no `roster`.
 - `XFACTOR_POSITION_MISMATCH`: a espécie não aparece em nenhuma vaga da posição do perk no `depth`, ou o perk é do lado errado (ofensivo no slot defensivo e vice-versa).
@@ -54,8 +55,12 @@ export interface RhythmState {
   zone: Record<TeamKey, { offense: ZoneProgress; defense: ZoneProgress }>;
   /** timeouts restantes; começa em 2 */
   timeouts: Record<TeamKey, number>;
+  /** o time já chamou timeout neste snap (volta a false em cada novo snap) */
+  calledThisSnap: Record<TeamKey, boolean>;
 }
 ```
+
+`MatchConfig.rhythm?: boolean` (padrão ligado) desliga o ritmo inteiro quando é `false`: sem eventos, sem modificadores e sem `USE_TIMEOUT`. Serve de prova de regressão (o golden antigo continua valendo) e de linha de base para o simulador.
 
 O nível do pulse é derivado, não guardado:
 
@@ -79,7 +84,7 @@ O time **pressionado** é o adversário do dominante.
 
 `MomentumReason`: `STREAK`, `SACK`, `LONG_CONVERSION`, `TURNOVER`, `TOUCHDOWN`, `SACK_SUFFERED`, `DOWNS`, `TIMEOUT`. `ZoneExitCause`: `NEGATIVE_PLAY`, `BIG_GAIN`, `TIMEOUT`.
 
-`MOMENTUM` sai uma vez por motivo. `PULSE_TIER` só quando o par (dominante, nível) muda. A ordem dentro de um `step()` é: `PLAY` e eventos já existentes, depois `MOMENTUM` na ordem da tabela 5.1, depois `ZONE_EXIT`, `ZONE_ENTER`, `ZONE_CLASH`, depois `PULSE_TIER`.
+`MOMENTUM` sai uma vez por motivo. `PULSE_TIER` só quando o par (dominante, nível) muda. A ordem dentro de um `step()` de jogada é: `CARDS`, `PLAY`, `MOMENTUM` na ordem da tabela 5.1, `ZONE_EXIT`, `ZONE_ENTER`, `ZONE_CLASH`, `PULSE_TIER`, e só então os eventos de campo já existentes (`FIRST_DOWN`, `TOUCHDOWN`, `TURNOVER`...). `PlayOutcome.perks?: { offense?; defense?; clash? }` registra os perks aplicados, e `PlayOutcome.read` passa a ser a leitura **efetiva** (depois do Telepathic Pocket).
 
 ## 5. Regras
 
@@ -120,7 +125,7 @@ Um capitão só conta na jogada em que é **ator** do lado dele (`offActors` ou 
 | QB | passe protegido ou screen completo (`GAIN`) com `read = WRONG` |
 | RB | corrida (`RUN_*`) com ganho ≥ 10 jardas |
 | WR | passe completo que resulta em 1st down |
-| OL | a jogada não é `SACK` e o ganho é ≥ 0 |
+| OL | a jogada é `GAIN` ou `INCOMPLETE` com ganho ≥ 0 (sack, perda e turnover não contam) |
 | DL | `SACK` (progresso +2) ou corrida com ganho ≤ 2 |
 | LB | `RUN_INSIDE` com ganho ≤ 3 |
 | CB | `INCOMPLETE` |
@@ -155,10 +160,10 @@ Todos os valores desta tabela e da seção 5.2 são **pontos de partida**, calib
 
 ### 5.5 Timeout do técnico
 
-- Ação nova: `{ type: 'USE_TIMEOUT'; team: TeamKey }`. Válida em `FORMATION` ou `PACKAGE`, por qualquer um dos times, uma vez por time por snap. A fase **não avança** e o timer **não é pausado**.
+- Ação nova: `{ type: 'USE_TIMEOUT'; team: TeamKey }`. Válida em `FORMATION` ou `PACKAGE`, por qualquer um dos times, uma vez por time por snap (`calledThisSnap`). A fase **não avança** e o timer **não é pausado**.
 - Erros novos: `NO_TIMEOUTS_LEFT`, `TIMEOUT_NOT_ALLOWED` (fase errada, ou já usou neste snap).
 - Efeito: `timeouts[team] -= 1`. Se o momentum favorece o **rival**, ele é cortado pela metade em direção a 0 (arredondado para 0). A sequência do rival zera. Os dois capitães do rival saem da zona (`cause: 'TIMEOUT'`). Sai `TIMEOUT_CALLED` e, se mudou, `MOMENTUM` com `reason: 'TIMEOUT'`.
-- Distinto do `TIMEOUT` já existente, que é a ação padrão do estouro de timer.
+- Distinto do `TIMEOUT` já existente, que é a ação padrão do estouro de timer. Esse ganha um `team?` opcional: em `PLAYCALL`, com `team`, só o padrão desse time é jogado (é o que o servidor usa no prazo curto do pulse).
 
 ## 6. Protocolo
 
@@ -169,13 +174,13 @@ Todos os valores desta tabela e da seção 5.2 são **pontos de partida**, calib
 
 ## 7. Servidor
 
-- `play:timeout` repassa ao engine e reenvia a `PhaseMessage` com a `view` atualizada, sem mudar `deadline` nem `turnId`.
-- O desconto do nível 1/2 é aplicado ao montar a `PhaseMessage` de `PLAYCALL`: a deadline do jogador pressionado é `PHASE_SECONDS.PLAYCALL - 2` s; a do outro não muda. O timeout padrão dispara por jogador.
+- `play:timeout` repassa ao engine, manda `match:reveal` com os eventos (`TIMEOUT_CALLED`, `MOMENTUM`...) aos dois e reenvia a `match:phase` com a `view` atualizada, sem mudar `deadline` nem `turnId`.
+- O desconto do nível 1/2 vale só no `PLAYCALL`: o `deadline` da `match:phase` do jogador pressionado é o cheio menos `PULSE_PLAYCALL_CUT_SECONDS` (2 s); o do outro não muda. Um timer próprio, no prazo curto, aplica `{ type: 'TIMEOUT', team }` só para ele. Se o outro jogador já tinha escolhido, a jogada resolve nesse momento.
 - Reconexão e `match:resync` não precisam de trabalho extra: o estado vive na `PlayerView`.
 
 ## 8. Simulador, bot e balanceamento
 
-- `packages/sim`: o gerador de times aleatórios escolhe capitães válidos. O bot usa `USE_TIMEOUT` quando o rival está em nível ≥ 1 e escolhe capitães ao montar o time.
+- `packages/sim`: `assignCaptains(team)` dá a um time um capitão ofensivo e um defensivo escolhidos pelo hash do elenco (sem consumir RNG, para não mudar a geração de times); `withPerk(team, xFactor)` dá só um, para isolar o perk. `runSim({ captains: true })` aplica `assignCaptains` a todos. O bot usa `USE_TIMEOUT` (50% das vezes) quando o rival domina em nível ≥ 1, ainda tem timeout e não chamou neste snap.
 - O portão `test:gate` ganha um cenário **com capitães**. Critérios (limites numéricos fixados no plano a partir dos do portão atual):
   1. Espelho: o mesmo time contra ele mesmo, ambos com capitães, fica dentro do intervalo de Wilson de 50%.
   2. Cada perk, isolado, move a taxa de vitória do time com capitães para além de um piso e abaixo de um teto, contra o mesmo time sem capitães.
@@ -190,7 +195,7 @@ Todos os valores desta tabela e da seção 5.2 são **pontos de partida**, calib
 4. Clash: ambos na zona e atores → perks anulados, `ZONE_CLASH` emitido, pulse mantido.
 5. Timeout: contagem, fase errada, uso duplo no snap, efeito em momentum, sequência e zona.
 6. Determinismo: o replay de uma partida com zona e timeout reproduz o placar e os eventos.
-7. Regressão: com `PlayModifiers` neutro e sem `captains`, os resultados são idênticos aos de antes (golden dos testes atuais continua passando).
+7. Regressão: com `PlayModifiers` neutro, `resolvePlay` é idêntico ao de antes; com `MatchConfig.rhythm: false`, o golden atual (seed 2026) continua passando sem alteração. Com o ritmo ligado há um golden novo.
 8. Validação de `captains` e compatibilidade com o código de time antigo.
 9. Servidor: `play:timeout`, deadline reduzida só para o pressionado, `resync` com `rhythm`.
 
