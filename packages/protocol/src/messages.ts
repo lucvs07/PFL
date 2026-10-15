@@ -21,6 +21,12 @@ export interface RoomPlayer {
   ready: boolean;
   teamName: string | null;
   teamErrors: TeamError[];
+  /** Elenco do time válido enviado (os dois jogadores veem o do adversário no lobby); vazio sem time válido. */
+  roster: number[];
+  /** Espécie de destaque do time (QB titular) ou null sem time válido. */
+  lead: number | null;
+  /** Custo total do time válido ou null. */
+  cost: number | null;
 }
 export interface RoomState {
   code: string;

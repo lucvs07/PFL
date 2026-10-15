@@ -1,12 +1,29 @@
+/* Desktop: a altura manda (o campo cabe na tela ao lado do painel); a largura vem da proporção. */
 .phaser-field {
-  width: 100%;
-  max-width: 480px;
+  height: min(640px, calc(100dvh - 176px));
+  min-height: 360px;
+  max-width: 100%;
   aspect-ratio: 480 / 560;
   margin: 0 auto;
-  border: var(--border);
+  /* contorno por fora: a caixa tem exatamente a proporção do campo e o canvas a preenche */
+  outline: 3px solid var(--gbc-ink);
   border-radius: 0;
   box-sizing: border-box;
   background: var(--gbc-field);
+}
+
+/* Estreito: a largura manda, mas o campo nunca passa de pouco mais da metade da altura da tela. */
+@media (max-width: 1040px) {
+  .phaser-field {
+    width: min(100%, 480px, calc(54dvh * 480 / 560));
+    height: auto;
+    min-height: 0;
+  }
+}
+
+/* Celular: o campo encolhe para as cartas caberem na mesma tela. */
+@media (max-width: 520px) {
+  .phaser-field { width: min(100%, calc(36dvh * 480 / 560)); }
 }
 
 .phaser-field canvas {

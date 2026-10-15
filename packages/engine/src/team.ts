@@ -23,6 +23,12 @@ export function teamCost(team: Team): number {
   return [...team.roster, team.specialist].reduce((sum, id) => sum + speciesCost(id), 0);
 }
 
+/** Espécie que representa o time no lobby: o QB titular ou, sem ele, o primeiro do elenco. */
+export function leadSpecies(team: Team | null): number | null {
+  if (!team) return null;
+  return team.depth.QB?.[0] ?? team.roster[0] ?? null;
+}
+
 /** Pesos por posição (spec 4.2), usados na nota de aptidão. */
 export const POSITION_WEIGHTS: Record<Position, Partial<Record<StatKey, number>>> = {
   QB: { spAttack: 0.7, spDefense: 0.2, speed: 0.1 },

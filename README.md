@@ -22,7 +22,7 @@ Jogo em http://localhost:8080 (servidor em :3001, com `GET /health`).
 ```bash
 npm ci
 npm run dev:server   # :3001
-npm run dev:client   # :5173 (baixa os sprites antes; sem rede segue com fallback)
+npm run dev:client   # :5173 (baixa os sprites e os GIFs animados da Pokédex antes; sem rede segue com fallback)
 ```
 Duas abas abertas simulam dois jogadores.
 

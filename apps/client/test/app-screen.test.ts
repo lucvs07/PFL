@@ -4,7 +4,9 @@ import { namesFromRoom, screenFor } from '../src/app/screen';
 import { initialMatchState, matchReducer, type MatchClientState } from '../src/match/matchState';
 import { makeView, testTeam } from './fixtures';
 
-const player = (key: 'A' | 'B', teamName: string | null): RoomPlayer => ({ key, connected: true, ready: false, teamName, teamErrors: [] });
+const player = (key: 'A' | 'B', teamName: string | null): RoomPlayer => ({
+  key, connected: true, ready: false, teamName, teamErrors: [], roster: [], lead: null, cost: null,
+});
 const room = (status: RoomStatus, players: RoomPlayer[] = []): RoomState => ({ code: 'ABCDEF', you: 'A', status, players });
 const end: EndMessage = {
   score: { A: 3, B: 0 },

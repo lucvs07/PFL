@@ -168,7 +168,7 @@ function SpeciesDetail({ species, draft, onAdd, onSpecialist }: DetailProps) {
         <span className="dex-ghost dex-detail-ghost" aria-hidden="true">
           {String(species.id).padStart(3, '0')}
         </span>
-        <Sprite id={species.id} size={192} />
+        <Sprite id={species.id} size={192} animated />
       </div>
       <h3 className="dex-detail-title">
         <span className="dex-detail-no">{dexNumber(species.id)}</span> {displayName(species.name)}

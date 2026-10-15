@@ -1,5 +1,5 @@
 import {
-  DEFENSE_SLOTS, OFFENSE_SLOTS, validateTeam, type SlotId, type Team, type TeamError, type TeamKey,
+  DEFENSE_SLOTS, OFFENSE_SLOTS, leadSpecies, teamCost, validateTeam, type SlotId, type Team, type TeamError, type TeamKey,
 } from '@pfl/engine';
 import { decodeTeam, type ErrorCode, type RoomState, type RoomStatus } from '@pfl/protocol';
 import { MatchSession } from './match-session';
@@ -249,6 +249,9 @@ export class Room {
         ready: s.ready,
         teamName: s.teamName,
         teamErrors: s.teamErrors,
+        roster: s.team ? [...s.team.roster] : [],
+        lead: leadSpecies(s.team),
+        cost: s.team ? teamCost(s.team) : null,
       })),
     };
   }
