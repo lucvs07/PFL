@@ -65,6 +65,46 @@ describe('buildTimeline', () => {
     expect(kinds(buildTimeline([{ t: 'CONVERSION', team: 'A', choice: 'PAT', good: false }]))).toEqual(['KICK', 'BANNER']);
   });
 
+  it('os passos carregam a categoria da carta ofensiva', () => {
+    const run = buildTimeline(play('ground_earthquake'));
+    expect(run.find((s) => s.kind === 'CLASH')).toMatchObject({ category: 'RUN_OUTSIDE' });
+    expect(run.find((s) => s.kind === 'RUN')).toMatchObject({ category: 'RUN_OUTSIDE' });
+    const deep = buildTimeline(play('fire_deep', { offActors: [63, 26, 95] }));
+    expect(deep.find((s) => s.kind === 'THROW')).toMatchObject({ category: 'DEEP_PASS' });
+    expect(deep.find((s) => s.kind === 'BLOCK')).toMatchObject({ category: 'DEEP_PASS', blitz: false });
+  });
+
+  it('carta de defesa de blitz marca o bloqueio', () => {
+    const events: GameEvent[] = [
+      { t: 'CARDS', offense: 'basic_pass', defense: 'dragon_wrath', read: 'NEUTRAL' },
+      { t: 'PLAY', outcome: outcome({ offActors: [63, 26, 95] }) },
+    ];
+    expect(buildTimeline(events).find((s) => s.kind === 'BLOCK')).toMatchObject({ blitz: true });
+  });
+
+  it('blitz contra corrida marca o confronto (não há bloqueio para carregar a marca)', () => {
+    const events: GameEvent[] = [
+      { t: 'CARDS', offense: 'basic_run', defense: 'dragon_wrath', read: 'NEUTRAL' },
+      { t: 'PLAY', outcome: outcome() },
+    ];
+    expect(buildTimeline(events).find((s) => s.kind === 'CLASH')).toMatchObject({ blitz: true });
+  });
+
+  it('em passe protegido a marca fica só no bloqueio', () => {
+    const events: GameEvent[] = [
+      { t: 'CARDS', offense: 'basic_pass', defense: 'dragon_wrath', read: 'NEUTRAL' },
+      { t: 'PLAY', outcome: outcome({ offActors: [63, 26, 95] }) },
+    ];
+    expect(buildTimeline(events).find((s) => s.kind === 'CLASH')?.blitz).toBeFalsy();
+  });
+
+  it('o confronto carrega o multiplicador de tipo', () => {
+    // os atores padrão são Gyarados (4x) e Machop (1x): média 2x; só o Gyarados dá 4x
+    expect(buildTimeline(play('electric_thunder_screen')).find((s) => s.kind === 'CLASH')).toMatchObject({ mult: 2 });
+    expect(buildTimeline(play('electric_thunder_screen', { defActors: [130] })).find((s) => s.kind === 'CLASH')).toMatchObject({ mult: 4 });
+    expect(buildTimeline(play('basic_run')).find((s) => s.kind === 'CLASH')).toMatchObject({ mult: null });
+  });
+
   it('nenhuma sequência passa do orçamento da animação', () => {
     const long: GameEvent[] = [
       ...play('basic_pass', { yards: 40, bigPlay: true, offActors: [63, 26, 95] }, [{ t: 'TOUCHDOWN', team: 'A' }]),

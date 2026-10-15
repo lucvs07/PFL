@@ -2,8 +2,8 @@ import Phaser from 'phaser';
 import type { Lineup, SlotId, TeamKey } from '@pfl/engine';
 import type { Stage } from '../match/matchState';
 import type { AnimStep } from '../match/timeline';
-import { EFFECT_TEXT } from '../match/effect';
 import { spriteSrc } from '../lib/sprites';
+import { applyTint, arcPoint, blockPlan, clampTextX, clampX, clashFx, driftSign, runPlan, throwPlan, type Point } from './choreography';
 import { speciesName } from '../lib/names';
 import {
   BAR_HEIGHT, BAR_WIDTH, FIELD_HEIGHT, FIELD_WIDTH, LOS_Y, PLATE_HEIGHT, PX_PER_YARD, SPRITE_SIZE, clampY, fatigueColor, fatigueRatio, plateText, slotPoint,
@@ -20,6 +20,7 @@ type Side = 'offense' | 'defense';
 
 interface PlayerSprite {
   container: Phaser.GameObjects.Container;
+  body: Phaser.GameObjects.GameObject;
   slot: SlotId;
   id: number;
   side: Side;
@@ -221,7 +222,7 @@ export class FieldScene extends Phaser.Scene {
       .setOrigin(0.5, 0);
     const shadow = this.add.ellipse(0, SPRITE_SIZE / 2 - 5, 30, 8, 0x0f380f, 0.35);
     const container = this.add.container(x, y, [shadow, body, barBg, bar, chip, name]).setDepth(w.side === 'defense' ? 10 : 11);
-    this.players.set(`${w.side}:${w.id}`, { container, slot: w.slot, id: w.id, side: w.side });
+    this.players.set(`${w.side}:${w.id}`, { container, body, slot: w.slot, id: w.id, side: w.side });
   }
 
   private clearPlayers(): void {
@@ -307,8 +308,8 @@ export class FieldScene extends Phaser.Scene {
     return [...this.players.values()].filter((p) => p.side === side && p.slot.startsWith(prefix));
   }
 
-  private floatText(x: number, y: number, text: string, color: string): void {
-    const t = this.add.text(x, y, text, { ...TEXT_STYLE, color }).setOrigin(0.5).setDepth(30);
+  private floatText(x: number, y: number, text: string, color: string, fontSize = 10): void {
+    const t = this.add.text(clampTextX(x, text, fontSize), y, text, { ...TEXT_STYLE, color, fontSize: `${fontSize}px` }).setOrigin(0.5).setDepth(30);
     this.transient.push(t);
     if (this.reduced) {
       // Texto informativo: fica parado e some depois, sem tween.
@@ -316,6 +317,39 @@ export class FieldScene extends Phaser.Scene {
       return;
     }
     this.tweens.add({ targets: t, y: y - 20, alpha: 0, duration: 900, onComplete: () => t.destroy() });
+  }
+
+  /** Defensores de DL e LB cruzam a linha em sequência (menos `except`, que já está no duelo). */
+  private blitzRush(plan: { rush: number; stagger: number }, d: number, except?: PlayerSprite): void {
+    if (plan.rush <= 0) return;
+    const rushers = [...this.bySlot('defense', 'DL'), ...this.bySlot('defense', 'LB')].filter((p) => p !== except);
+    rushers.forEach((p, i) => {
+      this.tweens.add({ targets: p.container, y: p.container.y + plan.rush, duration: d * 0.6, delay: this.reduced ? 0 : i * plan.stagger * d, ease: 'Cubic.easeOut' });
+    });
+  }
+
+  /** Bola de `start` a `end`. Reta quando `lift` é 0; senão em arco, dirigida por um contador de 0 a 1. */
+  private flyBall(start: Point, end: Point, lift: number, shadow: boolean, duration: number, delay = 0): void {
+    if (lift === 0 || duration === 0) {
+      this.tweens.add({ targets: this.ball, x: end.x, y: end.y, duration, delay, ease: 'Sine.easeOut' });
+      return;
+    }
+    const ground = shadow ? this.add.ellipse(start.x, start.y + 6, 10, 4, 0x0f380f, 0.4).setDepth(19) : null;
+    if (ground) this.transient.push(ground);
+    this.tweens.addCounter({
+      from: 0,
+      to: 1,
+      duration,
+      delay,
+      ease: 'Sine.easeOut',
+      onUpdate: (tween: Phaser.Tweens.Tween) => {
+        const t = Number(tween.getValue());
+        const p = arcPoint(start, end, lift, t);
+        this.ball.setPosition(p.x, p.y);
+        ground?.setPosition(start.x + (end.x - start.x) * t, start.y + (end.y - start.y) * t + 6);
+      },
+      onComplete: () => ground?.destroy(),
+    });
   }
 
   private runStep(step: AnimStep): void {
@@ -326,11 +360,16 @@ export class FieldScene extends Phaser.Scene {
         this.tweens.add({ targets: this.ball, x: qb?.container.x ?? FIELD_WIDTH / 2, y: (qb?.container.y ?? LOS_Y + 60) - 4, duration: d });
         break;
       }
-      case 'BLOCK':
-        for (const p of [...this.bySlot('offense', 'OL'), ...this.bySlot('defense', 'DL')]) {
+      case 'BLOCK': {
+        const plan = blockPlan(step.blitz);
+        // No blitz o tremor dos DL some: dois tweens em `y` brigariam e o avanço seria desfeito.
+        const shaking = plan.rush > 0 ? this.bySlot('offense', 'OL') : [...this.bySlot('offense', 'OL'), ...this.bySlot('defense', 'DL')];
+        for (const p of shaking) {
           this.tweens.add({ targets: p.container, y: p.container.y + (p.side === 'offense' ? -4 : 4), duration: d / 4, yoyo: true, repeat: 1 });
         }
+        this.blitzRush(plan, d);
         break;
+      }
       case 'CLASH': {
         const off = this.player('offense', step.off);
         const def = this.player('defense', step.def);
@@ -346,25 +385,81 @@ export class FieldScene extends Phaser.Scene {
             yoyo: true,
           });
         }
-        const text = step.effect ? EFFECT_TEXT[step.effect] : null;
-        if (text) this.floatText(mx, my - 24, text, step.effect === 'SUPER' ? '#f8d030' : '#c8c8c8');
-        if (!this.reduced) this.cameras.main.shake(120, 0.004);
+        // Blitz contra corrida ou screen não tem bloqueio: os outros defensores avançam junto do duelo.
+        this.blitzRush(blockPlan(step.blitz), d, def);
+        const fx = clashFx(step.mult, step.effect);
+        if (fx.text) this.floatText(mx, my - 24, fx.text, fx.color, fx.fontSize);
+        // Com movimento reduzido o "atravessa" vira cinza: a informação fica, o piscar sai.
+        const weaken = this.reduced && fx.weaken === 'ghost' ? 'gray' : fx.weaken;
+        if (weaken === 'gray') {
+          applyTint(off.body, 0x888888);
+          this.time.delayedCall(step.duration, () => applyTint(off.body, null));
+        } else if (weaken === 'ghost') {
+          this.tweens.add({ targets: off.body, alpha: 0.25, duration: d * 0.25, yoyo: true });
+        }
+        if (!this.reduced) {
+          if (fx.shake > 0) this.cameras.main.shake(120, fx.shake);
+          if (fx.flash) this.cameras.main.flash(150, 248, 208, 48);
+        }
         break;
       }
       case 'THROW': {
         const from = this.player('offense', step.from) ?? this.bySlot('offense', 'QB')[0];
         const to = this.player('offense', step.to);
         if (!to) break;
-        if (from) this.ball.setPosition(from.container.x, from.container.y - 4);
-        this.tweens.add({ targets: this.ball, x: to.container.x, y: to.container.y - 4, duration: d, ease: 'Sine.easeOut' });
+        const plan = throwPlan(step.category);
+        const start: Point = from ? { x: from.container.x, y: from.container.y - 4 } : { x: this.ball.x, y: this.ball.y };
+        const end: Point = { x: to.container.x, y: to.container.y - 4 };
+        // Com movimento reduzido o passe é sempre reto: o arco e a finta são só movimento.
+        const lift = this.reduced ? 0 : plan.lift;
+        this.ball.setPosition(start.x, start.y);
+        if (plan.qbDrop > 0 && from && !this.reduced) {
+          this.tweens.add({ targets: from.container, y: from.container.y + plan.qbDrop, duration: d * 0.4, ease: 'Cubic.easeOut' });
+        }
+        const rb = plan.fake && !this.reduced ? this.bySlot('offense', 'RB')[0] : undefined;
+        if (rb) {
+          // finta: a bola vai ao RB, volta ao QB e só então sai o passe
+          this.tweens.add({ targets: this.ball, x: rb.container.x, y: rb.container.y - 4, duration: d * 0.2, ease: 'Cubic.easeOut' });
+          this.tweens.add({ targets: this.ball, x: start.x, y: start.y, duration: d * 0.2, delay: d * 0.2, ease: 'Cubic.easeOut' });
+          this.flyBall(start, end, lift, plan.shadow, d * 0.6, d * 0.4);
+        } else {
+          this.flyBall(start, end, lift, plan.shadow, d);
+        }
         break;
       }
       case 'RUN': {
         const carrier = this.player('offense', step.carrier);
         if (!carrier) break;
-        const y = clampY(carrier.container.y - step.yards * PX_PER_YARD);
-        this.tweens.add({ targets: carrier.container, y, duration: d, ease: 'Quad.easeOut' });
-        this.tweens.add({ targets: this.ball, x: carrier.container.x, y: y - 4, duration: d, ease: 'Quad.easeOut' });
+        const plan = runPlan(step.category);
+        const x0 = carrier.container.x;
+        const y0 = carrier.container.y;
+        const y = clampY(y0 - step.yards * PX_PER_YARD);
+        if (plan.drift > 0 && d > 0) {
+          // por fora: deriva para a lateral mais próxima ao longo da corrida
+          const sign = driftSign(x0, step.carrier);
+          this.tweens.addCounter({
+            from: 0,
+            to: 1,
+            duration: d,
+            ease: 'Quad.easeOut',
+            onUpdate: (tween: Phaser.Tweens.Tween) => {
+              const t = Number(tween.getValue());
+              const x = clampX(x0 + sign * plan.drift * Math.sin((t * Math.PI) / 2));
+              const cy = y0 + (y - y0) * t;
+              carrier.container.setPosition(x, cy);
+              this.ball.setPosition(x, cy - 4);
+            },
+          });
+        } else {
+          this.tweens.add({ targets: carrier.container, y, duration: d, ease: 'Quad.easeOut' });
+          this.tweens.add({ targets: this.ball, x: carrier.container.x, y: y - 4, duration: d, ease: 'Quad.easeOut' });
+        }
+        if (plan.jitter > 0 && !this.reduced) {
+          // por dentro: as linhas tremem enquanto o RB entra no bolo
+          for (const p of [...this.bySlot('offense', 'OL'), ...this.bySlot('defense', 'DL')]) {
+            this.tweens.add({ targets: p.container, x: p.container.x + plan.jitter, duration: 40, yoyo: true, repeat: 3 });
+          }
+        }
         break;
       }
       case 'TACKLE': {

@@ -65,7 +65,8 @@ function fakeScene() {
     },
   };
   scene.time = { removeAllEvents: () => {}, delayedCall: () => {} };
-  scene.tweens = { killAll: () => {}, add: () => {} };
+  scene.tweens = { killAll: () => {}, add: () => {}, addCounter: () => {} };
+  scene.cameras = { main: { shake: () => {}, flash: () => {} } };
   const of = (kind: string) => created.filter((c) => c.kind === kind);
   const texts = () => of('text').map((c) => String(c.args[2]));
   return { scene, created, of, texts, loadImages, loaded };
@@ -209,5 +210,214 @@ describe('FieldScene: campo', () => {
     const ticks = lineCalls(t, 'fillRect').filter((c) => c.args[2] === 6 && c.args[3] === 2);
     expect(ticks.length).toBeGreaterThan(0);
     expect(ticks.length % 4).toBe(0);
+  });
+});
+
+/** Roda os passos na hora (delayedCall síncrono) e grava tweens, contadores e efeitos de câmera. */
+function playSteps(t2: typeof t, steps: any[], opts: { reduced?: boolean } = {}) {
+  const tweens: any[] = [];
+  const counters: any[] = [];
+  const camera = { shake: vi.fn(), flash: vi.fn() };
+  t2.scene.create();
+  t2.scene.reduced = !!opts.reduced;
+  t2.scene.tweens = { killAll: () => {}, add: (c: any) => tweens.push(c), addCounter: (c: any) => counters.push(c) };
+  t2.scene.cameras = { main: camera };
+  t2.scene.time = { removeAllEvents: () => {}, delayedCall: (_ms: number, cb: () => void) => cb() };
+  const s = stage();
+  t2.scene.sync(s, { seq: 1, stage: s, steps });
+  return { tweens, counters, camera };
+}
+const at = { at: 0, duration: 550 };
+const clash = (extra: object) => ({ kind: 'CLASH', off: 25, def: 95, effect: null, ...at, ...extra });
+
+describe('FieldScene: efetividade no CLASH', () => {
+  it('4x: flash, tremor forte e texto com o multiplicador', () => {
+    const { camera } = playSteps(t, [clash({ effect: 'SUPER', mult: 4 })]);
+    expect(camera.shake).toHaveBeenCalledWith(120, 0.008);
+    expect(camera.flash).toHaveBeenCalledWith(150, 248, 208, 48);
+    expect(t.texts()).toContain('É super efetivo! (×4)');
+  });
+
+  it('2x: flash e tremor médio', () => {
+    const { camera } = playSteps(t, [clash({ effect: 'SUPER', mult: 2 })]);
+    expect(camera.shake).toHaveBeenCalledWith(120, 0.004);
+    expect(camera.flash).toHaveBeenCalled();
+  });
+
+  it('½x: o atacante fica cinza e depois volta; sem tremor', () => {
+    const { camera } = playSteps(t, [clash({ effect: 'WEAK', mult: 0.5 })]);
+    const body = t.of('image').find((c) => c.args[2] === 'back-25')!;
+    expect(body.calls).toContainEqual({ method: 'setTint', args: [0x888888] });
+    expect(body.calls).toContainEqual({ method: 'clearTint', args: [] });
+    expect(camera.shake).not.toHaveBeenCalled();
+    expect(t.texts()).toContain('Não é muito efetivo...');
+  });
+
+  it('0x: o atacante pisca (alpha) e o texto aparece', () => {
+    const { tweens } = playSteps(t, [clash({ effect: 'IMMUNE', mult: 0 })]);
+    const body = t.of('image').find((c) => c.args[2] === 'back-25')!;
+    expect(tweens.some((c) => c.targets === body.proxy && c.alpha === 0.25 && c.yoyo)).toBe(true);
+    expect(t.texts()).toContain('Não teve efeito...');
+  });
+
+  it('sem elemento (carta básica): tremor pequeno e nenhum texto', () => {
+    const { camera } = playSteps(t, [clash({ effect: null, mult: null })]);
+    expect(camera.shake).toHaveBeenCalledWith(120, 0.002);
+    expect(camera.flash).not.toHaveBeenCalled();
+  });
+
+  it('passo antigo, sem mult nem category, não quebra', () => {
+    expect(() => playSteps(t, [clash({})])).not.toThrow();
+  });
+
+  it('reduced motion: sem tremor nem flash, mas o texto e o tint continuam', () => {
+    const { camera } = playSteps(t, [clash({ effect: 'SUPER', mult: 4 })], { reduced: true });
+    expect(camera.shake).not.toHaveBeenCalled();
+    expect(camera.flash).not.toHaveBeenCalled();
+    expect(t.texts()).toContain('É super efetivo! (×4)');
+  });
+
+  it('reduced motion: 0x vira cinza em vez de piscar', () => {
+    const { tweens } = playSteps(t, [clash({ effect: 'IMMUNE', mult: 0 })], { reduced: true });
+    const body = t.of('image').find((c) => c.args[2] === 'back-25')!;
+    expect(body.calls).toContainEqual({ method: 'setTint', args: [0x888888] });
+    expect(tweens.some((c) => c.targets === body.proxy && c.alpha === 0.25)).toBe(false);
+  });
+});
+
+const throwStep = (category?: string) => ({ kind: 'THROW', from: 63, to: 25, at: 0, duration: 450, category });
+const runStep = (category?: string) => ({ kind: 'RUN', carrier: 25, yards: 6, at: 0, duration: 700, category });
+
+describe('FieldScene: passes por categoria', () => {
+  it('passe curto: a bola voa reta (um tween, sem contador)', () => {
+    const { tweens, counters } = playSteps(t, [throwStep('SHORT_PASS')]);
+    const ball = t.of('image')[0].proxy;
+    expect(tweens.some((c) => c.targets === ball && c.ease === 'Sine.easeOut')).toBe(true);
+    expect(counters).toHaveLength(0);
+  });
+
+  it('passe longo: arco dirigido por contador, com sombra no chão', () => {
+    const { counters } = playSteps(t, [throwStep('DEEP_PASS')]);
+    expect(counters).toHaveLength(1);
+    expect(counters[0]).toMatchObject({ from: 0, to: 1, duration: 450 });
+    expect(t.of('ellipse').some((c) => c.args[2] === 10 && c.args[3] === 4)).toBe(true);
+  });
+
+  it('o contador do arco move a bola e a sombra', () => {
+    const { counters } = playSteps(t, [throwStep('DEEP_PASS')]);
+    const ball = t.of('image')[0];
+    const before = ball.calls.filter((c) => c.method === 'setPosition').length;
+    counters[0].onUpdate({ getValue: () => 0.5 });
+    expect(ball.calls.filter((c) => c.method === 'setPosition').length).toBe(before + 1);
+    const shadow = t.of('ellipse').find((c) => c.args[2] === 10 && c.args[3] === 4)!;
+    expect(shadow.calls.map((c) => c.method)).toContain('setPosition');
+  });
+
+  it('troca de estágio no meio do arco destrói a sombra', () => {
+    playSteps(t, [throwStep('DEEP_PASS')]);
+    const shadow = t.of('ellipse').find((c) => c.args[2] === 10 && c.args[3] === 4)!;
+    t.scene.sync(stage({ turnId: 9 }), null);
+    expect(shadow.calls.map((c) => c.method)).toContain('destroy');
+  });
+
+  it('play-action: a bola passa pelo RB antes do passe (dois movimentos, o segundo atrasado)', () => {
+    const { tweens, counters } = playSteps(t, [throwStep('PLAY_ACTION')]);
+    const ball = t.of('image')[0].proxy;
+    expect(tweens.filter((c) => c.targets === ball)).toHaveLength(2); // ida ao RB e volta ao QB
+    expect(counters[0].delay).toBeGreaterThan(0); // passe em arco, depois do handoff
+  });
+
+  it('screen: o QB recua', () => {
+    const { tweens } = playSteps(t, [throwStep('SCREEN')]);
+    const qb = t.of('container')[0].proxy;
+    expect(tweens.some((c) => c.targets === qb && c.y === 12)).toBe(true);
+  });
+
+  it('passo sem categoria: passe reto, sem erro', () => {
+    const { counters } = playSteps(t, [throwStep(undefined)]);
+    expect(counters).toHaveLength(0);
+  });
+
+  it('reduced motion: passe longo vai reto, sem arco nem sombra', () => {
+    const { counters } = playSteps(t, [throwStep('DEEP_PASS')], { reduced: true });
+    expect(counters).toHaveLength(0);
+    expect(t.of('ellipse').some((c) => c.args[2] === 10 && c.args[3] === 4)).toBe(false);
+  });
+});
+
+describe('FieldScene: corridas por categoria', () => {
+  it('por dentro: o RB sobe reto e as linhas tremem', () => {
+    const { tweens, counters } = playSteps(t, [runStep('RUN_INSIDE')]);
+    expect(counters).toHaveLength(0);
+    expect(tweens.filter((c) => c.yoyo && c.repeat === 3).length).toBeGreaterThan(0);
+  });
+
+  it('por fora: arco lateral por contador, sem tremor', () => {
+    const { tweens, counters } = playSteps(t, [runStep('RUN_OUTSIDE')]);
+    expect(counters).toHaveLength(1);
+    expect(counters[0]).toMatchObject({ from: 0, to: 1, duration: 700 });
+    expect(tweens.filter((c) => c.yoyo && c.repeat === 3)).toHaveLength(0);
+  });
+
+  it('reduced motion: sem tremor e sem arco, só o deslocamento', () => {
+    const { tweens, counters } = playSteps(t, [runStep('RUN_INSIDE')], { reduced: true });
+    expect(counters).toHaveLength(0);
+    expect(tweens.filter((c) => c.yoyo && c.repeat === 3)).toHaveLength(0);
+  });
+});
+
+describe('FieldScene: texto de efetividade', () => {
+  it('o texto largo do 4x não sai do campo quando o duelo é na borda', () => {
+    playSteps(t, [clash({ effect: 'SUPER', mult: 4 })]); // containers falsos em x = 0
+    const label = t.of('text').find((c) => c.args[2] === 'É super efetivo! (×4)')!;
+    expect(label.args[0]).toBeGreaterThanOrEqual(294 / 2 + 4);
+  });
+});
+
+describe('FieldScene: blitz contra corrida', () => {
+  it('o confronto com blitz manda os outros defensores cruzarem a linha, sem mexer no defensor do duelo', () => {
+    const lineup = stage({ lineups: { offense: { QB: 63, RB: 25 }, defense: { DL1: 95, DL2: 96, LB1: 97 } } });
+    const tweens: any[] = [];
+    t.scene.create();
+    t.scene.reduced = false;
+    t.scene.tweens = { killAll: () => {}, add: (c: any) => tweens.push(c), addCounter: () => {} };
+    t.scene.cameras = { main: { shake: () => {}, flash: () => {} } };
+    t.scene.time = { removeAllEvents: () => {}, delayedCall: (_ms: number, cb: () => void) => cb() };
+    t.scene.sync(lineup, { seq: 1, stage: lineup, steps: [clash({ blitz: true })] });
+    const rushes = tweens.filter((c) => c.y === 14);
+    expect(rushes).toHaveLength(2); // DL2 e LB1; o DL1 (95) é o defensor do duelo
+    const duelist = t.of('container')[2].proxy; // QB, RB, DL1, DL2, LB1
+    expect(rushes.some((c) => c.targets === duelist)).toBe(false);
+  });
+});
+
+describe('FieldScene: blitz', () => {
+  const block = (blitz: boolean) => ({ kind: 'BLOCK', category: 'SHORT_PASS', blitz, at: 0, duration: 350 });
+
+  it('com blitz a defesa cruza a linha, escalonada', () => {
+    const lineup = stage({ lineups: { offense: { QB: 63, OL1: 80 }, defense: { DL1: 95, DL2: 96, LB1: 97 } } });
+    const tweens: any[] = [];
+    t.scene.create();
+    t.scene.reduced = false;
+    t.scene.tweens = { killAll: () => {}, add: (c: any) => tweens.push(c), addCounter: () => {} };
+    t.scene.time = { removeAllEvents: () => {}, delayedCall: (_ms: number, cb: () => void) => cb() };
+    t.scene.sync(lineup, { seq: 1, stage: lineup, steps: [block(true)] });
+    const rushes = tweens.filter((c) => c.y === 14);
+    expect(rushes).toHaveLength(3);
+    expect(rushes.map((c) => c.delay)).toEqual([0, 35, 70]); // 10% da duração (350 ms) por defensor
+    // o tremor do bloqueio não pode brigar com o avanço: os DL não recebem o yoyo
+    const dl = [t.of('container')[2].proxy, t.of('container')[3].proxy];
+    expect(tweens.filter((c) => c.yoyo && dl.includes(c.targets))).toHaveLength(0);
+  });
+
+  it('sem blitz os DL continuam tremendo no bloqueio', () => {
+    const { tweens } = playSteps(t, [block(false)]);
+    const dl = t.of('container')[2].proxy; // DL1 (QB, RB, DL1, S1)
+    expect(tweens.some((c) => c.yoyo && c.targets === dl)).toBe(true);
+  });
+
+  it('sem blitz ninguém avança', () => {
+    const { tweens } = playSteps(t, [block(false)]);
+    expect(tweens.filter((c) => c.y === 14)).toHaveLength(0);
   });
 });
