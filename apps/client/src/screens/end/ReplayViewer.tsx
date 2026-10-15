@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { TeamKey } from '@pfl/engine';
 import { RESULT_ANIMATION_MS, computeStats, type ReplayData } from '@pfl/protocol';
+import { audio } from '../../audio';
+import { replayCues, shouldSoundReplay } from '../../audio/gameAudio';
 import { buildReplay } from '../../match/replayFrames';
 import { PhaserField } from '../../phaser/PhaserField';
 import type { PlaySpec } from '../../phaser/FieldScene';
@@ -42,6 +44,10 @@ export function ReplayViewer({ data, score }: Props) {
   const frame = frames[index] ?? null;
   const play = useMemo<PlaySpec | null>(() => (frame ? { seq: nonce, stage: frame.stage, steps: frame.steps } : null), [frame, nonce]);
   const partial = useMemo(() => computeStats(frames.slice(0, index + 1).flatMap((f) => f.events)), [frames, index]);
+
+  useEffect(() => {
+    if (frame && play && shouldSoundReplay(play.seq)) audio.playCues(replayCues(frame.events, frame.steps));
+  }, [frame, play]);
 
   if (!build.ok) {
     return (
