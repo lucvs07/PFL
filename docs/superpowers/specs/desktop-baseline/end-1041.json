@@ -1,0 +1,2333 @@
+{
+ "div:0": {
+  "x": 0,
+  "y": 0,
+  "w": 1041,
+  "h": 1870,
+  "fs": "16px"
+ },
+ "div:0 > div.audio-control:0": {
+  "x": 929,
+  "y": 740,
+  "w": 96,
+  "h": 44,
+  "fs": "16px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0": {
+  "x": 929,
+  "y": 740,
+  "w": 44,
+  "h": 44,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0": {
+  "x": 939,
+  "y": 754,
+  "w": 24,
+  "h": 16,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:0": {
+  "x": 947,
+  "y": 754,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:1": {
+  "x": 945,
+  "y": 756,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:2": {
+  "x": 947,
+  "y": 756,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:3": {
+  "x": 939,
+  "y": 758,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:4": {
+  "x": 941,
+  "y": 758,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:5": {
+  "x": 943,
+  "y": 758,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:6": {
+  "x": 945,
+  "y": 758,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:7": {
+  "x": 947,
+  "y": 758,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:8": {
+  "x": 939,
+  "y": 760,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:9": {
+  "x": 941,
+  "y": 760,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:10": {
+  "x": 943,
+  "y": 760,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:11": {
+  "x": 945,
+  "y": 760,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:12": {
+  "x": 947,
+  "y": 760,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:13": {
+  "x": 939,
+  "y": 762,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:14": {
+  "x": 941,
+  "y": 762,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:15": {
+  "x": 943,
+  "y": 762,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:16": {
+  "x": 945,
+  "y": 762,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:17": {
+  "x": 947,
+  "y": 762,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:18": {
+  "x": 939,
+  "y": 764,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:19": {
+  "x": 941,
+  "y": 764,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:20": {
+  "x": 943,
+  "y": 764,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:21": {
+  "x": 945,
+  "y": 764,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:22": {
+  "x": 947,
+  "y": 764,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:23": {
+  "x": 945,
+  "y": 766,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:24": {
+  "x": 947,
+  "y": 766,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:25": {
+  "x": 947,
+  "y": 768,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:26": {
+  "x": 951,
+  "y": 760,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:27": {
+  "x": 951,
+  "y": 762,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:28": {
+  "x": 955,
+  "y": 758,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:29": {
+  "x": 955,
+  "y": 760,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:30": {
+  "x": 955,
+  "y": 762,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:31": {
+  "x": 955,
+  "y": 764,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:1": {
+  "x": 981,
+  "y": 740,
+  "w": 44,
+  "h": 44,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:1 > span.audio-arrow:0": {
+  "x": 1000,
+  "y": 755,
+  "w": 6,
+  "h": 14,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0": {
+  "x": 0,
+  "y": 0,
+  "w": 1041,
+  "h": 1870,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.end:0 > div.end-top:0": {
+  "x": 16,
+  "y": 16,
+  "w": 1009,
+  "h": 232,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.end:0 > div.end-top:0 > section.panel.end-score:0": {
+  "x": 16,
+  "y": 24,
+  "w": 493,
+  "h": 215,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.end:0 > div.end-top:0 > section.panel.end-score:0 > h1.end-result.end-loss:0": {
+  "x": 142,
+  "y": 44,
+  "w": 240,
+  "h": 31,
+  "fs": "24px"
+ },
+ "div:0 > main.screen.end:0 > div.end-top:0 > section.panel.end-score:0 > p.end-line:0": {
+  "x": 36,
+  "y": 92,
+  "w": 453,
+  "h": 76,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.end:0 > div.end-top:0 > section.panel.end-score:0 > p.end-line:0 > span.end-team:0": {
+  "x": 93,
+  "y": 98,
+  "w": 183,
+  "h": 26,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.end:0 > div.end-top:0 > section.panel.end-score:0 > p.end-line:0 > strong.end-num:0": {
+  "x": 288,
+  "y": 92,
+  "w": 48,
+  "h": 38,
+  "fs": "24px"
+ },
+ "div:0 > main.screen.end:0 > div.end-top:0 > section.panel.end-score:0 > p.end-line:0 > span.end-x:1": {
+  "x": 348,
+  "y": 92,
+  "w": 24,
+  "h": 38,
+  "fs": "24px"
+ },
+ "div:0 > main.screen.end:0 > div.end-top:0 > section.panel.end-score:0 > p.end-line:0 > strong.end-num:1": {
+  "x": 384,
+  "y": 92,
+  "w": 48,
+  "h": 38,
+  "fs": "24px"
+ },
+ "div:0 > main.screen.end:0 > div.end-top:0 > section.panel.end-score:0 > p.end-line:0 > span.end-team:2": {
+  "x": 171,
+  "y": 142,
+  "w": 183,
+  "h": 26,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.end:0 > div.end-top:0 > section.panel.end-score:0 > button.btn.btn-primary:0": {
+  "x": 167,
+  "y": 184,
+  "w": 190,
+  "h": 36,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.end-top:0 > section.panel.mvp:1": {
+  "x": 533,
+  "y": 16,
+  "w": 493,
+  "h": 232,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.end:0 > div.end-top:0 > section.panel.mvp:1 > div.mvp-sprite:0": {
+  "x": 553,
+  "y": 36,
+  "w": 192,
+  "h": 192,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.end:0 > div.end-top:0 > section.panel.mvp:1 > div.mvp-sprite:0 > img.sprite:0": {
+  "x": 553,
+  "y": 36,
+  "w": 192,
+  "h": 192,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.end:0 > div.end-top:0 > section.panel.mvp:1 > div.mvp-info:1": {
+  "x": 761,
+  "y": 79,
+  "w": 245,
+  "h": 107,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.end:0 > div.end-top:0 > section.panel.mvp:1 > div.mvp-info:1 > p.mvp-tag:0": {
+  "x": 761,
+  "y": 83,
+  "w": 40,
+  "h": 21,
+  "fs": "8px"
+ },
+ "div:0 > main.screen.end:0 > div.end-top:0 > section.panel.mvp:1 > div.mvp-info:1 > h2.mvp-name:0": {
+  "x": 761,
+  "y": 111,
+  "w": 245,
+  "h": 18,
+  "fs": "12px"
+ },
+ "div:0 > main.screen.end:0 > div.end-top:0 > section.panel.mvp:1 > div.mvp-info:1 > p.mvp-team:1": {
+  "x": 761,
+  "y": 133,
+  "w": 245,
+  "h": 26,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.end:0 > div.end-top:0 > section.panel.mvp:1 > div.mvp-info:1 > p.mvp-stats:2": {
+  "x": 761,
+  "y": 163,
+  "w": 245,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.end-top:0 > section.panel.mvp:1 > div.mvp-info:1 > p.mvp-stats:2 > b:0": {
+  "x": 761,
+  "y": 168,
+  "w": 30,
+  "h": 10,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.end-top:0 > section.panel.mvp:1 > div.mvp-info:1 > p.mvp-stats:2 > b:1": {
+  "x": 852,
+  "y": 168,
+  "w": 10,
+  "h": 10,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.end-top:0 > section.panel.mvp:1 > div.mvp-info:1 > p.mvp-stats:2 > b:2": {
+  "x": 890,
+  "y": 168,
+  "w": 20,
+  "h": 10,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1": {
+  "x": 16,
+  "y": 264,
+  "w": 1009,
+  "h": 882,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0": {
+  "x": 16,
+  "y": 264,
+  "w": 497,
+  "h": 882,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > h2.panel-title:0": {
+  "x": 36,
+  "y": 284,
+  "w": 457,
+  "h": 16,
+  "fs": "12px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > p.stats-summary:0": {
+  "x": 36,
+  "y": 312,
+  "w": 457,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > p.stats-summary:0 > b:0": {
+  "x": 89,
+  "y": 317,
+  "w": 30,
+  "h": 10,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > p.stats-summary:0 > b:1": {
+  "x": 201,
+  "y": 317,
+  "w": 10,
+  "h": 10,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > p.stats-summary:0 > b:2": {
+  "x": 263,
+  "y": 317,
+  "w": 10,
+  "h": 10,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0": {
+  "x": 36,
+  "y": 346,
+  "w": 457,
+  "h": 780,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > thead:0": {
+  "x": 36,
+  "y": 346,
+  "w": 457,
+  "h": 31,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > thead:0 > tr:0": {
+  "x": 36,
+  "y": 346,
+  "w": 457,
+  "h": 31,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > thead:0 > tr:0 > th:0": {
+  "x": 36,
+  "y": 346,
+  "w": 208,
+  "h": 31,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > thead:0 > tr:0 > th:1": {
+  "x": 244,
+  "y": 346,
+  "w": 110,
+  "h": 31,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > thead:0 > tr:0 > th:2": {
+  "x": 354,
+  "y": 346,
+  "w": 98,
+  "h": 31,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > thead:0 > tr:0 > th:3": {
+  "x": 452,
+  "y": 346,
+  "w": 41,
+  "h": 31,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0": {
+  "x": 36,
+  "y": 377,
+  "w": 457,
+  "h": 748,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:0": {
+  "x": 36,
+  "y": 377,
+  "w": 457,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:0 > td:0": {
+  "x": 36,
+  "y": 377,
+  "w": 208,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:0 > td:0 > span.stats-name:0": {
+  "x": 40,
+  "y": 382,
+  "w": 200,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:0 > td:0 > span.stats-name:0 > img.sprite:0": {
+  "x": 40,
+  "y": 382,
+  "w": 48,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:0 > td:0 > span.stats-name:0 > span:0": {
+  "x": 96,
+  "y": 395,
+  "w": 44,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:0 > td:0 > span.yards-bar:1": {
+  "x": 40,
+  "y": 432,
+  "w": 200,
+  "h": 8,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:0 > td:0 > span.yards-bar:1 > span.yards-fill:0": {
+  "x": 42,
+  "y": 434,
+  "w": 0,
+  "h": 4,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:0 > td.num:1": {
+  "x": 244,
+  "y": 377,
+  "w": 110,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:0 > td.num:2": {
+  "x": 354,
+  "y": 377,
+  "w": 98,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:0 > td.num:3": {
+  "x": 452,
+  "y": 377,
+  "w": 41,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:1": {
+  "x": 36,
+  "y": 445,
+  "w": 457,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:1 > td:0": {
+  "x": 36,
+  "y": 445,
+  "w": 208,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:1 > td:0 > span.stats-name:0": {
+  "x": 40,
+  "y": 450,
+  "w": 200,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:1 > td:0 > span.stats-name:0 > img.sprite:0": {
+  "x": 40,
+  "y": 450,
+  "w": 48,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:1 > td:0 > span.stats-name:0 > span:0": {
+  "x": 96,
+  "y": 463,
+  "w": 56,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:1 > td:0 > span.yards-bar:1": {
+  "x": 40,
+  "y": 500,
+  "w": 200,
+  "h": 8,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:1 > td:0 > span.yards-bar:1 > span.yards-fill:0": {
+  "x": 42,
+  "y": 502,
+  "w": 0,
+  "h": 4,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:1 > td.num:1": {
+  "x": 244,
+  "y": 445,
+  "w": 110,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:1 > td.num:2": {
+  "x": 354,
+  "y": 445,
+  "w": 98,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:1 > td.num:3": {
+  "x": 452,
+  "y": 445,
+  "w": 41,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:2": {
+  "x": 36,
+  "y": 513,
+  "w": 457,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:2 > td:0": {
+  "x": 36,
+  "y": 513,
+  "w": 208,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:2 > td:0 > span.stats-name:0": {
+  "x": 40,
+  "y": 518,
+  "w": 200,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:2 > td:0 > span.stats-name:0 > img.sprite:0": {
+  "x": 40,
+  "y": 518,
+  "w": 48,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:2 > td:0 > span.stats-name:0 > span:0": {
+  "x": 96,
+  "y": 531,
+  "w": 50,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:2 > td:0 > span.yards-bar:1": {
+  "x": 40,
+  "y": 568,
+  "w": 200,
+  "h": 8,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:2 > td:0 > span.yards-bar:1 > span.yards-fill:0": {
+  "x": 42,
+  "y": 570,
+  "w": 196,
+  "h": 4,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:2 > td.num:1": {
+  "x": 244,
+  "y": 513,
+  "w": 110,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:2 > td.num:2": {
+  "x": 354,
+  "y": 513,
+  "w": 98,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:2 > td.num:3": {
+  "x": 452,
+  "y": 513,
+  "w": 41,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:3": {
+  "x": 36,
+  "y": 581,
+  "w": 457,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:3 > td:0": {
+  "x": 36,
+  "y": 581,
+  "w": 208,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:3 > td:0 > span.stats-name:0": {
+  "x": 40,
+  "y": 586,
+  "w": 200,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:3 > td:0 > span.stats-name:0 > img.sprite:0": {
+  "x": 40,
+  "y": 586,
+  "w": 48,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:3 > td:0 > span.stats-name:0 > span:0": {
+  "x": 96,
+  "y": 599,
+  "w": 59,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:3 > td:0 > span.yards-bar:1": {
+  "x": 40,
+  "y": 636,
+  "w": 200,
+  "h": 8,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:3 > td:0 > span.yards-bar:1 > span.yards-fill:0": {
+  "x": 42,
+  "y": 638,
+  "w": 0,
+  "h": 4,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:3 > td.num:1": {
+  "x": 244,
+  "y": 581,
+  "w": 110,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:3 > td.num:2": {
+  "x": 354,
+  "y": 581,
+  "w": 98,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:3 > td.num:3": {
+  "x": 452,
+  "y": 581,
+  "w": 41,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:4": {
+  "x": 36,
+  "y": 649,
+  "w": 457,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:4 > td:0": {
+  "x": 36,
+  "y": 649,
+  "w": 208,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:4 > td:0 > span.stats-name:0": {
+  "x": 40,
+  "y": 654,
+  "w": 200,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:4 > td:0 > span.stats-name:0 > img.sprite:0": {
+  "x": 40,
+  "y": 654,
+  "w": 48,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:4 > td:0 > span.stats-name:0 > span:0": {
+  "x": 96,
+  "y": 667,
+  "w": 51,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:4 > td:0 > span.yards-bar:1": {
+  "x": 40,
+  "y": 704,
+  "w": 200,
+  "h": 8,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:4 > td:0 > span.yards-bar:1 > span.yards-fill:0": {
+  "x": 42,
+  "y": 706,
+  "w": 0,
+  "h": 4,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:4 > td.num:1": {
+  "x": 244,
+  "y": 649,
+  "w": 110,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:4 > td.num:2": {
+  "x": 354,
+  "y": 649,
+  "w": 98,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:4 > td.num:3": {
+  "x": 452,
+  "y": 649,
+  "w": 41,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:5": {
+  "x": 36,
+  "y": 717,
+  "w": 457,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:5 > td:0": {
+  "x": 36,
+  "y": 717,
+  "w": 208,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:5 > td:0 > span.stats-name:0": {
+  "x": 40,
+  "y": 722,
+  "w": 200,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:5 > td:0 > span.stats-name:0 > img.sprite:0": {
+  "x": 40,
+  "y": 722,
+  "w": 48,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:5 > td:0 > span.stats-name:0 > span:0": {
+  "x": 96,
+  "y": 735,
+  "w": 27,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:5 > td:0 > span.yards-bar:1": {
+  "x": 40,
+  "y": 772,
+  "w": 200,
+  "h": 8,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:5 > td:0 > span.yards-bar:1 > span.yards-fill:0": {
+  "x": 42,
+  "y": 774,
+  "w": 0,
+  "h": 4,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:5 > td.num:1": {
+  "x": 244,
+  "y": 717,
+  "w": 110,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:5 > td.num:2": {
+  "x": 354,
+  "y": 717,
+  "w": 98,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:5 > td.num:3": {
+  "x": 452,
+  "y": 717,
+  "w": 41,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:6": {
+  "x": 36,
+  "y": 785,
+  "w": 457,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:6 > td:0": {
+  "x": 36,
+  "y": 785,
+  "w": 208,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:6 > td:0 > span.stats-name:0": {
+  "x": 40,
+  "y": 790,
+  "w": 200,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:6 > td:0 > span.stats-name:0 > img.sprite:0": {
+  "x": 40,
+  "y": 790,
+  "w": 48,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:6 > td:0 > span.stats-name:0 > span:0": {
+  "x": 96,
+  "y": 803,
+  "w": 51,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:6 > td:0 > span.yards-bar:1": {
+  "x": 40,
+  "y": 840,
+  "w": 200,
+  "h": 8,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:6 > td:0 > span.yards-bar:1 > span.yards-fill:0": {
+  "x": 42,
+  "y": 842,
+  "w": 0,
+  "h": 4,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:6 > td.num:1": {
+  "x": 244,
+  "y": 785,
+  "w": 110,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:6 > td.num:2": {
+  "x": 354,
+  "y": 785,
+  "w": 98,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:6 > td.num:3": {
+  "x": 452,
+  "y": 785,
+  "w": 41,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:7": {
+  "x": 36,
+  "y": 853,
+  "w": 457,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:7 > td:0": {
+  "x": 36,
+  "y": 853,
+  "w": 208,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:7 > td:0 > span.stats-name:0": {
+  "x": 40,
+  "y": 858,
+  "w": 200,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:7 > td:0 > span.stats-name:0 > img.sprite:0": {
+  "x": 40,
+  "y": 858,
+  "w": 48,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:7 > td:0 > span.stats-name:0 > span:0": {
+  "x": 96,
+  "y": 871,
+  "w": 56,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:7 > td:0 > span.yards-bar:1": {
+  "x": 40,
+  "y": 908,
+  "w": 200,
+  "h": 8,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:7 > td:0 > span.yards-bar:1 > span.yards-fill:0": {
+  "x": 42,
+  "y": 910,
+  "w": 0,
+  "h": 4,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:7 > td.num:1": {
+  "x": 244,
+  "y": 853,
+  "w": 110,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:7 > td.num:2": {
+  "x": 354,
+  "y": 853,
+  "w": 98,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:7 > td.num:3": {
+  "x": 452,
+  "y": 853,
+  "w": 41,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:8": {
+  "x": 36,
+  "y": 921,
+  "w": 457,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:8 > td:0": {
+  "x": 36,
+  "y": 921,
+  "w": 208,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:8 > td:0 > span.stats-name:0": {
+  "x": 40,
+  "y": 926,
+  "w": 200,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:8 > td:0 > span.stats-name:0 > img.sprite:0": {
+  "x": 40,
+  "y": 926,
+  "w": 48,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:8 > td:0 > span.stats-name:0 > span:0": {
+  "x": 96,
+  "y": 939,
+  "w": 52,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:8 > td:0 > span.yards-bar:1": {
+  "x": 40,
+  "y": 976,
+  "w": 200,
+  "h": 8,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:8 > td:0 > span.yards-bar:1 > span.yards-fill:0": {
+  "x": 42,
+  "y": 978,
+  "w": 0,
+  "h": 4,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:8 > td.num:1": {
+  "x": 244,
+  "y": 921,
+  "w": 110,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:8 > td.num:2": {
+  "x": 354,
+  "y": 921,
+  "w": 98,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:8 > td.num:3": {
+  "x": 452,
+  "y": 921,
+  "w": 41,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:9": {
+  "x": 36,
+  "y": 989,
+  "w": 457,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:9 > td:0": {
+  "x": 36,
+  "y": 989,
+  "w": 208,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:9 > td:0 > span.stats-name:0": {
+  "x": 40,
+  "y": 994,
+  "w": 200,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:9 > td:0 > span.stats-name:0 > img.sprite:0": {
+  "x": 40,
+  "y": 994,
+  "w": 48,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:9 > td:0 > span.stats-name:0 > span:0": {
+  "x": 96,
+  "y": 1007,
+  "w": 55,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:9 > td:0 > span.yards-bar:1": {
+  "x": 40,
+  "y": 1044,
+  "w": 200,
+  "h": 8,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:9 > td:0 > span.yards-bar:1 > span.yards-fill:0": {
+  "x": 42,
+  "y": 1046,
+  "w": 159,
+  "h": 4,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:9 > td.num:1": {
+  "x": 244,
+  "y": 989,
+  "w": 110,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:9 > td.num:2": {
+  "x": 354,
+  "y": 989,
+  "w": 98,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:9 > td.num:3": {
+  "x": 452,
+  "y": 989,
+  "w": 41,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:10": {
+  "x": 36,
+  "y": 1057,
+  "w": 457,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:10 > td:0": {
+  "x": 36,
+  "y": 1057,
+  "w": 208,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:10 > td:0 > span.stats-name:0": {
+  "x": 40,
+  "y": 1062,
+  "w": 200,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:10 > td:0 > span.stats-name:0 > img.sprite:0": {
+  "x": 40,
+  "y": 1062,
+  "w": 48,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:10 > td:0 > span.stats-name:0 > span:0": {
+  "x": 96,
+  "y": 1075,
+  "w": 40,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:10 > td:0 > span.yards-bar:1": {
+  "x": 40,
+  "y": 1112,
+  "w": 200,
+  "h": 8,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:10 > td:0 > span.yards-bar:1 > span.yards-fill:0": {
+  "x": 42,
+  "y": 1114,
+  "w": 0,
+  "h": 4,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:10 > td.num:1": {
+  "x": 244,
+  "y": 1057,
+  "w": 110,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:10 > td.num:2": {
+  "x": 354,
+  "y": 1057,
+  "w": 98,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:0 > table.stats-table:0 > tbody:0 > tr:10 > td.num:3": {
+  "x": 452,
+  "y": 1057,
+  "w": 41,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1": {
+  "x": 529,
+  "y": 264,
+  "w": 497,
+  "h": 882,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > h2.panel-title:0": {
+  "x": 549,
+  "y": 284,
+  "w": 457,
+  "h": 16,
+  "fs": "12px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > p.stats-summary:0": {
+  "x": 549,
+  "y": 312,
+  "w": 457,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > p.stats-summary:0 > b:0": {
+  "x": 602,
+  "y": 317,
+  "w": 30,
+  "h": 10,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > p.stats-summary:0 > b:1": {
+  "x": 714,
+  "y": 317,
+  "w": 10,
+  "h": 10,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > p.stats-summary:0 > b:2": {
+  "x": 776,
+  "y": 317,
+  "w": 10,
+  "h": 10,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0": {
+  "x": 549,
+  "y": 346,
+  "w": 457,
+  "h": 780,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > thead:0": {
+  "x": 549,
+  "y": 346,
+  "w": 457,
+  "h": 31,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > thead:0 > tr:0": {
+  "x": 549,
+  "y": 346,
+  "w": 457,
+  "h": 31,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > thead:0 > tr:0 > th:0": {
+  "x": 549,
+  "y": 346,
+  "w": 208,
+  "h": 31,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > thead:0 > tr:0 > th:1": {
+  "x": 756,
+  "y": 346,
+  "w": 110,
+  "h": 31,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > thead:0 > tr:0 > th:2": {
+  "x": 866,
+  "y": 346,
+  "w": 98,
+  "h": 31,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > thead:0 > tr:0 > th:3": {
+  "x": 964,
+  "y": 346,
+  "w": 41,
+  "h": 31,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0": {
+  "x": 549,
+  "y": 377,
+  "w": 457,
+  "h": 748,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:0": {
+  "x": 549,
+  "y": 377,
+  "w": 457,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:0 > td:0": {
+  "x": 549,
+  "y": 377,
+  "w": 208,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:0 > td:0 > span.stats-name:0": {
+  "x": 553,
+  "y": 382,
+  "w": 200,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:0 > td:0 > span.stats-name:0 > img.sprite:0": {
+  "x": 553,
+  "y": 382,
+  "w": 48,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:0 > td:0 > span.stats-name:0 > span:0": {
+  "x": 609,
+  "y": 395,
+  "w": 44,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:0 > td:0 > span.yards-bar:1": {
+  "x": 553,
+  "y": 432,
+  "w": 200,
+  "h": 8,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:0 > td:0 > span.yards-bar:1 > span.yards-fill:0": {
+  "x": 555,
+  "y": 434,
+  "w": 0,
+  "h": 4,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:0 > td.num:1": {
+  "x": 756,
+  "y": 377,
+  "w": 110,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:0 > td.num:2": {
+  "x": 866,
+  "y": 377,
+  "w": 98,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:0 > td.num:3": {
+  "x": 964,
+  "y": 377,
+  "w": 41,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:1": {
+  "x": 549,
+  "y": 445,
+  "w": 457,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:1 > td:0": {
+  "x": 549,
+  "y": 445,
+  "w": 208,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:1 > td:0 > span.stats-name:0": {
+  "x": 553,
+  "y": 450,
+  "w": 200,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:1 > td:0 > span.stats-name:0 > img.sprite:0": {
+  "x": 553,
+  "y": 450,
+  "w": 48,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:1 > td:0 > span.stats-name:0 > span:0": {
+  "x": 609,
+  "y": 463,
+  "w": 56,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:1 > td:0 > span.yards-bar:1": {
+  "x": 553,
+  "y": 500,
+  "w": 200,
+  "h": 8,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:1 > td:0 > span.yards-bar:1 > span.yards-fill:0": {
+  "x": 555,
+  "y": 502,
+  "w": 0,
+  "h": 4,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:1 > td.num:1": {
+  "x": 756,
+  "y": 445,
+  "w": 110,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:1 > td.num:2": {
+  "x": 866,
+  "y": 445,
+  "w": 98,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:1 > td.num:3": {
+  "x": 964,
+  "y": 445,
+  "w": 41,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:2": {
+  "x": 549,
+  "y": 513,
+  "w": 457,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:2 > td:0": {
+  "x": 549,
+  "y": 513,
+  "w": 208,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:2 > td:0 > span.stats-name:0": {
+  "x": 553,
+  "y": 518,
+  "w": 200,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:2 > td:0 > span.stats-name:0 > img.sprite:0": {
+  "x": 553,
+  "y": 518,
+  "w": 48,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:2 > td:0 > span.stats-name:0 > span:0": {
+  "x": 609,
+  "y": 531,
+  "w": 50,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:2 > td:0 > span.yards-bar:1": {
+  "x": 553,
+  "y": 568,
+  "w": 200,
+  "h": 8,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:2 > td:0 > span.yards-bar:1 > span.yards-fill:0": {
+  "x": 555,
+  "y": 570,
+  "w": 196,
+  "h": 4,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:2 > td.num:1": {
+  "x": 756,
+  "y": 513,
+  "w": 110,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:2 > td.num:2": {
+  "x": 866,
+  "y": 513,
+  "w": 98,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:2 > td.num:3": {
+  "x": 964,
+  "y": 513,
+  "w": 41,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:3": {
+  "x": 549,
+  "y": 581,
+  "w": 457,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:3 > td:0": {
+  "x": 549,
+  "y": 581,
+  "w": 208,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:3 > td:0 > span.stats-name:0": {
+  "x": 553,
+  "y": 586,
+  "w": 200,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:3 > td:0 > span.stats-name:0 > img.sprite:0": {
+  "x": 553,
+  "y": 586,
+  "w": 48,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:3 > td:0 > span.stats-name:0 > span:0": {
+  "x": 609,
+  "y": 599,
+  "w": 59,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:3 > td:0 > span.yards-bar:1": {
+  "x": 553,
+  "y": 636,
+  "w": 200,
+  "h": 8,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:3 > td:0 > span.yards-bar:1 > span.yards-fill:0": {
+  "x": 555,
+  "y": 638,
+  "w": 0,
+  "h": 4,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:3 > td.num:1": {
+  "x": 756,
+  "y": 581,
+  "w": 110,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:3 > td.num:2": {
+  "x": 866,
+  "y": 581,
+  "w": 98,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:3 > td.num:3": {
+  "x": 964,
+  "y": 581,
+  "w": 41,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:4": {
+  "x": 549,
+  "y": 649,
+  "w": 457,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:4 > td:0": {
+  "x": 549,
+  "y": 649,
+  "w": 208,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:4 > td:0 > span.stats-name:0": {
+  "x": 553,
+  "y": 654,
+  "w": 200,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:4 > td:0 > span.stats-name:0 > img.sprite:0": {
+  "x": 553,
+  "y": 654,
+  "w": 48,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:4 > td:0 > span.stats-name:0 > span:0": {
+  "x": 609,
+  "y": 667,
+  "w": 51,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:4 > td:0 > span.yards-bar:1": {
+  "x": 553,
+  "y": 704,
+  "w": 200,
+  "h": 8,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:4 > td:0 > span.yards-bar:1 > span.yards-fill:0": {
+  "x": 555,
+  "y": 706,
+  "w": 0,
+  "h": 4,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:4 > td.num:1": {
+  "x": 756,
+  "y": 649,
+  "w": 110,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:4 > td.num:2": {
+  "x": 866,
+  "y": 649,
+  "w": 98,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:4 > td.num:3": {
+  "x": 964,
+  "y": 649,
+  "w": 41,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:5": {
+  "x": 549,
+  "y": 717,
+  "w": 457,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:5 > td:0": {
+  "x": 549,
+  "y": 717,
+  "w": 208,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:5 > td:0 > span.stats-name:0": {
+  "x": 553,
+  "y": 722,
+  "w": 200,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:5 > td:0 > span.stats-name:0 > img.sprite:0": {
+  "x": 553,
+  "y": 722,
+  "w": 48,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:5 > td:0 > span.stats-name:0 > span:0": {
+  "x": 609,
+  "y": 735,
+  "w": 27,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:5 > td:0 > span.yards-bar:1": {
+  "x": 553,
+  "y": 772,
+  "w": 200,
+  "h": 8,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:5 > td:0 > span.yards-bar:1 > span.yards-fill:0": {
+  "x": 555,
+  "y": 774,
+  "w": 0,
+  "h": 4,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:5 > td.num:1": {
+  "x": 756,
+  "y": 717,
+  "w": 110,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:5 > td.num:2": {
+  "x": 866,
+  "y": 717,
+  "w": 98,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:5 > td.num:3": {
+  "x": 964,
+  "y": 717,
+  "w": 41,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:6": {
+  "x": 549,
+  "y": 785,
+  "w": 457,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:6 > td:0": {
+  "x": 549,
+  "y": 785,
+  "w": 208,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:6 > td:0 > span.stats-name:0": {
+  "x": 553,
+  "y": 790,
+  "w": 200,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:6 > td:0 > span.stats-name:0 > img.sprite:0": {
+  "x": 553,
+  "y": 790,
+  "w": 48,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:6 > td:0 > span.stats-name:0 > span:0": {
+  "x": 609,
+  "y": 803,
+  "w": 51,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:6 > td:0 > span.yards-bar:1": {
+  "x": 553,
+  "y": 840,
+  "w": 200,
+  "h": 8,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:6 > td:0 > span.yards-bar:1 > span.yards-fill:0": {
+  "x": 555,
+  "y": 842,
+  "w": 0,
+  "h": 4,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:6 > td.num:1": {
+  "x": 756,
+  "y": 785,
+  "w": 110,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:6 > td.num:2": {
+  "x": 866,
+  "y": 785,
+  "w": 98,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:6 > td.num:3": {
+  "x": 964,
+  "y": 785,
+  "w": 41,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:7": {
+  "x": 549,
+  "y": 853,
+  "w": 457,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:7 > td:0": {
+  "x": 549,
+  "y": 853,
+  "w": 208,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:7 > td:0 > span.stats-name:0": {
+  "x": 553,
+  "y": 858,
+  "w": 200,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:7 > td:0 > span.stats-name:0 > img.sprite:0": {
+  "x": 553,
+  "y": 858,
+  "w": 48,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:7 > td:0 > span.stats-name:0 > span:0": {
+  "x": 609,
+  "y": 871,
+  "w": 56,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:7 > td:0 > span.yards-bar:1": {
+  "x": 553,
+  "y": 908,
+  "w": 200,
+  "h": 8,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:7 > td:0 > span.yards-bar:1 > span.yards-fill:0": {
+  "x": 555,
+  "y": 910,
+  "w": 0,
+  "h": 4,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:7 > td.num:1": {
+  "x": 756,
+  "y": 853,
+  "w": 110,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:7 > td.num:2": {
+  "x": 866,
+  "y": 853,
+  "w": 98,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:7 > td.num:3": {
+  "x": 964,
+  "y": 853,
+  "w": 41,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:8": {
+  "x": 549,
+  "y": 921,
+  "w": 457,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:8 > td:0": {
+  "x": 549,
+  "y": 921,
+  "w": 208,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:8 > td:0 > span.stats-name:0": {
+  "x": 553,
+  "y": 926,
+  "w": 200,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:8 > td:0 > span.stats-name:0 > img.sprite:0": {
+  "x": 553,
+  "y": 926,
+  "w": 48,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:8 > td:0 > span.stats-name:0 > span:0": {
+  "x": 609,
+  "y": 939,
+  "w": 55,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:8 > td:0 > span.yards-bar:1": {
+  "x": 553,
+  "y": 976,
+  "w": 200,
+  "h": 8,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:8 > td:0 > span.yards-bar:1 > span.yards-fill:0": {
+  "x": 555,
+  "y": 978,
+  "w": 151,
+  "h": 4,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:8 > td.num:1": {
+  "x": 756,
+  "y": 921,
+  "w": 110,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:8 > td.num:2": {
+  "x": 866,
+  "y": 921,
+  "w": 98,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:8 > td.num:3": {
+  "x": 964,
+  "y": 921,
+  "w": 41,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:9": {
+  "x": 549,
+  "y": 989,
+  "w": 457,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:9 > td:0": {
+  "x": 549,
+  "y": 989,
+  "w": 208,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:9 > td:0 > span.stats-name:0": {
+  "x": 553,
+  "y": 994,
+  "w": 200,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:9 > td:0 > span.stats-name:0 > img.sprite:0": {
+  "x": 553,
+  "y": 994,
+  "w": 48,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:9 > td:0 > span.stats-name:0 > span:0": {
+  "x": 609,
+  "y": 1007,
+  "w": 52,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:9 > td:0 > span.yards-bar:1": {
+  "x": 553,
+  "y": 1044,
+  "w": 200,
+  "h": 8,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:9 > td:0 > span.yards-bar:1 > span.yards-fill:0": {
+  "x": 555,
+  "y": 1046,
+  "w": 0,
+  "h": 4,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:9 > td.num:1": {
+  "x": 756,
+  "y": 989,
+  "w": 110,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:9 > td.num:2": {
+  "x": 866,
+  "y": 989,
+  "w": 98,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:9 > td.num:3": {
+  "x": 964,
+  "y": 989,
+  "w": 41,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:10": {
+  "x": 549,
+  "y": 1057,
+  "w": 457,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:10 > td:0": {
+  "x": 549,
+  "y": 1057,
+  "w": 208,
+  "h": 68,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:10 > td:0 > span.stats-name:0": {
+  "x": 553,
+  "y": 1062,
+  "w": 200,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:10 > td:0 > span.stats-name:0 > img.sprite:0": {
+  "x": 553,
+  "y": 1062,
+  "w": 48,
+  "h": 48,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:10 > td:0 > span.stats-name:0 > span:0": {
+  "x": 609,
+  "y": 1075,
+  "w": 40,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:10 > td:0 > span.yards-bar:1": {
+  "x": 553,
+  "y": 1112,
+  "w": 200,
+  "h": 8,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:10 > td:0 > span.yards-bar:1 > span.yards-fill:0": {
+  "x": 555,
+  "y": 1114,
+  "w": 0,
+  "h": 4,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:10 > td.num:1": {
+  "x": 756,
+  "y": 1057,
+  "w": 110,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:10 > td.num:2": {
+  "x": 866,
+  "y": 1057,
+  "w": 98,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > div.stats-grid:1 > section.panel:1 > table.stats-table:0 > tbody:0 > tr:10 > td.num:3": {
+  "x": 964,
+  "y": 1057,
+  "w": 41,
+  "h": 68,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0": {
+  "x": 16,
+  "y": 1162,
+  "w": 1009,
+  "h": 692,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0 > h2.panel-title:0": {
+  "x": 36,
+  "y": 1182,
+  "w": 969,
+  "h": 16,
+  "fs": "12px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0 > div.replay-layout:0": {
+  "x": 36,
+  "y": 1210,
+  "w": 969,
+  "h": 624,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0 > div.replay-layout:0 > div.phaser-field:0": {
+  "x": 36,
+  "y": 1210,
+  "w": 480,
+  "h": 624,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0 > div.replay-layout:0 > div.phaser-field:0 > canvas:0": {
+  "x": 36,
+  "y": 1242,
+  "w": 480,
+  "h": 560,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0 > div.replay-layout:0 > div.stack:1": {
+  "x": 532,
+  "y": 1210,
+  "w": 473,
+  "h": 352,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0 > div.replay-layout:0 > div.stack:1 > div.row:0": {
+  "x": 532,
+  "y": 1210,
+  "w": 473,
+  "h": 19,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0 > div.replay-layout:0 > div.stack:1 > div.row:0 > button.btn.btn-small:0": {
+  "x": 532,
+  "y": 1210,
+  "w": 23,
+  "h": 19,
+  "fs": "8px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0 > div.replay-layout:0 > div.stack:1 > div.row:0 > button.btn.btn-small:1": {
+  "x": 563,
+  "y": 1210,
+  "w": 21,
+  "h": 19,
+  "fs": "8px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0 > div.replay-layout:0 > div.stack:1 > div.row:0 > span:0": {
+  "x": 592,
+  "y": 1213,
+  "w": 96,
+  "h": 13,
+  "fs": "8px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0 > div.replay-layout:0 > div.stack:1 > div.row:0 > button.btn.btn-small:2": {
+  "x": 696,
+  "y": 1210,
+  "w": 21,
+  "h": 19,
+  "fs": "8px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0 > div.replay-layout:0 > div.stack:1 > div.row:0 > button.btn.btn-small:3": {
+  "x": 725,
+  "y": 1210,
+  "w": 23,
+  "h": 19,
+  "fs": "8px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0 > div.replay-layout:0 > div.stack:1 > div.row:0 > button.btn.btn-small:4": {
+  "x": 756,
+  "y": 1210,
+  "w": 96,
+  "h": 19,
+  "fs": "8px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0 > div.replay-layout:0 > div.stack:1 > div.row:0 > button.btn.btn-small:5": {
+  "x": 860,
+  "y": 1210,
+  "w": 72,
+  "h": 19,
+  "fs": "8px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0 > div.replay-layout:0 > div.stack:1 > ol.log-list.replay-lines:0": {
+  "x": 532,
+  "y": 1237,
+  "w": 473,
+  "h": 233,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0 > div.replay-layout:0 > div.stack:1 > ol.log-list.replay-lines:0 > li.log-line.log-drive:0": {
+  "x": 543,
+  "y": 1256,
+  "w": 451,
+  "h": 26,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0 > div.replay-layout:0 > div.stack:1 > ol.log-list.replay-lines:0 > li.log-line.log-call:1": {
+  "x": 543,
+  "y": 1282,
+  "w": 451,
+  "h": 25,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0 > div.replay-layout:0 > div.stack:1 > ol.log-list.replay-lines:0 > li.log-line.log-call:2": {
+  "x": 543,
+  "y": 1308,
+  "w": 451,
+  "h": 25,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0 > div.replay-layout:0 > div.stack:1 > ol.log-list.replay-lines:0 > li.log-line.log-call:3": {
+  "x": 543,
+  "y": 1333,
+  "w": 451,
+  "h": 25,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0 > div.replay-layout:0 > div.stack:1 > ol.log-list.replay-lines:0 > li.log-line.log-effect:4": {
+  "x": 543,
+  "y": 1358,
+  "w": 451,
+  "h": 25,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0 > div.replay-layout:0 > div.stack:1 > ol.log-list.replay-lines:0 > li.log-line.log-play:5": {
+  "x": 543,
+  "y": 1384,
+  "w": 451,
+  "h": 25,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0 > div.replay-layout:0 > div.stack:1 > ol.log-list.replay-lines:0 > li.log-line.log-play:6": {
+  "x": 543,
+  "y": 1409,
+  "w": 451,
+  "h": 25,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0 > div.replay-layout:0 > div.stack:1 > ol.log-list.replay-lines:0 > li.log-line.log-result:7": {
+  "x": 543,
+  "y": 1434,
+  "w": 451,
+  "h": 25,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.end:0 > section.panel.replay:0 > div.replay-layout:0 > div.stack:1 > p.muted:0": {
+  "x": 532,
+  "y": 1495,
+  "w": 473,
+  "h": 51,
+  "fs": "16px"
+ }
+}

@@ -1,7 +1,8 @@
-import { useId } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import type { Card } from '@pfl/engine';
 import { cardInfo } from '../builder/cardInfo';
 import { TypeBadge } from './TypeBadge';
+import { tapAction } from './tapAction';
 import './ui.css';
 
 interface Props {
@@ -13,13 +14,55 @@ interface Props {
   onClick?: () => void;
 }
 
+const isTouch = (): boolean => typeof window !== 'undefined' && !!window.matchMedia?.('(hover: none)').matches;
+
 /** Carta clicável com tooltip de requisitos, perfil e leitura. Desabilitada = acinzentada (spec 3.4). */
 export function CardTile({ card, disabled = false, selected = false, badge, onClick }: Props) {
   const tipId = useId();
   const info = cardInfo(card);
+  const tileRef = useRef<HTMLDivElement>(null);
+  const [tipOpen, setTipOpen] = useState(false);
+
+  // Toque fora do tile fecha o tooltip (abrir outra carta cai aqui, então só um fica aberto).
+  useEffect(() => {
+    if (!tipOpen) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (!tileRef.current?.contains(e.target as Node)) setTipOpen(false);
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
+  }, [tipOpen]);
+
+  const act = () => {
+    setTipOpen(false);
+    onClick?.();
+  };
+
+  const handleClick = () => {
+    switch (tapAction(isTouch(), tipOpen, disabled)) {
+      case 'open':
+        setTipOpen(true);
+        break;
+      case 'close':
+        setTipOpen(false);
+        break;
+      case 'act':
+        act();
+        break;
+      case 'ignore':
+        break;
+    }
+  };
+
   return (
-    <div className={`card-tile${disabled ? ' is-disabled' : ''}${selected ? ' is-selected' : ''}`}>
-      <button type="button" className="card-face" disabled={disabled} onClick={onClick} aria-describedby={tipId}>
+    <div
+      ref={tileRef}
+      className={`card-tile${disabled ? ' is-disabled' : ''}${selected ? ' is-selected' : ''}${tipOpen ? ' is-tip-open' : ''}`}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') setTipOpen(false);
+      }}
+    >
+      <button type="button" className="card-face" aria-disabled={disabled || undefined} onClick={handleClick} aria-describedby={tipId}>
         <span className="card-name">{card.name}</span>
         <span className="card-category">{info.category}</span>
         <span className="card-meta">
@@ -48,6 +91,17 @@ export function CardTile({ card, disabled = false, selected = false, badge, onCl
             ))}
           </ul>
         )}
+        {/* só aparecem na folha de toque (ui.css): a folha cobre a carta, então ela mesma joga e fecha */}
+        <div className="card-sheet-actions">
+          {!disabled && (
+            <button type="button" className="btn btn-primary" onClick={act}>
+              Jogar esta carta
+            </button>
+          )}
+          <button type="button" className="btn" onClick={() => setTipOpen(false)}>
+            Fechar
+          </button>
+        </div>
       </div>
     </div>
   );

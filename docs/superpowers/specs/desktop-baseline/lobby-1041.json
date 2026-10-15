@@ -1,0 +1,1549 @@
+{
+ "div:0": {
+  "x": 0,
+  "y": 0,
+  "w": 1041,
+  "h": 1137,
+  "fs": "16px"
+ },
+ "div:0 > div.audio-control:0": {
+  "x": 929,
+  "y": 859,
+  "w": 96,
+  "h": 44,
+  "fs": "16px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0": {
+  "x": 929,
+  "y": 859,
+  "w": 44,
+  "h": 44,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0": {
+  "x": 939,
+  "y": 873,
+  "w": 24,
+  "h": 16,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:0": {
+  "x": 947,
+  "y": 873,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:1": {
+  "x": 945,
+  "y": 875,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:2": {
+  "x": 947,
+  "y": 875,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:3": {
+  "x": 939,
+  "y": 877,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:4": {
+  "x": 941,
+  "y": 877,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:5": {
+  "x": 943,
+  "y": 877,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:6": {
+  "x": 945,
+  "y": 877,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:7": {
+  "x": 947,
+  "y": 877,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:8": {
+  "x": 939,
+  "y": 879,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:9": {
+  "x": 941,
+  "y": 879,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:10": {
+  "x": 943,
+  "y": 879,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:11": {
+  "x": 945,
+  "y": 879,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:12": {
+  "x": 947,
+  "y": 879,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:13": {
+  "x": 939,
+  "y": 881,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:14": {
+  "x": 941,
+  "y": 881,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:15": {
+  "x": 943,
+  "y": 881,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:16": {
+  "x": 945,
+  "y": 881,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:17": {
+  "x": 947,
+  "y": 881,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:18": {
+  "x": 939,
+  "y": 883,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:19": {
+  "x": 941,
+  "y": 883,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:20": {
+  "x": 943,
+  "y": 883,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:21": {
+  "x": 945,
+  "y": 883,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:22": {
+  "x": 947,
+  "y": 883,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:23": {
+  "x": 945,
+  "y": 885,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:24": {
+  "x": 947,
+  "y": 885,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:25": {
+  "x": 947,
+  "y": 887,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:26": {
+  "x": 951,
+  "y": 879,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:27": {
+  "x": 951,
+  "y": 881,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:28": {
+  "x": 955,
+  "y": 877,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:29": {
+  "x": 955,
+  "y": 879,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:30": {
+  "x": 955,
+  "y": 881,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:0 > svg:0 > rect:31": {
+  "x": 955,
+  "y": 883,
+  "w": 2,
+  "h": 2,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:1": {
+  "x": 981,
+  "y": 859,
+  "w": 44,
+  "h": 44,
+  "fs": "10px"
+ },
+ "div:0 > div.audio-control:0 > button.btn.audio-btn:1 > span.audio-arrow:0": {
+  "x": 1000,
+  "y": 874,
+  "w": 6,
+  "h": 14,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.lobby:0": {
+  "x": 0,
+  "y": 0,
+  "w": 1041,
+  "h": 1137,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > header.panel.lobby-header:0": {
+  "x": 16,
+  "y": 16,
+  "w": 1009,
+  "h": 145,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > header.panel.lobby-header:0 > div.lobby-code-block:0": {
+  "x": 36,
+  "y": 36,
+  "w": 312,
+  "h": 105,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > header.panel.lobby-header:0 > div.lobby-code-block:0 > p.muted:0": {
+  "x": 36,
+  "y": 36,
+  "w": 312,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.lobby:0 > header.panel.lobby-header:0 > div.lobby-code-block:0 > p.room-code:1": {
+  "x": 36,
+  "y": 62,
+  "w": 312,
+  "h": 52,
+  "fs": "40px"
+ },
+ "div:0 > main.screen.lobby:0 > header.panel.lobby-header:0 > div.lobby-code-block:0 > p.muted:2": {
+  "x": 36,
+  "y": 118,
+  "w": 312,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.lobby:0 > header.panel.lobby-header:0 > div.lobby-leave:1": {
+  "x": 745,
+  "y": 36,
+  "w": 260,
+  "h": 83,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > header.panel.lobby-header:0 > div.lobby-leave:1 > button.btn:0": {
+  "x": 855,
+  "y": 36,
+  "w": 150,
+  "h": 36,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.lobby:0 > header.panel.lobby-header:0 > div.lobby-leave:1 > p.muted.lobby-leave-note:0": {
+  "x": 745,
+  "y": 80,
+  "w": 260,
+  "h": 39,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0": {
+  "x": 16,
+  "y": 177,
+  "w": 1009,
+  "h": 355,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0": {
+  "x": 16,
+  "y": 177,
+  "w": 497,
+  "h": 355,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > div.lobby-card-facts:0": {
+  "x": 36,
+  "y": 193,
+  "w": 253,
+  "h": 192,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > div.lobby-card-facts:0 > h2.lobby-card-title:0": {
+  "x": 36,
+  "y": 193,
+  "w": 253,
+  "h": 21,
+  "fs": "12px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > div.lobby-card-facts:0 > h2.lobby-card-title:0 > span.lobby-you:0": {
+  "x": 144,
+  "y": 195,
+  "w": 44,
+  "h": 17,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > div.lobby-card-facts:0 > p.lobby-conn:0": {
+  "x": 36,
+  "y": 222,
+  "w": 253,
+  "h": 20,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > div.lobby-card-facts:0 > p.lobby-conn:0 > span:0": {
+  "x": 36,
+  "y": 223,
+  "w": 8,
+  "h": 17,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > div.lobby-card-facts:0 > p.lobby-team:1": {
+  "x": 36,
+  "y": 245,
+  "w": 253,
+  "h": 16,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > div.lobby-card-facts:0 > p.lobby-cost:2": {
+  "x": 36,
+  "y": 265,
+  "w": 253,
+  "h": 11,
+  "fs": "8px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > div.lobby-card-facts:0 > p.lobby-ready.is-waiting:3": {
+  "x": 36,
+  "y": 285,
+  "w": 129,
+  "h": 30,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > div.lobby-lead:1": {
+  "x": 301,
+  "y": 193,
+  "w": 192,
+  "h": 192,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > div.lobby-lead:1 > img.sprite:0": {
+  "x": 301,
+  "y": 193,
+  "w": 192,
+  "h": 192,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0": {
+  "x": 36,
+  "y": 397,
+  "w": 457,
+  "h": 119,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:0": {
+  "x": 36,
+  "y": 408,
+  "w": 52,
+  "h": 52,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:0 > img.sprite:0": {
+  "x": 38,
+  "y": 410,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:1": {
+  "x": 92,
+  "y": 408,
+  "w": 52,
+  "h": 52,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:1 > img.sprite:0": {
+  "x": 94,
+  "y": 410,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:2": {
+  "x": 148,
+  "y": 408,
+  "w": 52,
+  "h": 52,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:2 > img.sprite:0": {
+  "x": 150,
+  "y": 410,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:3": {
+  "x": 204,
+  "y": 408,
+  "w": 52,
+  "h": 52,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:3 > img.sprite:0": {
+  "x": 206,
+  "y": 410,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:4": {
+  "x": 260,
+  "y": 408,
+  "w": 52,
+  "h": 52,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:4 > img.sprite:0": {
+  "x": 262,
+  "y": 410,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:5": {
+  "x": 316,
+  "y": 408,
+  "w": 52,
+  "h": 52,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:5 > img.sprite:0": {
+  "x": 318,
+  "y": 410,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:6": {
+  "x": 372,
+  "y": 408,
+  "w": 52,
+  "h": 52,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:6 > img.sprite:0": {
+  "x": 374,
+  "y": 410,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:7": {
+  "x": 428,
+  "y": 408,
+  "w": 52,
+  "h": 52,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:7 > img.sprite:0": {
+  "x": 430,
+  "y": 410,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:8": {
+  "x": 36,
+  "y": 464,
+  "w": 52,
+  "h": 52,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:8 > img.sprite:0": {
+  "x": 38,
+  "y": 466,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:9": {
+  "x": 92,
+  "y": 464,
+  "w": 52,
+  "h": 52,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:9 > img.sprite:0": {
+  "x": 94,
+  "y": 466,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:10": {
+  "x": 148,
+  "y": 464,
+  "w": 52,
+  "h": 52,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:10 > img.sprite:0": {
+  "x": 150,
+  "y": 466,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:11": {
+  "x": 204,
+  "y": 464,
+  "w": 52,
+  "h": 52,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:11 > img.sprite:0": {
+  "x": 206,
+  "y": 466,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:12": {
+  "x": 260,
+  "y": 464,
+  "w": 52,
+  "h": 52,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:12 > img.sprite:0": {
+  "x": 262,
+  "y": 466,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:13": {
+  "x": 316,
+  "y": 464,
+  "w": 52,
+  "h": 52,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:13 > img.sprite:0": {
+  "x": 318,
+  "y": 466,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:14": {
+  "x": 372,
+  "y": 464,
+  "w": 52,
+  "h": 52,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:14 > img.sprite:0": {
+  "x": 374,
+  "y": 466,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:15": {
+  "x": 428,
+  "y": 464,
+  "w": 52,
+  "h": 52,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.is-you:0 > ul.lobby-roster:0 > li:15 > img.sprite:0": {
+  "x": 430,
+  "y": 466,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1": {
+  "x": 529,
+  "y": 177,
+  "w": 497,
+  "h": 355,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > div.lobby-card-facts:0": {
+  "x": 548,
+  "y": 192,
+  "w": 255,
+  "h": 193,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > div.lobby-card-facts:0 > h2.lobby-card-title:0": {
+  "x": 548,
+  "y": 192,
+  "w": 255,
+  "h": 18,
+  "fs": "12px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > div.lobby-card-facts:0 > p.lobby-conn:0": {
+  "x": 548,
+  "y": 218,
+  "w": 255,
+  "h": 20,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > div.lobby-card-facts:0 > p.lobby-conn:0 > span:0": {
+  "x": 548,
+  "y": 219,
+  "w": 8,
+  "h": 17,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > div.lobby-card-facts:0 > p.lobby-team:1": {
+  "x": 548,
+  "y": 241,
+  "w": 255,
+  "h": 16,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > div.lobby-card-facts:0 > p.lobby-cost:2": {
+  "x": 548,
+  "y": 261,
+  "w": 255,
+  "h": 11,
+  "fs": "8px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > div.lobby-card-facts:0 > p.lobby-ready.is-waiting:3": {
+  "x": 548,
+  "y": 281,
+  "w": 129,
+  "h": 30,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > div.lobby-lead:1": {
+  "x": 814,
+  "y": 193,
+  "w": 192,
+  "h": 192,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > div.lobby-lead:1 > img.sprite:0": {
+  "x": 814,
+  "y": 193,
+  "w": 192,
+  "h": 192,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0": {
+  "x": 548,
+  "y": 397,
+  "w": 459,
+  "h": 120,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:0": {
+  "x": 548,
+  "y": 408,
+  "w": 52,
+  "h": 53,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:0 > img.sprite:0": {
+  "x": 550,
+  "y": 410,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:1": {
+  "x": 604,
+  "y": 408,
+  "w": 52,
+  "h": 53,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:1 > img.sprite:0": {
+  "x": 606,
+  "y": 410,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:2": {
+  "x": 660,
+  "y": 408,
+  "w": 52,
+  "h": 53,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:2 > img.sprite:0": {
+  "x": 662,
+  "y": 410,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:3": {
+  "x": 716,
+  "y": 408,
+  "w": 52,
+  "h": 53,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:3 > img.sprite:0": {
+  "x": 718,
+  "y": 410,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:4": {
+  "x": 772,
+  "y": 408,
+  "w": 52,
+  "h": 53,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:4 > img.sprite:0": {
+  "x": 774,
+  "y": 410,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:5": {
+  "x": 828,
+  "y": 408,
+  "w": 52,
+  "h": 53,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:5 > img.sprite:0": {
+  "x": 830,
+  "y": 410,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:6": {
+  "x": 884,
+  "y": 408,
+  "w": 52,
+  "h": 53,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:6 > img.sprite:0": {
+  "x": 886,
+  "y": 410,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:7": {
+  "x": 940,
+  "y": 408,
+  "w": 52,
+  "h": 53,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:7 > img.sprite:0": {
+  "x": 942,
+  "y": 410,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:8": {
+  "x": 548,
+  "y": 464,
+  "w": 52,
+  "h": 53,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:8 > img.sprite:0": {
+  "x": 550,
+  "y": 466,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:9": {
+  "x": 604,
+  "y": 464,
+  "w": 52,
+  "h": 53,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:9 > img.sprite:0": {
+  "x": 606,
+  "y": 466,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:10": {
+  "x": 660,
+  "y": 464,
+  "w": 52,
+  "h": 53,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:10 > img.sprite:0": {
+  "x": 662,
+  "y": 466,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:11": {
+  "x": 716,
+  "y": 464,
+  "w": 52,
+  "h": 53,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:11 > img.sprite:0": {
+  "x": 718,
+  "y": 466,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:12": {
+  "x": 772,
+  "y": 464,
+  "w": 52,
+  "h": 53,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:12 > img.sprite:0": {
+  "x": 774,
+  "y": 466,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:13": {
+  "x": 828,
+  "y": 464,
+  "w": 52,
+  "h": 53,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:13 > img.sprite:0": {
+  "x": 830,
+  "y": 466,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:14": {
+  "x": 884,
+  "y": 464,
+  "w": 52,
+  "h": 53,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:14 > img.sprite:0": {
+  "x": 886,
+  "y": 466,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:15": {
+  "x": 940,
+  "y": 464,
+  "w": 52,
+  "h": 53,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.lobby-players:0 > article.lobby-card.has-lead:1 > ul.lobby-roster:0 > li:15 > img.sprite:0": {
+  "x": 942,
+  "y": 466,
+  "w": 48,
+  "h": 48,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1": {
+  "x": 16,
+  "y": 548,
+  "w": 1009,
+  "h": 573,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > h2.panel-title:0": {
+  "x": 36,
+  "y": 568,
+  "w": 969,
+  "h": 16,
+  "fs": "12px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0": {
+  "x": 36,
+  "y": 603,
+  "w": 969,
+  "h": 392,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:0": {
+  "x": 36,
+  "y": 603,
+  "w": 969,
+  "h": 60,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:0 > label.team-option.is-selected:0": {
+  "x": 36,
+  "y": 603,
+  "w": 969,
+  "h": 60,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:0 > label.team-option.is-selected:0 > input:0": {
+  "x": 58,
+  "y": 625,
+  "w": 18,
+  "h": 18,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:0 > label.team-option.is-selected:0 > span.team-option-text:0": {
+  "x": 88,
+  "y": 614,
+  "w": 688,
+  "h": 38,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:0 > label.team-option.is-selected:0 > span.team-option-text:0 > span.team-option-name:0": {
+  "x": 88,
+  "y": 614,
+  "w": 688,
+  "h": 16,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:0 > label.team-option.is-selected:0 > span.team-option-text:0 > span.team-option-source:1": {
+  "x": 88,
+  "y": 630,
+  "w": 688,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:0 > label.team-option.is-selected:0 > span.team-option-sprites:1": {
+  "x": 788,
+  "y": 618,
+  "w": 202,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:0 > label.team-option.is-selected:0 > span.team-option-sprites:1 > img.sprite:0": {
+  "x": 788,
+  "y": 618,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:0 > label.team-option.is-selected:0 > span.team-option-sprites:1 > img.sprite:1": {
+  "x": 822,
+  "y": 618,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:0 > label.team-option.is-selected:0 > span.team-option-sprites:1 > img.sprite:2": {
+  "x": 856,
+  "y": 618,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:0 > label.team-option.is-selected:0 > span.team-option-sprites:1 > img.sprite:3": {
+  "x": 890,
+  "y": 618,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:0 > label.team-option.is-selected:0 > span.team-option-sprites:1 > img.sprite:4": {
+  "x": 924,
+  "y": 618,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:0 > label.team-option.is-selected:0 > span.team-option-sprites:1 > img.sprite:5": {
+  "x": 958,
+  "y": 618,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:1": {
+  "x": 36,
+  "y": 672,
+  "w": 969,
+  "h": 58,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:1 > label.team-option:0": {
+  "x": 36,
+  "y": 672,
+  "w": 969,
+  "h": 58,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:1 > label.team-option:0 > input:0": {
+  "x": 58,
+  "y": 692,
+  "w": 18,
+  "h": 18,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:1 > label.team-option:0 > span.team-option-text:0": {
+  "x": 88,
+  "y": 682,
+  "w": 689,
+  "h": 38,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:1 > label.team-option:0 > span.team-option-text:0 > span.team-option-name:0": {
+  "x": 88,
+  "y": 682,
+  "w": 689,
+  "h": 16,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:1 > label.team-option:0 > span.team-option-text:0 > span.team-option-source:1": {
+  "x": 88,
+  "y": 698,
+  "w": 689,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:1 > label.team-option:0 > span.team-option-sprites:1": {
+  "x": 789,
+  "y": 685,
+  "w": 202,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:1 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:0": {
+  "x": 789,
+  "y": 685,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:1 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:1": {
+  "x": 823,
+  "y": 685,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:1 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:2": {
+  "x": 857,
+  "y": 685,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:1 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:3": {
+  "x": 891,
+  "y": 685,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:1 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:4": {
+  "x": 925,
+  "y": 685,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:1 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:5": {
+  "x": 959,
+  "y": 685,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:2": {
+  "x": 36,
+  "y": 738,
+  "w": 969,
+  "h": 58,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:2 > label.team-option:0": {
+  "x": 36,
+  "y": 738,
+  "w": 969,
+  "h": 58,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:2 > label.team-option:0 > input:0": {
+  "x": 58,
+  "y": 758,
+  "w": 18,
+  "h": 18,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:2 > label.team-option:0 > span.team-option-text:0": {
+  "x": 88,
+  "y": 748,
+  "w": 689,
+  "h": 38,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:2 > label.team-option:0 > span.team-option-text:0 > span.team-option-name:0": {
+  "x": 88,
+  "y": 748,
+  "w": 689,
+  "h": 16,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:2 > label.team-option:0 > span.team-option-text:0 > span.team-option-source:1": {
+  "x": 88,
+  "y": 764,
+  "w": 689,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:2 > label.team-option:0 > span.team-option-sprites:1": {
+  "x": 789,
+  "y": 751,
+  "w": 202,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:2 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:0": {
+  "x": 789,
+  "y": 751,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:2 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:1": {
+  "x": 823,
+  "y": 751,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:2 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:2": {
+  "x": 857,
+  "y": 751,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:2 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:3": {
+  "x": 891,
+  "y": 751,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:2 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:4": {
+  "x": 925,
+  "y": 751,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:2 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:5": {
+  "x": 959,
+  "y": 751,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:3": {
+  "x": 36,
+  "y": 805,
+  "w": 969,
+  "h": 58,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:3 > label.team-option:0": {
+  "x": 36,
+  "y": 805,
+  "w": 969,
+  "h": 58,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:3 > label.team-option:0 > input:0": {
+  "x": 58,
+  "y": 825,
+  "w": 18,
+  "h": 18,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:3 > label.team-option:0 > span.team-option-text:0": {
+  "x": 88,
+  "y": 815,
+  "w": 689,
+  "h": 38,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:3 > label.team-option:0 > span.team-option-text:0 > span.team-option-name:0": {
+  "x": 88,
+  "y": 815,
+  "w": 689,
+  "h": 16,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:3 > label.team-option:0 > span.team-option-text:0 > span.team-option-source:1": {
+  "x": 88,
+  "y": 831,
+  "w": 689,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:3 > label.team-option:0 > span.team-option-sprites:1": {
+  "x": 789,
+  "y": 818,
+  "w": 202,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:3 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:0": {
+  "x": 789,
+  "y": 818,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:3 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:1": {
+  "x": 823,
+  "y": 818,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:3 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:2": {
+  "x": 857,
+  "y": 818,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:3 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:3": {
+  "x": 891,
+  "y": 818,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:3 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:4": {
+  "x": 925,
+  "y": 818,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:3 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:5": {
+  "x": 959,
+  "y": 818,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:4": {
+  "x": 36,
+  "y": 871,
+  "w": 969,
+  "h": 58,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:4 > label.team-option:0": {
+  "x": 36,
+  "y": 871,
+  "w": 969,
+  "h": 58,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:4 > label.team-option:0 > input:0": {
+  "x": 58,
+  "y": 891,
+  "w": 18,
+  "h": 18,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:4 > label.team-option:0 > span.team-option-text:0": {
+  "x": 88,
+  "y": 881,
+  "w": 689,
+  "h": 38,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:4 > label.team-option:0 > span.team-option-text:0 > span.team-option-name:0": {
+  "x": 88,
+  "y": 881,
+  "w": 689,
+  "h": 16,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:4 > label.team-option:0 > span.team-option-text:0 > span.team-option-source:1": {
+  "x": 88,
+  "y": 897,
+  "w": 689,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:4 > label.team-option:0 > span.team-option-sprites:1": {
+  "x": 789,
+  "y": 884,
+  "w": 202,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:4 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:0": {
+  "x": 789,
+  "y": 884,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:4 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:1": {
+  "x": 823,
+  "y": 884,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:4 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:2": {
+  "x": 857,
+  "y": 884,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:4 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:3": {
+  "x": 891,
+  "y": 884,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:4 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:4": {
+  "x": 925,
+  "y": 884,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:4 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:5": {
+  "x": 959,
+  "y": 884,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:5": {
+  "x": 36,
+  "y": 937,
+  "w": 969,
+  "h": 58,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:5 > label.team-option:0": {
+  "x": 36,
+  "y": 937,
+  "w": 969,
+  "h": 58,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:5 > label.team-option:0 > input:0": {
+  "x": 58,
+  "y": 958,
+  "w": 18,
+  "h": 18,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:5 > label.team-option:0 > span.team-option-text:0": {
+  "x": 88,
+  "y": 947,
+  "w": 689,
+  "h": 38,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:5 > label.team-option:0 > span.team-option-text:0 > span.team-option-name:0": {
+  "x": 88,
+  "y": 947,
+  "w": 689,
+  "h": 16,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:5 > label.team-option:0 > span.team-option-text:0 > span.team-option-source:1": {
+  "x": 88,
+  "y": 963,
+  "w": 689,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:5 > label.team-option:0 > span.team-option-sprites:1": {
+  "x": 789,
+  "y": 951,
+  "w": 202,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:5 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:0": {
+  "x": 789,
+  "y": 951,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:5 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:1": {
+  "x": 823,
+  "y": 951,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:5 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:2": {
+  "x": 857,
+  "y": 951,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:5 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:3": {
+  "x": 891,
+  "y": 951,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:5 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:4": {
+  "x": 925,
+  "y": 951,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > ul.team-options:0 > li:5 > label.team-option:0 > span.team-option-sprites:1 > img.sprite:5": {
+  "x": 959,
+  "y": 951,
+  "w": 32,
+  "h": 32,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > div.row.lobby-actions:0": {
+  "x": 36,
+  "y": 1004,
+  "w": 969,
+  "h": 36,
+  "fs": "16px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > div.row.lobby-actions:0 > button.btn:0": {
+  "x": 36,
+  "y": 1004,
+  "w": 140,
+  "h": 36,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > div.row.lobby-actions:0 > button.btn.btn-primary:1": {
+  "x": 184,
+  "y": 1004,
+  "w": 150,
+  "h": 36,
+  "fs": "10px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > p.muted.lobby-help:0": {
+  "x": 36,
+  "y": 1048,
+  "w": 969,
+  "h": 22,
+  "fs": "14px"
+ },
+ "div:0 > main.screen.lobby:0 > section.panel.stack:1 > p.muted.lobby-help:1": {
+  "x": 36,
+  "y": 1078,
+  "w": 969,
+  "h": 22,
+  "fs": "14px"
+ }
+}

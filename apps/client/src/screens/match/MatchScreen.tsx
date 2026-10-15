@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { FormationId, PackageId, PlayerView, Team } from '@pfl/engine';
-import { RECONNECT_GRACE_MS, type RoomState } from '@pfl/protocol';
+import type { RoomState } from '@pfl/protocol';
 import { applyDepthAction, type DepthAction } from '../../builder/depth';
 import { canSubmitCard, panelMode, timerSeconds, type MatchClientState } from '../../match/matchState';
 import { draftFromTeamDepth, shouldSendDepth, type DepthDraft } from '../../match/depthDraft';
@@ -77,8 +77,6 @@ export function MatchScreen({ state, room, myTeam, now, onFormation, onPackage, 
     );
   }
 
-  const opponent = room.players.find((p) => p.key !== room.you);
-  const paused = room.status === 'PAUSED' || opponent?.connected === false;
   const levels = view.fatigue[view.you] ?? {};
   const applyDepth = (a: DepthAction) => {
     if (!myTeam) return;
@@ -150,11 +148,6 @@ export function MatchScreen({ state, room, myTeam, now, onFormation, onPackage, 
   return (
     <main className="match">
       <Hud view={view} names={state.names} seconds={animating ? null : timerSeconds(state, now)} />
-      {paused && (
-        <div className="notice match-notice" role="status">
-          Adversário desconectado. Aguardando a reconexão (até {RECONNECT_GRACE_MS / 1000} s)...
-        </div>
-      )}
       <section className="match-field">
         <PhaserField stage={animating && state.animation ? state.animation.stage : state.stage} play={animating ? play : null} />
         {animating && <RevealBanner reveal={state.reveal} />}

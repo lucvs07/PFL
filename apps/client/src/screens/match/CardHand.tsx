@@ -1,5 +1,6 @@
 import type { PlayerView } from '@pfl/engine';
 import { findCard } from '@pfl/engine';
+import { useArrowNav } from '../../app/useArrowNav';
 import { handEntries } from '../../match/matchState';
 import { CardTile } from '../../components/CardTile';
 import './match.css';
@@ -12,8 +13,9 @@ interface Props {
 
 /** Mão de 5 + básicas (+ Punt/FG no 4º down). Não jogáveis ficam acinzentadas (view.playable). */
 export function CardHand({ view, canPick, onPick }: Props) {
+  const { ref, onKeyDown } = useArrowNav<HTMLDivElement>();
   return (
-    <div className="hand">
+    <div className="hand" role="group" aria-label="Cartas da mão" ref={ref} onKeyDown={onKeyDown}>
       {handEntries(view).map((entry) => {
         const card = findCard(entry.cardId);
         if (!card) return null;

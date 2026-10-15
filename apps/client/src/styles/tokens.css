@@ -5,16 +5,20 @@
   --gbc-panel: #e8e0c8;
   --gbc-panel-dark: #c8b890;
   --gbc-border: #383028;
-  --gbc-muted: #6c6458;
+  --gbc-muted: #5c5448;
   --gbc-green-0: #0f380f;
   --gbc-green-1: #306230;
   --gbc-green-2: #8bac0f;
   --gbc-green-3: #9bbc0f;
   --gbc-field: #48a058;
   --gbc-red: #d03028;
+  /* texto vermelho: --gbc-red segue como cor de lado e de preenchimento (3,85:1 como texto sobre painel) */
+  --gbc-red-text: #a82018;
   --gbc-blue: #3058c0;
   --gbc-yellow: #f8d030;
   --gbc-orange: #e88830;
+  /* laranja como texto/ícone (2,46:1 sobre papel): estrelas e efeito no log */
+  --gbc-orange-text: #a04010;
 
   /* Duotone DMG para fundos de destaque */
   --dmg-0: var(--gbc-green-0);
@@ -35,7 +39,7 @@
   /* Leitura do ponto de vista da defesa: ✔ azul, · cinza, ✖ vermelho */
   --read-right: var(--gbc-blue);
   --read-neutral: var(--gbc-muted);
-  --read-wrong: var(--gbc-red);
+  --read-wrong: var(--gbc-red-text);
 
   --type-normal: #a8a878;
   --type-fire: #f08030;
@@ -76,4 +80,11 @@
 
   --border: 4px solid var(--gbc-border);
   --shadow: 4px 4px 0 var(--gbc-border);
+
+  /* alvo mínimo de toque; no desktop com mouse não há piso (abaixo), a densidade de hoje */
+  --hit-min: 44px;
+}
+
+@media (min-width: 721px) and (pointer: fine) {
+  :root { --hit-min: 0px; }
 }

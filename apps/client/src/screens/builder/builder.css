@@ -29,14 +29,14 @@
 }
 
 .builder-controls .input {
-  font-size: var(--fs-body-sm);
+  font-size: 16px; /* iOS: sem zoom no foco */
   flex: 1 1 160px;
 }
 
 .builder-controls .builder-name {
   flex: 2 1 200px;
   font-family: var(--font-display);
-  font-size: var(--fs-sm);
+  font-size: 16px; /* iOS: sem zoom no foco */
 }
 
 .builder-message {
@@ -47,6 +47,7 @@
 }
 
 .builder-errors summary {
+  min-height: var(--hit-min);
   cursor: pointer;
   font-family: var(--font-display);
   font-size: var(--fs-sm);
@@ -94,7 +95,7 @@
 }
 
 .cap-bar.is-over .cap-bar-fill { background: var(--gbc-red); }
-.cap-bar.is-over .cap-bar-label { color: var(--gbc-red); }
+.cap-bar.is-over .cap-bar-label { color: var(--gbc-red-text); }
 
 .roster-strip {
   display: flex;
@@ -112,7 +113,7 @@
 
 .roster-strip-body {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 88px;
+  grid-template-columns: minmax(0, 1fr) 80px;
   gap: var(--space-3);
   align-items: start;
   min-width: 0;
@@ -123,7 +124,7 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
   gap: var(--space-2);
   min-width: 0;
 }
@@ -135,7 +136,7 @@
   align-items: center;
   gap: 2px;
   min-width: 0;
-  min-height: 96px;
+  min-height: 84px;
   /* faixa de 22 px no topo reservada ao ✕: ele nunca cobre o sprite nem o rótulo */
   padding: 22px var(--space-1) var(--space-1);
   background: var(--gbc-paper);
@@ -154,7 +155,7 @@
 .roster-slot-no {
   font-family: var(--font-display);
   font-size: var(--fs-sm);
-  color: var(--gbc-panel-dark);
+  color: var(--gbc-muted);
 }
 
 .roster-slot-name {
@@ -167,7 +168,7 @@
 }
 
 .roster-slot-meta {
-  display: flex;
+  display: none;
   gap: var(--space-1);
   align-items: center;
 }
@@ -196,7 +197,9 @@
   cursor: pointer;
 }
 
-.roster-slot-remove:hover { background: var(--gbc-muted); }
+@media (hover: hover) and (pointer: fine) {
+  .roster-slot-remove:hover { background: var(--gbc-muted); }
+}
 
 .roster-kicker {
   border-width: 4px;
@@ -260,8 +263,10 @@
   color: var(--gbc-paper);
 }
 
-.tab.is-active:hover:not(:disabled) {
-  background: var(--gbc-ink);
+@media (hover: hover) and (pointer: fine) {
+  .tab.is-active:hover:not(:disabled) {
+    background: var(--gbc-ink);
+  }
 }
 
 /* ---------- aba Elenco ---------- */
@@ -274,7 +279,7 @@
 
 .pokedex {
   display: grid;
-  grid-template-columns: 132px minmax(0, 1fr) 288px;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
   align-items: start;
   min-width: 0;
@@ -283,12 +288,17 @@
 /* trilho de tipos */
 .type-rail {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: var(--space-1);
   min-width: 0;
+  /* celular: o trilho vira uma linha de chips com rolagem própria */
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+  overscroll-behavior-x: contain;
 }
 
 .rail-pill {
+  min-height: var(--hit-min);
   --pill-color: var(--gbc-ink);
   display: flex;
   align-items: center;
@@ -303,10 +313,13 @@
   line-height: 1.6;
   text-align: left;
   white-space: nowrap;
+  flex: none;
   cursor: pointer;
 }
 
-.rail-pill:hover { background: var(--gbc-panel); }
+@media (hover: hover) and (pointer: fine) {
+  .rail-pill:hover { background: var(--gbc-panel); }
+}
 
 .rail-pill[aria-pressed='true'] {
   background: var(--pill-color);
@@ -329,7 +342,7 @@
   margin-bottom: var(--space-2);
 }
 
-.pokedex-filters .input { font-size: var(--fs-body-sm); }
+.pokedex-filters .input { font-size: 16px; /* iOS: sem zoom no foco */ }
 
 .pokedex-count {
   margin: 0 0 var(--space-2);
@@ -343,9 +356,9 @@
   margin: 0;
   padding: var(--space-3) var(--space-2) var(--space-3) 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(124px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
   gap: var(--space-3);
-  max-height: 70vh;
+  max-height: 60dvh;
   overflow-y: auto;
   border-top: 3px solid var(--gbc-ink);
 }
@@ -371,7 +384,9 @@
   cursor: pointer;
 }
 
-.dex-tile:hover { background: var(--gbc-panel); }
+@media (hover: hover) and (pointer: fine) {
+  .dex-tile:hover { background: var(--gbc-panel); }
+}
 
 .dex-tile.is-selected {
   border-width: 4px;
@@ -400,8 +415,11 @@
   user-select: none;
 }
 
-.dex-tile.is-selected .dex-ghost,
-.dex-tile:hover .dex-ghost { color: var(--gbc-paper); }
+.dex-tile.is-selected .dex-ghost { color: var(--gbc-paper); }
+
+@media (hover: hover) and (pointer: fine) {
+  .dex-tile:hover .dex-ghost { color: var(--gbc-paper); }
+}
 
 /* poço do sprite: célula própria no topo do card, ×1 (96 px), tudo dentro da borda */
 .dex-tile-sprite {
@@ -410,13 +428,20 @@
   align-self: stretch;
   display: grid;
   place-items: center;
-  height: 96px;
+  height: 48px;
   min-width: 0;
   overflow: hidden;
   margin-bottom: var(--space-1);
 }
 
-.dex-tile-sprite .sprite { position: relative; }
+.dex-tile-sprite .dex-ghost { font-size: 20px; } /* celular */
+
+.dex-tile-sprite .sprite {
+  position: relative;
+  /* celular: ×0,5 (48 px); max-* também vale para o fallback com tamanho inline */
+  max-width: 48px;
+  max-height: 48px;
+}
 
 .dex-tile-no {
   font-family: var(--font-display);
@@ -457,8 +482,7 @@
 
 /* painel de detalhe fixo à direita */
 .dex-detail {
-  position: sticky;
-  top: var(--space-4);
+  position: static;
   align-self: start;
   display: flex;
   flex-direction: column;
@@ -607,7 +631,7 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 2px var(--space-2);
 }
 
@@ -648,7 +672,7 @@
 /* ---------- aba Deck ---------- */
 .deck-editor {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
   align-items: start;
 }
@@ -700,13 +724,20 @@
 /* ---------- aba Código ---------- */
 .code-panel {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
 }
 
 .code-panel > p { grid-column: 1 / -1; }
 
 /* ---------- foco ---------- */
+/* área de toque do ✕ (22 px visuais) sem crescer o botão */
+.roster-slot-remove::after {
+  content: '';
+  position: absolute;
+  inset: calc((22px - var(--hit-min)) / 2);
+}
+
 .rail-pill:focus-visible,
 .roster-slot-remove:focus-visible,
 .builder-errors summary:focus-visible {
@@ -714,48 +745,33 @@
   outline-offset: 2px;
 }
 
-/* ---------- responsivo ---------- */
-@media (max-width: 900px) {
+/* ---------- a partir de 721px: pokédex em duas colunas, detalhe abaixo ---------- */
+@media (min-width: 721px) {
   .pokedex { grid-template-columns: 120px minmax(0, 1fr); }
-  .dex-detail {
-    grid-column: 1 / -1;
-    position: static;
-  }
-  .deck-editor,
-  .code-panel { grid-template-columns: minmax(0, 1fr); }
+  .dex-detail { grid-column: 1 / -1; }
+  .type-rail { flex-direction: column; overflow-x: visible; padding-bottom: 0; }
+  .dex-grid { grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); max-height: 70dvh; }
+  .dex-tile-sprite { height: 96px; }
+  .dex-tile-sprite .sprite { max-width: none; max-height: none; }
+  .dex-tile-sprite .dex-ghost { font-size: 28px; }
+  .roster-strip-body { grid-template-columns: minmax(0, 1fr) 88px; }
+  .roster-slots { grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); }
+  .roster-slot { min-height: 96px; }
+  .roster-slot-meta { display: flex; }
+  .gym-roster { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
-@media (max-width: 720px) {
-  .pokedex { grid-template-columns: minmax(0, 1fr); }
+/* campos: tamanho de hoje só com mouse (no toque ficam 16px: o iOS dá zoom abaixo disso) */
+@media (min-width: 721px) and (pointer: fine) {
+  .builder-controls .input { font-size: var(--fs-body-sm); }
+  .builder-controls .builder-name { font-size: var(--fs-sm); }
+  .pokedex-filters .input { font-size: var(--fs-body-sm); }
+}
 
-  /* trilho vira linha de chips com rolagem própria */
-  .type-rail {
-    flex-direction: row;
-    overflow-x: auto;
-    padding-bottom: var(--space-2);
-    overscroll-behavior-x: contain;
-  }
-  .rail-pill { flex: none; }
-
-  .dex-grid {
-    grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
-    max-height: 60vh;
-  }
-
-  /* ×0,5 (48 px): o card de 104 px não comporta 96; max-* também vale para o fallback com tamanho inline */
-  .dex-tile-sprite { height: 48px; }
-  .dex-tile-sprite .sprite {
-    width: 48px;
-    height: 48px;
-    max-width: 48px;
-    max-height: 48px;
-  }
-  .dex-tile-sprite .dex-ghost { font-size: 20px; }
-
-  .roster-strip-body { grid-template-columns: minmax(0, 1fr) 80px; }
-  .roster-slots { grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); }
-  .roster-slot { min-height: 84px; }
-  .roster-slot-meta { display: none; }
-
-  .gym-roster { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+/* ---------- a partir de 901px: pokédex em três colunas, editor e código lado a lado ---------- */
+@media (min-width: 901px) {
+  .pokedex { grid-template-columns: 132px minmax(0, 1fr) 288px; }
+  .dex-detail { grid-column: auto; position: sticky; top: var(--space-4); }
+  .deck-editor,
+  .code-panel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

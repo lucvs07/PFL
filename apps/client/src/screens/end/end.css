@@ -3,7 +3,7 @@
 
 .end-top {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-6);
   align-items: center;
 }
@@ -45,7 +45,7 @@
 
 /* ---------- MVP (ref 1): sprite grande numa coluna própria, dentro da caixa ---------- */
 .mvp {
-  --mvp-size: 192px;
+  --mvp-size: 96px;
   display: grid;
   grid-template-columns: var(--mvp-size) minmax(0, 1fr);
   align-items: center;
@@ -101,7 +101,7 @@
 /* ---------- estatísticas ---------- */
 .stats-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
 }
 .stats-grid > .panel { min-width: 0; }
@@ -143,7 +143,7 @@
 /* ---------- replay ---------- */
 .replay-layout {
   display: grid;
-  grid-template-columns: minmax(0, 480px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
   align-items: start;
 }
@@ -156,13 +156,13 @@
   background: var(--gbc-paper);
 }
 
-@media (max-width: 900px) {
-  .end-top,
-  .stats-grid,
-  .replay-layout { grid-template-columns: minmax(0, 1fr); }
+/* celular (base): MVP ×1 (96 px) para sobrar largura ao nome e às estatísticas */
+@media (min-width: 601px) {
+  .mvp { --mvp-size: 192px; }
 }
 
-/* celular: MVP ×1 (96 px) para sobrar largura ao nome e às estatísticas */
-@media (max-width: 600px) {
-  .mvp { --mvp-size: 96px; }
+@media (min-width: 901px) {
+  .end-top { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .stats-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .replay-layout { grid-template-columns: minmax(0, 480px) minmax(0, 1fr); }
 }
