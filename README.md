@@ -1,5 +1,9 @@
 # PFL — Pokémon Football League
 
+<!-- portfolio:pt -->
+Jogo de estratégia tática por turnos, 1x1 ao vivo, que mistura futebol americano, cartas e os 151 Pokémon da 1ª geração. Motor de regras, servidor Socket.IO e cliente React + Phaser.
+<!-- /portfolio:pt -->
+
 Jogo de estratégia tática por turnos, JxJ ao vivo, que mistura futebol americano com cartas e os 151 Pokémon da 1ª geração. Dois jogadores montam times 7v7 e, em cada jogada, ataque e defesa escolhem cartas às cegas e ao mesmo tempo; o playbook de cada time vem do elenco escalado. Projeto pessoal, para jogar com amigos.
 
 ## Estrutura
